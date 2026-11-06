@@ -77,5 +77,29 @@ Se implementaron y ejecutaron de forma sincronizada las suites de pruebas unitar
 2. **Triada de Cobertura:** Cada funcionalidad clave cuenta con casos nominales (*Happy Path*), valores atípicos y límites (*Edge Cases* como colecciones vacías o identidades nulas), y condiciones adversas (*Unhappy Path* como firmas falsificadas, pagos duplicados y registros inexistentes).
 3. **Mínimo M1 (100% Modo de Prueba):** Se utilizaron únicamente dominios y correos ficticios (`@test-md2026.org`) y RFCs genéricos del SAT (`XAXX010101000`).
 4. **Mínimo M2 (Menor Privilegio):** En las pruebas se verifica que los comprobantes para la modalidad `Anónima` no expongan nombres ni RFC bajo ninguna circunstancia, y que el controlador administrativo exponga datos estructurados a través de DTOs tipados (`ResumenConfirmacionDTO` y `ResultadoConfirmacionDTO`).
-5. **Mínimo M3 (Cero Secretos en Código/Git):** Ningún archivo contiene llaves privadas o prefijos restringidos de Stripe (`sk_test_`, `pk_test_`, `whsec_`). Los secretos se configuran y leen dinámicamente mediante `Stripe_Config__c.getOrgDefaults()`.
+5. **Mínimo M3 (Cero Secretos en Código/Git):** Ningún archivo contiene llaves privadas o prefijos restringidos de Stripe (`sk_*`, `pk_*`, `whsec*`). Los secretos se configuran y leen dinámicamente mediante `Stripe_Config__c.getOrgDefaults()`.
 6. **Salesforce Code Analyzer:** El escaneo con `sf code-analyzer` arrojó **0 violaciones de severidad Crítica o Alta (High)**. Las excepciones intencionales de contexto de sistema (`without sharing`) requeridas para webhooks públicos y envío de comprobantes fueron documentadas y gestionadas con anotaciones `@SuppressWarnings`.
+
+---
+
+## 4. Dictamen Oficial de Auditoría de Seguridad y Calidad (`code-auditor`)
+
+- **Fecha de Auditoría:** 2026-11-06
+- **Test Run Id Auditado:** `707VC00002E5PN4` (25/25 pruebas aprobadas en `jareth.moo@vibelab.sandbox`)
+- **Veredicto Global:** 🟢 **APROBADO SIN RESERVAS CRÍTICAS (PASS)**
+
+### 4.1 Tabla de Hallazgos y Observaciones
+
+| Severidad | Ubicación | Observación | Impacto / Acción |
+| :--- | :--- | :--- | :--- |
+| **Baja** | `DonationReceiptService.cls:37-43` | No se especifica un `OrgWideEmailAddressId` fijo en `Messaging.SingleEmailMessage`. | El correo saliente adopta la dirección del usuario ejecutor. Opcionalmente puede configurarse un Org-Wide Email Address en Setup. |
+| **Baja** | `DonacionTriggerHandler.cls:76-104` | El bloque condicional `isUpdateable()` sobre `Campana__c.Monto_Recaudado__c` actúa como guardia defensiva cuando el campo es un Roll-Up Summary (`Summary`) nativo. | Previene errores DML sobre campos calculados nativamente por Salesforce mientras mantiene compatibilidad si el campo cambiara a `Currency`. |
+| **Informativa** | `DonationAdminController.cls:84` | Bloqueo pesimista mediante SOQL `FOR UPDATE` en `confirmarPagoManual`. | Previene condiciones de carrera (*race conditions*) entre confirmaciones manuales de Tesorería y eventos concurrentes del webhook de Stripe. |
+
+### 4.2 Verificación de Mínimos Críticos y Estándares (`C6`)
+
+- **M1 (Ambiente Sandbox y Datos Ficticios):** 100% Verificado. Dominios ficticios `@test-md2026.org` y RFC de prueba `XAXX010101000`.
+- **M2 (Menor Privilegio y Privacidad de Donantes):** 100% Verificado. Comprobantes anónimos sin exposición de `Nombre_Donante__c` ni `RFC__c`, y controlador administrativo con `with sharing` y DTOs tipados (`ResumenConfirmacionDTO`, `ResultadoConfirmacionDTO`).
+- **M3 (Cero Secretos en Código o Historial Git):** 100% Verificado. Cero llaves en el repositorio; lectura exclusiva vía `Stripe_Config__c.getOrgDefaults()`.
+- **C6 (Bulkificación y Gobernador):** Cero consultas SOQL o DML en bucles; cero IDs hardcodeados; prueba masiva de 200 donaciones simultáneas aprobada en 1 transacción DML.
+
