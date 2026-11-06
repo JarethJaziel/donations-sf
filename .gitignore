@@ -39,6 +39,11 @@ ehthumbs.db
 [Dd]esktop.ini
 $RECYCLE.BIN/
 
+# Local IDE & Agent runner metadata
+.codex/
+.cursor/
+.gemini/
+
 # Local environment variables & secrets protection (M3)
 .env
 .env.*
