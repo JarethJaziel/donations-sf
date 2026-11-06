@@ -4,6 +4,18 @@
         <application>Gestion_Donaciones_MD2026</application>
         <visible>true</visible>
     </applicationVisibilities>
+    <classAccesses>
+        <apexClass>DonationAdminController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>DonationReceiptService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>StripeWebhookService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
     <description>Permisos administrativos para Coordinación y Tesorería sobre Campañas, Donaciones y Avisos de Pasarela MD2026.</description>
     <fieldPermissions>
         <editable>true</editable>
