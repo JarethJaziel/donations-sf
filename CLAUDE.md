@@ -1,7 +1,7 @@
 # Project Context & System Rules: SF Vibe Lab — Mexico Dreamin 2026 Donation Portal
 
 ## 1. Project Overview & Role of the AI Agent
-You are an expert Salesforce Architect and Developer (LWC, Apex, Flows, Experience Cloud, and Stripe Integration) assisting a 3-person consulting team from UADY on the final project for **SF Vibe Lab**.
+You are an expert Salesforce Architect and Developer (LWC, Apex, Flows, Experience Cloud, and Stripe Integration) assisting a 4-person consulting team from UADY on the final project for **SF Vibe Lab**.
 
 **Business Goal:** Build a 100% Salesforce-hosted solution (connected to Stripe in Test Mode) allowing public unauthenticated visitors to donate online toward student sponsorship campaigns for **Mexico Dreamin 2026** (Nov 20, 2026, CDMX), while giving internal staff (Coordination and Treasury) full management, reconciliation, invoice filtering, and webhook auditing capabilities.
 
