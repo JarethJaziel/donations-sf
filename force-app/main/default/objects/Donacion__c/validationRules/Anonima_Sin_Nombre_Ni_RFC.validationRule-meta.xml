@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Anonima_Sin_Nombre_Ni_RFC</fullName>
+    <active>true</active>
+    <description>Garantiza que las donaciones anónimas no almacenen nombre del donante ni RFC.</description>
+    <errorConditionFormula>ISPICKVAL(Modalidad__c, &apos;Anónima&apos;) &amp;&amp; (!ISBLANK(Nombre_Donante__c) || !ISBLANK(RFC__c))</errorConditionFormula>
+    <errorMessage>Una donación en modalidad Anónima no debe incluir Nombre del Donante ni RFC.</errorMessage>
+</ValidationRule>

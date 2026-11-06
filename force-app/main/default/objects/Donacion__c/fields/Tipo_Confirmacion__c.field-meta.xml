@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Tipo_Confirmacion__c</fullName>
+    <description>Origen de la confirmación del pago (Manual por Tesorería o Automática por Webhook).</description>
+    <externalId>false</externalId>
+    <label>Tipo de Confirmación</label>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Manual</fullName>
+                <default>false</default>
+                <label>Manual</label>
+            </value>
+            <value>
+                <fullName>Automática</fullName>
+                <default>false</default>
+                <label>Automática</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

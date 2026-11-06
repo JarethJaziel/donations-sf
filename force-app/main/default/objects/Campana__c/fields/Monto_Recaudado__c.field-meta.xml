@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Monto_Recaudado__c</fullName>
+    <description>Suma de donaciones con Estado = Pagada asociadas a esta campaña.</description>
+    <externalId>false</externalId>
+    <label>Monto Recaudado</label>
+    <summarizedField>Donacion__c.Monto__c</summarizedField>
+    <summaryFilterItems>
+        <field>Donacion__c.Estado__c</field>
+        <operation>equals</operation>
+        <value>Pagada</value>
+    </summaryFilterItems>
+    <summaryForeignKey>Donacion__c.Campana__c</summaryForeignKey>
+    <summaryOperation>sum</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Summary</type>
+</CustomField>

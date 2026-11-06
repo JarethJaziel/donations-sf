@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Solicita_Factura__c</fullName>
+    <description>Indicador automático de solicitud de factura según la modalidad.</description>
+    <externalId>false</externalId>
+    <formula>ISPICKVAL(Modalidad__c, &apos;Con factura&apos;)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Solicita Factura</label>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

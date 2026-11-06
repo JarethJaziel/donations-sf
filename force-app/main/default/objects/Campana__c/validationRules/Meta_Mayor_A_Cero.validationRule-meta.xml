@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Meta_Mayor_A_Cero</fullName>
+    <active>true</active>
+    <description>Impide guardar una campaña con meta menor o igual a cero.</description>
+    <errorConditionFormula>ISBLANK(Meta__c) || Meta__c &lt;= 0</errorConditionFormula>
+    <errorDisplayField>Meta__c</errorDisplayField>
+    <errorMessage>La meta financiera de la campaña debe ser mayor a $0.00.</errorMessage>
+</ValidationRule>

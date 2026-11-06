@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Nombre_Requerido_Credito_O_Factura</fullName>
+    <active>true</active>
+    <description>Exige Nombre o Razón Social cuando la modalidad es Con crédito o Con factura.</description>
+    <errorConditionFormula>(ISPICKVAL(Modalidad__c, &apos;Con crédito&apos;) || ISPICKVAL(Modalidad__c, &apos;Con factura&apos;)) &amp;&amp; ISBLANK(Nombre_Donante__c)</errorConditionFormula>
+    <errorDisplayField>Nombre_Donante__c</errorDisplayField>
+    <errorMessage>El Nombre o Razón Social del donante es obligatorio para donaciones con crédito o con factura.</errorMessage>
+</ValidationRule>

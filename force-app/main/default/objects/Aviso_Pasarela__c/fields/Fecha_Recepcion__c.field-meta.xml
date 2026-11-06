@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Fecha_Recepcion__c</fullName>
+    <defaultValue>NOW()</defaultValue>
+    <description>Fecha y hora de recepción de la notificación en el endpoint REST.</description>
+    <externalId>false</externalId>
+    <label>Fecha de Recepción</label>
+    <required>true</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>DateTime</type>
+</CustomField>

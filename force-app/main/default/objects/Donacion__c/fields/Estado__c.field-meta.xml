@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Estado__c</fullName>
+    <description>Estado del pago de la donación.</description>
+    <externalId>false</externalId>
+    <label>Estado</label>
+    <required>true</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Pendiente</fullName>
+                <default>true</default>
+                <label>Pendiente</label>
+            </value>
+            <value>
+                <fullName>Pagada</fullName>
+                <default>false</default>
+                <label>Pagada</label>
+            </value>
+            <value>
+                <fullName>Expirada</fullName>
+                <default>false</default>
+                <label>Expirada</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
