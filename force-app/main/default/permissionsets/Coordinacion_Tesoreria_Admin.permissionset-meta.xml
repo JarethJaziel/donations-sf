@@ -24,16 +24,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>Aviso_Pasarela__c.Estado_Aviso__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Aviso_Pasarela__c.Fecha_Recepcion__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
         <field>Aviso_Pasarela__c.Motivo_Rechazo__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -58,11 +48,6 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
-        <field>Campana__c.Meta__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
         <editable>false</editable>
         <field>Campana__c.Monto_Recaudado__c</field>
         <readable>true</readable>
@@ -75,26 +60,6 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Donacion__c.Comprobante_Enviado__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Donacion__c.Correo__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Donacion__c.Estado__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Donacion__c.Modalidad__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Donacion__c.Monto__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

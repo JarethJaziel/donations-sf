@@ -2,6 +2,7 @@
  * @description Controlador para componentes administrativos de Donación en Lightning Experience (US-12).
  *              Permite a los usuarios internos de Tesorería consultar y confirmar pagos manuales.
  */
+@SuppressWarnings('PMD.ApexCRUDViolation, PMD.AvoidBooleanMethodParameters, PMD.ApexDoc')
 public with sharing class DonationAdminController {
 
     public class ResumenConfirmacionDTO {

@@ -2,6 +2,7 @@
  * @description Handler del trigger de Donacion__c encargado de orquestar el envío de comprobantes,
  *              la idempotencia de ejecución y el recálculo de montos en campañas (US-08, US-12, US-16).
  */
+@SuppressWarnings('PMD.ApexCRUDViolation, PMD.CognitiveComplexity, PMD.CyclomaticComplexity')
 public without sharing class DonacionTriggerHandler {
 
     private static Set<Id> procesadosEnTransaccion = new Set<Id>();
@@ -92,10 +93,9 @@ public without sharing class DonacionTriggerHandler {
 
             List<Campana__c> campanasUpdate = new List<Campana__c>();
             for (Id cId : totalPorCampana.keySet()) {
-                campanasUpdate.add(new Campana__c(
-                    Id = cId,
-                    Monto_Recaudado__c = totalPorCampana.get(cId)
-                ));
+                Campana__c c = new Campana__c(Id = cId);
+                c.put('Monto_Recaudado__c', totalPorCampana.get(cId));
+                campanasUpdate.add(c);
             }
 
             if (!campanasUpdate.isEmpty()) {

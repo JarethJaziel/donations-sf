@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Stripe_Event_Id__c</fullName>
-    <caseSensitive>true</caseSensitive>
     <description>ID del evento en Stripe (evt_...) utilizado para control de idempotencia.</description>
     <externalId>true</externalId>
     <label>Stripe Event ID</label>

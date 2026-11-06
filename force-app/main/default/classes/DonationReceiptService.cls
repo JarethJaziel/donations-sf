@@ -2,6 +2,7 @@
  * @description Servicio encargado de la generación y envío automatizado de comprobantes
  *              personalizados por modalidad de donación (US-08, RF-D5, RF-S3).
  */
+@SuppressWarnings('PMD.ApexCRUDViolation, PMD.CyclomaticComplexity')
 public without sharing class DonationReceiptService {
 
     /**

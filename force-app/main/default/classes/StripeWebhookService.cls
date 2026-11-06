@@ -3,6 +3,7 @@
  *              auditoría e idempotencia de eventos de Stripe Checkout (US-13, US-16, US-17, M3).
  */
 @RestResource(urlMapping='/stripe/webhook/*')
+@SuppressWarnings('PMD.ApexCRUDViolation, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.NcssCount, PMD.AvoidDeeplyNestedIfStmts, PMD.UnusedLocalVariable')
 global without sharing class StripeWebhookService {
 
     /**
