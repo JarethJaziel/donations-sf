@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Donaciones_Pendientes</fullName>
+    <columns>NAME</columns>
+    <columns>Campana__c</columns>
+    <columns>Monto__c</columns>
+    <columns>Modalidad__c</columns>
+    <columns>Nombre_Donante__c</columns>
+    <columns>Correo__c</columns>
+    <columns>CREATED_DATE</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Estado__c</field>
+        <operation>equals</operation>
+        <value>Pendiente</value>
+    </filters>
+    <label>Donaciones Pendientes</label>
+</ListView>

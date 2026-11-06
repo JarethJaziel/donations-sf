@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Avisos_Rechazados</fullName>
+    <columns>NAME</columns>
+    <columns>Stripe_Event_Id__c</columns>
+    <columns>Estado_Aviso__c</columns>
+    <columns>Motivo_Rechazo__c</columns>
+    <columns>Fecha_Recepcion__c</columns>
+    <columns>Donacion__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Estado_Aviso__c</field>
+        <operation>equals</operation>
+        <value>Rechazado</value>
+    </filters>
+    <label>Avisos Rechazados</label>
+</ListView>

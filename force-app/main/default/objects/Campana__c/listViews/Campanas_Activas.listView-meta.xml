@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Campanas_Activas</fullName>
+    <columns>NAME</columns>
+    <columns>Meta__c</columns>
+    <columns>Monto_Recaudado__c</columns>
+    <columns>Fecha_Fin__c</columns>
+    <columns>Permitir_Sobrecupo__c</columns>
+    <columns>Activa__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Activa__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <label>Campañas Activas</label>
+</ListView>

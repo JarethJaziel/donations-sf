@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Todas_las_Campanas</fullName>
+    <columns>NAME</columns>
+    <columns>Meta__c</columns>
+    <columns>Monto_Recaudado__c</columns>
+    <columns>Fecha_Fin__c</columns>
+    <columns>Permitir_Sobrecupo__c</columns>
+    <columns>Activa__c</columns>
+    <filterScope>Everything</filterScope>
+    <label>Todas las Campañas</label>
+</ListView>

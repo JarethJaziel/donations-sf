@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Solicitudes_de_Factura</fullName>
+    <columns>NAME</columns>
+    <columns>Campana__c</columns>
+    <columns>Nombre_Donante__c</columns>
+    <columns>RFC__c</columns>
+    <columns>Correo__c</columns>
+    <columns>Monto__c</columns>
+    <columns>Estado__c</columns>
+    <columns>Tipo_Confirmacion__c</columns>
+    <columns>CREATED_DATE</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Solicita_Factura__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <label>Solicitudes de Factura</label>
+</ListView>

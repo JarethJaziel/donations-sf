@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Todas_las_Donaciones</fullName>
+    <columns>NAME</columns>
+    <columns>Campana__c</columns>
+    <columns>Monto__c</columns>
+    <columns>Modalidad__c</columns>
+    <columns>Estado__c</columns>
+    <columns>Tipo_Confirmacion__c</columns>
+    <columns>Solicita_Factura__c</columns>
+    <columns>CREATED_DATE</columns>
+    <filterScope>Everything</filterScope>
+    <label>Todas las Donaciones</label>
+</ListView>
