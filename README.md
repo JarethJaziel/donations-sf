@@ -22,11 +22,12 @@ Solución 100% hospedada en Salesforce (Experience Cloud, LWC, Apex, Flows) inte
 
 ## Guía Rápida de Autenticación y Despliegue a tu Org
 
-### 1. Autenticar tu Developer Edition Org
-Ejecuta en tu terminal:
+### 1. Autenticar tu Org (Sandbox o Developer Edition)
+Para Sandbox (como `uadyOrg` / `jareth.moo@vibelab.sandbox`):
 ```bash
-sf org login web --alias mexico-dreamin-org --set-default
+sf org login web --instance-url https://test.salesforce.com --alias uadyOrg --set-default
 ```
+*(Para Developer Edition u org de producción normal, omite `--instance-url` o usa `https://login.salesforce.com`).*
 
 ### 2. Desplegar el Modelo de Datos y Configuración Base
 ```bash
