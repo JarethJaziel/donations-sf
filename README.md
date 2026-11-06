@@ -4,6 +4,14 @@ Solución 100% hospedada en Salesforce (Experience Cloud, LWC, Apex, Flows) inte
 
 ---
 
+## Tablero de Gestión y Backlog (GitHub Projects)
+
+El seguimiento de las 17 Historias de Usuario (US-01 a US-17), criterios de aceptación, asignaciones del equipo de 4 integrantes y evidencias de entrega se gestionan en:
+
+👉 **[Tablero del Proyecto en GitHub Projects #7](https://github.com/users/JarethJaziel/projects/7)**
+
+---
+
 ## Estructura del Proyecto
 
 - [`GEMINI.md`](./GEMINI.md) y [`CLAUDE.md`](./CLAUDE.md): Reglas del sistema, contexto de negocio, mínimos críticos (`M1`, `M2`, `M3`) y estándares de codificación (`C6`).
