@@ -3,7 +3,7 @@
 > [!IMPORTANT]
 > **Versión 2 (2026-11-08).** Los prompts se reescribieron para alinearlos con el backlog actualizado (issues US-01 a US-20 en GitHub Projects) y con los hallazgos de la auditoría del proyecto. La fuente de verdad de cada historia son **los criterios de aceptación del issue en GitHub**.
 >
-> **Prioridad de reglas:** si `CLAUDE.md`, `GEMINI.md` o `.agents/rules/donation-portal.md` contradicen este documento o un issue (por ejemplo, el antiguo "Patrón de Dos Transacciones" con `crearSesionStripe(Id)`), **prevalecen este documento y el issue**. Esos archivos de reglas se actualizarán en un commit aparte.
+> **Reglas de los agentes:** `CLAUDE.md`, `GEMINI.md` y `.agents/rules/donation-portal.md` ya están alineados con este documento y con el backlog (versión 2). Si aun así encuentras una contradicción con un issue, prevalece el issue.
 
 ## Estado Base del Repositorio
 
@@ -74,7 +74,7 @@ flowchart TD
 ### Prompt Listo para Copiar y Pegar (Integrante 1)
 
 ```markdown
-Lee primero `CLAUDE.md` (o `GEMINI.md`), `docs/arquitectura_y_decisiones.md`, `docs/artifacts/guia_ejecucion_integrantes_2_3_4.md` (sección "Reglas Comunes") y los issues US-01, US-04, US-05, US-06, US-08, US-09, US-12, US-13, US-16 y US-17 del repositorio en GitHub. Si las reglas de `CLAUDE.md` contradicen la guía o los issues, prevalecen la guía y los issues.
+Lee primero `CLAUDE.md` (o `GEMINI.md`), `docs/arquitectura_y_decisiones.md`, `docs/artifacts/guia_ejecucion_integrantes_2_3_4.md` (sección "Reglas Comunes") y los issues US-01, US-04, US-05, US-06, US-08, US-09, US-12, US-13, US-16 y US-17 del repositorio en GitHub. Si algo contradice un issue, prevalece el issue.
 Soy el **Integrante 1 (Líder Admin y Backend)**. Debo corregir el código que ya construimos y agregar los campos nuevos del backlog, sin implementar el portal público (eso es del Integrante 2).
 
 ⚠️ REGLAS: M1, M2 y M3 de la guía. No escribas llaves ni usuarios de la org. No borres pruebas existentes; actualízalas.
@@ -145,7 +145,7 @@ Soy el **Integrante 1 (Líder Admin y Backend)**. Debo corregir el código que y
 ### Prompt Listo para Copiar y Pegar (Integrante 2)
 
 ```markdown
-Lee primero `CLAUDE.md` (o `GEMINI.md`), `docs/arquitectura_y_decisiones.md`, `docs/artifacts/guia_ejecucion_integrantes_2_3_4.md` (sección "Reglas Comunes") y los issues US-01, US-02, US-03, US-04, US-05, US-06 y US-14 del repositorio en GitHub. Si las reglas de `CLAUDE.md` contradicen la guía o los issues (en especial el antiguo "Patrón de Dos Transacciones" con `crearSesionStripe(Id)`), prevalecen la guía y los issues.
+Lee primero `CLAUDE.md` (o `GEMINI.md`), `docs/arquitectura_y_decisiones.md`, `docs/artifacts/guia_ejecucion_integrantes_2_3_4.md` (sección "Reglas Comunes") y los issues US-01, US-02, US-03, US-04, US-05, US-06 y US-14 del repositorio en GitHub. Si algo contradice un issue, prevalece el issue.
 Soy el **Integrante 2 (Líder de Portal Público)** y me corresponde implementar únicamente las historias **US-01, US-02, US-03, US-04, US-05, US-06 y US-14**.
 
 ⚠️ REGLAS ESTRICTAS DE FRONTERA Y SEGURIDAD:

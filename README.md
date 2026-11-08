@@ -17,7 +17,7 @@ El seguimiento de las 17 Historias de Usuario (US-01 a US-17), criterios de acep
 - [`GEMINI.md`](./GEMINI.md) y [`CLAUDE.md`](./CLAUDE.md): Reglas del sistema, contexto de negocio, mínimos críticos (`M1`, `M2`, `M3`) y estándares de codificación (`C6`).
 - [`docs/bitacora_ia.md`](./docs/bitacora_ia.md): Registro cronológico obligatorio de interacciones con IA (**Criterio C3 — 20 pts**).
 - [`docs/preguntas_y_reportes.md`](./docs/preguntas_y_reportes.md): Registro de discovery con el cliente y reportes técnicos (**Criterio C7 — 15 pts**).
-- [`docs/arquitectura_y_decisiones.md`](./docs/arquitectura_y_decisiones.md): Diagrama de secuencia y ADRs (Patrón de Dos Transacciones, Seguridad Guest User `M2` y Secretos Protegidos `M3`).
+- [`docs/arquitectura_y_decisiones.md`](./docs/arquitectura_y_decisiones.md): Diagrama de secuencia y ADRs (Checkout en una transacción con referencia opaca, Seguridad Guest User `M2` y Secretos Protegidos `M3`).
 - [`docs/plan_pruebas_y_seguridad.md`](./docs/plan_pruebas_y_seguridad.md): Checklist de validación de mínimos y matriz de pruebas funcionales/negativas.
 - [`force-app/main/default/objects/`](./force-app/main/default/objects/):
   - `Campana__c`: Campañas de patrocinio (`Meta__c`, `Monto_Recaudado__c` Roll-Up Summary filtrado por `Estado__c = 'Pagada'`, `Activa__c`, `Fecha_Fin__c`, `Permitir_Sobrecupo__c`).
