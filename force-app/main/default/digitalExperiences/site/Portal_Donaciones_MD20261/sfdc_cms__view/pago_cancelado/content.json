@@ -1,0 +1,81 @@
+{
+  "type": "sfdc_cms__view",
+  "title": "Pago cancelado",
+  "contentBody": {
+    "component": {
+      "children": [
+        {
+          "children": [
+            {
+              "attributes": {
+                "backgroundImageConfig": "",
+                "backgroundImageOverlay": "rgba(0,0,0,0)",
+                "componentSpacerSize": "",
+                "layoutDirectionDesktop": "row",
+                "layoutDirectionMobile": "column",
+                "layoutDirectionTablet": "column",
+                "maxContentWidth": "",
+                "sectionColumnGutterWidth": "",
+                "sectionConfig": "{\"UUID\":\"e1acfd5b-18f2-4b73-b07e-86ad8be2ede6\",\"columns\":[{\"UUID\":\"8b3cac27-10f1-4e9d-9431-a5da48153a76\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":null}]}",
+                "sectionMinHeight": "",
+                "sectionVerticalAlign": "flex-start"
+              },
+              "children": [
+                {
+                  "children": [
+                    {
+                      "attributes": {
+                        "imageInfos": "",
+                        "richTextValue": "<div style=\"max-width: 640px; margin: 48px auto; padding: 0 16px; text-align: center;\"><h1 class=\"slds-text-heading_large slds-p-bottom_small\">Pago cancelado</h1><p>No se realizó ningún cargo y tu donación no se registró como pagada.</p><p>Si quieres intentarlo de nuevo, vuelve a elegir la campaña y el monto.</p><p class=\"slds-p-top_medium\"><a href=\"./\">Volver a las campañas</a></p></div>"
+                      },
+                      "definition": "community_builder:htmlEditor",
+                      "id": "0f949d93-7e65-4fb6-9c6d-1c72b2d6d1d0",
+                      "type": "component"
+                    }
+                  ],
+                  "id": "8b3cac27-10f1-4e9d-9431-a5da48153a76",
+                  "name": "col1",
+                  "title": "Columna 1",
+                  "type": "region"
+                }
+              ],
+              "definition": "community_layout:section",
+              "id": "e1acfd5b-18f2-4b73-b07e-86ad8be2ede6",
+              "type": "component"
+            }
+          ],
+          "id": "e71eee0a-9256-44c4-9ff2-6f73e611a3e7",
+          "name": "content",
+          "title": "Contenido",
+          "type": "region"
+        },
+        {
+          "children": [
+            {
+              "attributes": {
+                "customHeadTags": "",
+                "description": "El pago se canceló y no hubo cargo.",
+                "pageTitle": "Pago cancelado",
+                "recordId": "{!recordId}"
+              },
+              "definition": "community_builder:seoAssistant",
+              "id": "bb010262-39f2-4cb5-b6a2-bb7755ab9eeb",
+              "type": "component"
+            }
+          ],
+          "id": "de5607c7-5179-46a1-8d5c-6631e738257a",
+          "name": "sfdcHiddenRegion",
+          "title": "sfdcHiddenRegion",
+          "type": "region"
+        }
+      ],
+      "definition": "community_layout:sldsFlexibleLayout",
+      "id": "0a95d65c-743c-4df5-a27a-a01a027113be",
+      "type": "component"
+    },
+    "dataProviders": [],
+    "themeLayoutType": "Inner",
+    "viewType": "custom-pago-cancelado"
+  },
+  "urlName": "pago-cancelado"
+}

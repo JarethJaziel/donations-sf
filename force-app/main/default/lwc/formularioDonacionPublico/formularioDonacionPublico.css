@@ -1,0 +1,192 @@
+:host {
+    display: block;
+}
+
+.formulario {
+    background: var(--md-fondo, #ffffff);
+    border: 1px solid var(--md-borde, #dddbda);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+}
+
+.titulo {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 1rem;
+}
+
+.grupo {
+    border: 0;
+    margin: 0 0 1.25rem;
+    padding: 0;
+    min-width: 0;
+}
+
+.etiqueta {
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    padding: 0;
+}
+
+.etiqueta-campo {
+    display: block;
+    font-weight: 600;
+    margin: 0.75rem 0 0.25rem;
+}
+
+.montos {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.5rem;
+}
+
+.monto {
+    padding: 0.625rem 0.25rem;
+    border: 1px solid var(--md-borde, #dddbda);
+    border-radius: 0.5rem;
+    background: #ffffff;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.monto:hover,
+.monto:focus-visible {
+    border-color: var(--md-primario, #0b5cab);
+}
+
+.monto.seleccionado {
+    background: var(--md-primario, #0b5cab);
+    border-color: var(--md-primario, #0b5cab);
+    color: #ffffff;
+}
+
+.campo {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.625rem 0.75rem;
+    border: 1px solid #939393;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+}
+
+.campo:focus {
+    outline: 2px solid var(--md-primario, #0b5cab);
+    outline-offset: 1px;
+}
+
+.campo[aria-invalid] {
+    border-color: #ba0517;
+}
+
+.mayusculas {
+    text-transform: uppercase;
+}
+
+.ayuda {
+    color: var(--md-suave, #5c5c5c);
+    font-size: 0.8125rem;
+    margin: 0.25rem 0 0;
+}
+
+.centrada {
+    text-align: center;
+}
+
+.nota {
+    background: var(--md-fondo-suave, #f3f3f3);
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    margin: 0 0 1.25rem;
+}
+
+.error {
+    color: #ba0517;
+    font-weight: 600;
+    font-size: 0.875rem;
+    margin: 0.25rem 0 0;
+}
+
+.servidor {
+    margin-bottom: 1rem;
+}
+
+.boton-primario,
+.boton-secundario {
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.boton-primario {
+    border: 0;
+    background: var(--md-primario, #0b5cab);
+    color: #ffffff;
+}
+
+.boton-primario:hover,
+.boton-primario:focus-visible {
+    background: var(--md-primario-oscuro, #084785);
+}
+
+.boton-primario[disabled] {
+    opacity: 0.6;
+    cursor: progress;
+}
+
+.boton-secundario {
+    border: 1px solid var(--md-primario, #0b5cab);
+    background: #ffffff;
+    color: var(--md-primario, #0b5cab);
+}
+
+.enviar {
+    width: 100%;
+}
+
+.cerrada {
+    font-weight: 600;
+    margin: 0;
+}
+
+.fondo-dialogo {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    z-index: 9000;
+}
+
+.dialogo {
+    background: #ffffff;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    max-width: 420px;
+    width: 100%;
+}
+
+.monto-dialogo {
+    font-size: 1.25rem;
+}
+
+.acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    margin-top: 1.25rem;
+}
+
+@media (max-width: 480px) {
+    .montos {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .acciones button {
+        width: 100%;
+    }
+}

@@ -1,0 +1,101 @@
+<template>
+    <section class="formulario" aria-labelledby="titulo-formulario">
+        <h2 class="titulo" id="titulo-formulario">Haz tu donación</h2>
+
+        <template lwc:if={aceptaDonaciones}>
+            <form novalidate onsubmit={continuar}>
+                <!-- Monto (US-01 AC3, US-02) -->
+                <fieldset class="grupo">
+                    <legend class="etiqueta">¿Cuánto quieres donar?</legend>
+                    <div class="montos">
+                        <template for:each={montos} for:item="m">
+                            <button key={m.valor} type="button" class={m.clase} data-valor={m.valor}
+                                aria-pressed={m.presionado} onclick={elegirMonto}>{m.texto}</button>
+                        </template>
+                    </div>
+                    <label class="etiqueta-campo" for="monto">Otro monto (MXN)</label>
+                    <input id="monto" class="campo" type="text" inputmode="decimal" placeholder="Ej. 135.50"
+                        value={montoTexto} data-campo="montoTexto" oninput={cambiarCampo} onblur={salirCampo}
+                        aria-invalid={invalidoMonto} />
+                    <p class="ayuda">Mínimo $10.00 MXN.</p>
+                    <template lwc:if={mensajeMonto}>
+                        <p class="error" role="alert">{mensajeMonto}</p>
+                    </template>
+                </fieldset>
+
+                <!-- Modalidad (US-03, US-04, US-05) -->
+                <div class="grupo">
+                    <lightning-radio-group name="modalidad" label="¿Cómo quieres donar?" options={opcionesModalidad}
+                        value={modalidad} onchange={cambiarModalidad} type="radio" required></lightning-radio-group>
+                </div>
+
+                <div class="grupo">
+                    <label class="etiqueta-campo" for="correo">Correo electrónico</label>
+                    <input id="correo" class="campo" type="email" autocomplete="email" value={correo}
+                        data-campo="correo" oninput={cambiarCampo} onblur={salirCampo} aria-invalid={invalidoCorreo} />
+                    <p class="ayuda">Solo lo usamos para enviarte tu comprobante. Nunca se publica.</p>
+                    <template lwc:if={mensajeCorreo}>
+                        <p class="error" role="alert">{mensajeCorreo}</p>
+                    </template>
+                </div>
+
+                <template lwc:if={esAnonima}>
+                    <p class="nota">Tu nombre no aparecerá en el sitio ni en tu comprobante.</p>
+                </template>
+                <template lwc:else>
+                    <div class="grupo">
+                        <label class="etiqueta-campo" for="nombre">{etiquetaNombre}</label>
+                        <input id="nombre" class="campo" type="text" maxlength="255" autocomplete="name" value={nombre}
+                            data-campo="nombre" oninput={cambiarCampo} onblur={salirCampo} aria-invalid={invalidoNombre} />
+                        <template lwc:if={mensajeNombre}>
+                            <p class="error" role="alert">{mensajeNombre}</p>
+                        </template>
+                    </div>
+                    <div class="grupo">
+                        <label class="etiqueta-campo" for="nombrePublico">Nombre para el muro (opcional)</label>
+                        <input id="nombrePublico" class="campo" type="text" maxlength="80" value={nombrePublico}
+                            data-campo="nombrePublico" oninput={cambiarCampo} placeholder="Ej. Familia Pérez" />
+                        <p class="ayuda">Si lo dejas vacío, en el muro aparecerá el nombre de arriba. Tu correo y RFC nunca se publican.</p>
+                    </div>
+                </template>
+
+                <template lwc:if={esFactura}>
+                    <div class="grupo">
+                        <label class="etiqueta-campo" for="rfc">RFC</label>
+                        <input id="rfc" class="campo mayusculas" type="text" maxlength="13" autocomplete="off" value={rfc}
+                            data-campo="rfc" oninput={cambiarCampo} onblur={salirCampo} aria-invalid={invalidoRfc} />
+                        <p class="ayuda">12 caracteres para empresas, 13 para personas. Este comprobante no es un CFDI.</p>
+                        <template lwc:if={mensajeRfc}>
+                            <p class="error" role="alert">{mensajeRfc}</p>
+                        </template>
+                    </div>
+                </template>
+
+                <template lwc:if={errorServidor}>
+                    <p class="error servidor" role="alert">{errorServidor}</p>
+                </template>
+
+                <button class="boton-primario enviar" type="submit" disabled={enviando}>{etiquetaBoton}</button>
+                <p class="ayuda centrada">El pago se hace en la página segura de Stripe (modo de prueba).</p>
+            </form>
+        </template>
+        <template lwc:else>
+            <p class="cerrada">Esta campaña alcanzó su meta y ya no recibe donaciones. ¡Gracias!</p>
+        </template>
+
+        <!-- Confirmación de montos altos (US-02 AC4) -->
+        <template lwc:if={confirmando}>
+            <div class="fondo-dialogo">
+                <div class="dialogo" role="dialog" aria-modal="true" aria-labelledby="titulo-dialogo"
+                    onkeydown={manejarTeclaDialogo}>
+                    <h3 class="titulo" id="titulo-dialogo">Confirma tu donación</h3>
+                    <p>Vas a donar <strong class="monto-dialogo">{montoFormateado}</strong>. ¿Es correcto?</p>
+                    <div class="acciones">
+                        <button type="button" class="boton-secundario" onclick={corregirMonto}>Corregir monto</button>
+                        <button type="button" class="boton-primario" onclick={confirmarMonto}>Sí, donar {montoFormateado}</button>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </section>
+</template>

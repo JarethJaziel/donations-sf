@@ -1,0 +1,12 @@
+{
+  "type": "sfdc_cms__route",
+  "title": "Pago cancelado",
+  "contentBody": {
+    "activeViewId": "pago_cancelado",
+    "configurationTags": [],
+    "pageAccess": "UseParent",
+    "routeType": "custom-pago-cancelado",
+    "urlPrefix": "pago-cancelado"
+  },
+  "urlName": "pago-cancelado"
+}

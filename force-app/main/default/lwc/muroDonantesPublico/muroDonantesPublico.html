@@ -1,0 +1,37 @@
+<template>
+    <section class="muro" aria-labelledby="titulo-muro">
+        <h2 class="titulo" id="titulo-muro">Muro de donantes</h2>
+
+        <template lwc:if={cargando}>
+            <p class="estado">Cargando…</p>
+        </template>
+        <template lwc:if={error}>
+            <p class="estado" role="alert">{error}</p>
+        </template>
+        <template lwc:if={sinDonantes}>
+            <p class="estado">Aún no hay donantes públicos. ¡Sé el primero en aparecer aquí!</p>
+        </template>
+
+        <template lwc:if={hayDonantes}>
+            <p class="total">{totalTexto} con reconocimiento público</p>
+            <div class="ventana" tabindex="0" aria-label="Lista de donantes">
+                <ul class={clasePista} style={estiloPista}>
+                    <template for:each={donantes} for:item="d">
+                        <li key={d.clave} class="donante">
+                            <span class="nombre">{d.nombrePublico}</span>
+                            <span class="monto"><lightning-formatted-number value={d.monto} format-style="currency" currency-code="MXN"></lightning-formatted-number></span>
+                        </li>
+                    </template>
+                    <template lwc:if={desplazar}>
+                        <template for:each={donantes} for:item="d">
+                            <li key={d.claveCopia} class="donante copia" aria-hidden="true">
+                                <span class="nombre">{d.nombrePublico}</span>
+                                <span class="monto"><lightning-formatted-number value={d.monto} format-style="currency" currency-code="MXN"></lightning-formatted-number></span>
+                            </li>
+                        </template>
+                    </template>
+                </ul>
+            </div>
+        </template>
+    </section>
+</template>

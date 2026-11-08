@@ -9,7 +9,7 @@ You are an expert Salesforce Architect and Developer (LWC, Apex, Flows, Experien
 
 **Business Goal:** Build a 100% Salesforce-hosted solution (connected to Stripe in Test Mode) allowing public unauthenticated visitors to donate online toward student sponsorship campaigns for **Mexico Dreamin 2026** (Nov 20, 2026, CDMX), while giving internal staff (Coordination, Treasury and Moderation) management, reconciliation, invoice filtering, and webhook auditing capabilities.
 
-**Current state:** the data model, staff app, receipts, manual confirmation and Stripe webhook are built and deployed (member 1). **The public portal does not exist yet**: no Experience Cloud site, no public Apex controller and no public LWC. That is member 2's work (section 6).
+**Current state:** the data model, staff app, receipts, manual confirmation and Stripe webhook are built and deployed (member 1). The public portal (site `/md2026`, `DonationPublicController` and its 3 LWC) is built and deployed (member 2, section 6). Pending: thank-you and payment-cancelled components (member 3), seed data and security evidence (member 4), and the Stripe test key in `Stripe_Config__c` (set manually in the org).
 
 ---
 
@@ -144,15 +144,18 @@ Open client questions are tagged **(P#)**. Build the provisional decision; it ma
 
 ## 6. Public Portal — Member 2 Scope (`US-01` to `US-06`, `US-14`)
 
-### 6.1 Experience Cloud site
+### 6.1 Experience Cloud site (built: "Portal Donaciones MD2026", path `/md2026`)
+- Guest profile `Portal Donaciones MD2026 Perfil`: access to `DonationPublicController` only; no object or field permissions (verified live with zero permissions). Guest profiles do not appear in Setup → Profiles; open them from Experience Builder → Settings → General.
+- `networks/` and `sites/` are git-ignored because they contain the sender email and the org username; deploy them only from a local machine.
+- After deploying LWC or bundle changes run `sf community publish --name "Portal Donaciones MD2026"`.
 - Create a **new** site with the **Build Your Own (LWR)** template and guest access. In LWR, every change requires **Publish** again.
 - The org is a shared copy of an older university org. It already contains a live site at `/donaciones` and about 30 legacy LWCs from previous years (`home`, `footer`, `container`, `lastDonors`, PayPal/Oxxo components, etc.). **Do not use, modify or reuse them**, do not reuse the `/donaciones` path, and do not create components with those generic names.
 - Pages: `/` (campaigns, form, wall), `/agradecimiento` and `/pago-cancelado` (components by member 3). No global search, profiles or internal tabs (US-14).
 - Guest profile: access to `DonationPublicController` only; zero object permissions on `Donacion__c` and `Aviso_Pasarela__c`.
 - Retrieve the site into the repo (`DigitalExperienceBundle`, `DigitalExperienceConfig`, `Network`, `CustomSite`) and check that no usernames, emails or keys are included before committing.
 
-### 6.2 `DonationPublicController` (to build)
-`without sharing` only because the guest has no object permissions; justify it in a comment. Every method returns DTOs.
+### 6.2 `DonationPublicController` (built)
+`without sharing`, with **`WITH SYSTEM_MODE`** on every query and **`insert as system`**: in the guest context Salesforce applies the user's schema visibility even inside Apex (`sObject type ... is not supported`, `No such column ...`), and the guest profile must keep **zero object and field permissions**. All access control lives in this controller. Every method returns DTOs.
 
 1. `@AuraEnabled(cacheable=true) List<CampanaPublicaDTO> obtenerCampanasActivas()`:
    - `Vigente__c = true`, ordered by `Fecha_Fin__c, Name`.

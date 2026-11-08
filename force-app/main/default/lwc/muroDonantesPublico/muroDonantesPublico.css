@@ -1,0 +1,92 @@
+:host {
+    display: block;
+}
+
+.muro {
+    background: var(--md-fondo-suave, #f3f3f3);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+}
+
+.titulo {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem;
+}
+
+.estado,
+.total {
+    color: var(--md-suave, #5c5c5c);
+    margin: 0 0 0.75rem;
+}
+
+.ventana {
+    max-height: 22rem;
+    overflow: hidden;
+    border-radius: 0.5rem;
+}
+
+.ventana:focus-visible {
+    outline: 2px solid var(--md-primario, #0b5cab);
+}
+
+.pista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.pista.animada {
+    animation-name: desplazar;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+.ventana:hover .pista.animada,
+.ventana:focus-within .pista.animada {
+    animation-play-state: paused;
+}
+
+@keyframes desplazar {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-50%);
+    }
+}
+
+.donante {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    background: #ffffff;
+    border-radius: 0.5rem;
+    padding: 0.625rem 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+.nombre {
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.monto {
+    white-space: nowrap;
+    color: var(--md-acento, #2e844a);
+    font-weight: 700;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pista.animada {
+        animation: none;
+    }
+
+    .copia {
+        display: none;
+    }
+
+    .ventana {
+        overflow-y: auto;
+    }
+}

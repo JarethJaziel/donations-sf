@@ -1,0 +1,5 @@
+{
+  "apiName": "pago_cancelado",
+  "type": "sfdc_cms__view",
+  "path": "views"
+}

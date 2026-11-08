@@ -1,0 +1,81 @@
+{
+  "type": "sfdc_cms__view",
+  "title": "¡Gracias por tu donación!",
+  "contentBody": {
+    "component": {
+      "children": [
+        {
+          "children": [
+            {
+              "attributes": {
+                "backgroundImageConfig": "",
+                "backgroundImageOverlay": "rgba(0,0,0,0)",
+                "componentSpacerSize": "",
+                "layoutDirectionDesktop": "row",
+                "layoutDirectionMobile": "column",
+                "layoutDirectionTablet": "column",
+                "maxContentWidth": "",
+                "sectionColumnGutterWidth": "",
+                "sectionConfig": "{\"UUID\":\"45db05ab-a4c6-4882-aaf5-3c0f9edbe328\",\"columns\":[{\"UUID\":\"1748505a-a6bb-4e83-a8ba-7fa9d6fc1b22\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":null}]}",
+                "sectionMinHeight": "",
+                "sectionVerticalAlign": "flex-start"
+              },
+              "children": [
+                {
+                  "children": [
+                    {
+                      "attributes": {
+                        "imageInfos": "",
+                        "richTextValue": "<div style=\"max-width: 640px; margin: 48px auto; padding: 0 16px; text-align: center;\"><h1 class=\"slds-text-heading_large slds-p-bottom_small\">¡Gracias por tu donación!</h1><p>Recibimos tu donación. Te enviaremos tu comprobante por correo cuando se confirme el pago.</p><p class=\"slds-p-top_medium\"><a href=\"./\">Volver a las campañas</a></p></div>"
+                      },
+                      "definition": "community_builder:htmlEditor",
+                      "id": "1d6d3357-a5e6-4c5b-9422-e46aaf75ff79",
+                      "type": "component"
+                    }
+                  ],
+                  "id": "1748505a-a6bb-4e83-a8ba-7fa9d6fc1b22",
+                  "name": "col1",
+                  "title": "Columna 1",
+                  "type": "region"
+                }
+              ],
+              "definition": "community_layout:section",
+              "id": "45db05ab-a4c6-4882-aaf5-3c0f9edbe328",
+              "type": "component"
+            }
+          ],
+          "id": "c396e3c0-e7fd-4cc9-8669-e28b3a00e68b",
+          "name": "content",
+          "title": "Contenido",
+          "type": "region"
+        },
+        {
+          "children": [
+            {
+              "attributes": {
+                "customHeadTags": "",
+                "description": "Confirmación de recepción de la donación.",
+                "pageTitle": "¡Gracias por tu donación!",
+                "recordId": "{!recordId}"
+              },
+              "definition": "community_builder:seoAssistant",
+              "id": "0659b8e6-5ac2-423f-8a25-f3046a1d682d",
+              "type": "component"
+            }
+          ],
+          "id": "4ea955ce-9363-4934-8366-c502579fd833",
+          "name": "sfdcHiddenRegion",
+          "title": "sfdcHiddenRegion",
+          "type": "region"
+        }
+      ],
+      "definition": "community_layout:sldsFlexibleLayout",
+      "id": "83213e4f-9ca2-4ea9-947e-3b87d0c1ecde",
+      "type": "component"
+    },
+    "dataProviders": [],
+    "themeLayoutType": "Inner",
+    "viewType": "custom-agradecimiento"
+  },
+  "urlName": "agradecimiento"
+}

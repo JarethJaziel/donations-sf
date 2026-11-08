@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>67.0</apiVersion>
+    <isExposed>false</isExposed>
+    <masterLabel>Formulario de Donación MD2026</masterLabel>
+    <description>Formulario público de donación; lo usa portalCampanasPublico (US-02 a US-06).</description>
+</LightningComponentBundle>

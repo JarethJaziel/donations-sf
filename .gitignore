@@ -55,3 +55,8 @@ $RECYCLE.BIN/
 **/__pycache__/
 **/.venv/
 **/venv/
+
+# Metadatos del sitio que contienen datos personales (correo remitente, usuario administrador).
+# Se despliegan desde la máquina local; no se publican en el repositorio (M3).
+force-app/main/default/networks/
+force-app/main/default/sites/

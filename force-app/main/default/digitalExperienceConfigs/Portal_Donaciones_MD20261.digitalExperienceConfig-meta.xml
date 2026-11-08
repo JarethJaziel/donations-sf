@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DigitalExperienceConfig xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Portal Donaciones MD2026</label>
+    <site>
+        <urlPathPrefix>md2026</urlPathPrefix>
+    </site>
+    <space>site/Portal_Donaciones_MD20261</space>
+</DigitalExperienceConfig>

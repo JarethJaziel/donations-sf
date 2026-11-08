@@ -1,0 +1,89 @@
+<template>
+    <div class="portal">
+        <template lwc:if={cargando}>
+            <div class="estado" role="status">
+                <lightning-spinner alternative-text="Cargando campañas" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template lwc:if={error}>
+            <p class="estado aviso" role="alert">{error}</p>
+        </template>
+
+        <template lwc:if={mostrarVacio}>
+            <div class="estado">
+                <h2 class="titulo-seccion">No hay campañas activas por ahora</h2>
+                <p>Vuelve pronto: aquí aparecerán las próximas campañas de Mexico Dreamin 2026.</p>
+            </div>
+        </template>
+
+        <!-- Lista de campañas (US-01 AC1) -->
+        <template lwc:if={mostrarLista}>
+            <header class="encabezado">
+                <h1 class="titulo">Apoya a estudiantes rumbo a Mexico Dreamin 2026</h1>
+                <p class="subtitulo">Elige una campaña. Puedes donar de forma anónima, con reconocimiento público o con factura.</p>
+            </header>
+            <ul class="rejilla">
+                <template for:each={campanas} for:item="c">
+                    <li key={c.id} class="tarjeta">
+                        <template lwc:if={c.imagenUrl}>
+                            <img class="imagen" src={c.imagenUrl} alt={c.nombre} loading="lazy" />
+                        </template>
+                        <template lwc:else>
+                            <div class="imagen imagen-vacia" aria-hidden="true"></div>
+                        </template>
+                        <div class="cuerpo">
+                            <h2 class="nombre">{c.nombre}</h2>
+                            <p class="descripcion">{c.descripcion}</p>
+                            <div class="barra" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                                aria-valuenow={c.porcentaje} aria-label={c.porcentajeTexto}>
+                                <div class="relleno" style={c.barraEstilo}></div>
+                            </div>
+                            <p class="cifras"><strong>{c.recaudadoTexto}</strong><span>{c.restoCifras}</span></p>
+                            <p class="fecha">{c.cierraTexto}</p>
+                            <template lwc:if={c.cerrada}>
+                                <p class="cerrada">Cerrada para nuevas donaciones ({c.motivoCierre})</p>
+                            </template>
+                            <button class="boton" data-id={c.id} onclick={elegir} aria-label={c.etiquetaBoton}>{c.textoBoton}</button>
+                        </div>
+                    </li>
+                </template>
+            </ul>
+        </template>
+
+        <!-- Detalle de la campaña (US-01 AC7) -->
+        <template lwc:if={seleccionada}>
+            <article class="detalle">
+                <template lwc:if={puedeVolver}>
+                    <button class="volver" onclick={volver}>← Ver todas las campañas</button>
+                </template>
+                <template lwc:if={seleccionada.imagenUrl}>
+                    <img class="imagen-detalle" src={seleccionada.imagenUrl} alt={seleccionada.nombre} />
+                </template>
+                <h1 class="titulo">{seleccionada.nombre}</h1>
+                <p class="descripcion-detalle">{seleccionada.descripcion}</p>
+                <template lwc:if={seleccionada.proposito}>
+                    <section class="proposito">
+                        <h2 class="titulo-seccion">¿Para qué se usará el dinero?</h2>
+                        <p>{seleccionada.proposito}</p>
+                    </section>
+                </template>
+                <div class="barra grande" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                    aria-valuenow={seleccionada.porcentaje} aria-label={seleccionada.porcentajeTexto}>
+                    <div class="relleno" style={seleccionada.barraEstilo}></div>
+                </div>
+                <p class="cifras"><strong>{seleccionada.recaudadoTexto}</strong><span>{seleccionada.restoCifrasDetalle}</span></p>
+                <p class="fecha">{seleccionada.fechaLimiteTexto}</p>
+
+                <div class="columnas">
+                    <div class="columna-formulario">
+                        <c-formulario-donacion-publico campana={seleccionada}></c-formulario-donacion-publico>
+                    </div>
+                    <div class="columna-muro">
+                        <c-muro-donantes-publico campana-id={seleccionada.id}></c-muro-donantes-publico>
+                    </div>
+                </div>
+            </article>
+        </template>
+    </div>
+</template>
