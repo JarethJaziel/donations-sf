@@ -1,98 +1,147 @@
 <template>
-    <section class="formulario" aria-labelledby="titulo-formulario">
-        <h2 class="titulo" id="titulo-formulario">Haz tu donación</h2>
+    <section class="taquilla" aria-labelledby="taquilla-titulo">
+        <h2 class="taquilla__titulo" id="taquilla-titulo">Haz tu donación</h2>
 
         <template lwc:if={aceptaDonaciones}>
             <form novalidate onsubmit={continuar}>
                 <!-- Monto (US-01 AC3, US-02) -->
-                <fieldset class="grupo">
-                    <legend class="etiqueta">¿Cuánto quieres donar?</legend>
-                    <div class="montos">
+                <fieldset class="taquilla__grupo">
+                    <legend class="taquilla__leyenda">¿Cuánto quieres donar?</legend>
+                    <div class="taquilla__montos">
                         <template for:each={montos} for:item="m">
                             <button key={m.valor} type="button" class={m.clase} data-valor={m.valor}
                                 aria-pressed={m.presionado} onclick={elegirMonto}>{m.texto}</button>
                         </template>
                     </div>
-                    <label class="etiqueta-campo" for="monto">Otro monto (MXN)</label>
-                    <input id="monto" class="campo" type="text" inputmode="decimal" placeholder="Ej. 135.50"
-                        value={montoTexto} data-campo="montoTexto" oninput={cambiarCampo} onblur={salirCampo}
-                        aria-invalid={invalidoMonto} />
-                    <p class="ayuda">Mínimo $10.00 MXN.</p>
-                    <template lwc:if={mensajeMonto}>
-                        <p class="error" role="alert">{mensajeMonto}</p>
-                    </template>
+                    <div class="campo">
+                        <label for="monto">Otro monto (MXN)</label>
+                        <input id="monto" type="text" inputmode="decimal" autocomplete="off" placeholder="Ej. 135.50"
+                            value={montoTexto} data-campo="montoTexto" oninput={cambiarCampo} onblur={salirCampo}
+                            aria-invalid={invalidoMonto} />
+                        <p class="campo__ayuda">Mínimo $10.00 MXN. Sin máximo.</p>
+                        <template lwc:if={mensajeMonto}>
+                            <p class="campo__error" role="alert">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>
+                                <span>{mensajeMonto}</span>
+                            </p>
+                        </template>
+                    </div>
                 </fieldset>
 
                 <!-- Modalidad (US-03, US-04, US-05) -->
-                <div class="grupo">
-                    <lightning-radio-group name="modalidad" label="¿Cómo quieres donar?" options={opcionesModalidad}
-                        value={modalidad} onchange={cambiarModalidad} type="radio" required></lightning-radio-group>
-                </div>
+                <fieldset class="taquilla__grupo">
+                    <legend class="taquilla__leyenda">¿Cómo quieres aparecer?</legend>
+                    <div class="modalidades">
+                        <label class={claseAnonima}>
+                            <input type="radio" name="modalidad" value="Anónima" checked={esAnonima} onchange={cambiarModalidad} />
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"></path><path d="M10.6 5.1A10.4 10.4 0 0 1 12 5c5 0 9 4.5 10 7-.4 1-1.2 2.3-2.4 3.5M6.6 6.6C4.3 8 2.7 10.1 2 12c1 2.5 5 7 10 7 1.8 0 3.4-.6 4.8-1.4"></path><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"></path></svg>
+                            <span><strong>Anónima</strong><span>Tu nombre no aparece en ningún lado.</span></span>
+                        </label>
+                        <label class={claseCredito}>
+                            <input type="radio" name="modalidad" value="Con crédito" checked={esCredito} onchange={cambiarModalidad} />
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"></path></svg>
+                            <span><strong>Con reconocimiento</strong><span>Tu nombre aparece en el muro de donantes.</span></span>
+                        </label>
+                        <label class={claseFactura}>
+                            <input type="radio" name="modalidad" value="Con factura" checked={esFactura} onchange={cambiarModalidad} />
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3Z"></path><path d="M9 8h6M9 12h6M9 16h3"></path></svg>
+                            <span><strong>Con factura</strong><span>Pides factura y también apareces en el muro.</span></span>
+                        </label>
+                    </div>
+                </fieldset>
 
-                <div class="grupo">
-                    <label class="etiqueta-campo" for="correo">Correo electrónico</label>
-                    <input id="correo" class="campo" type="email" autocomplete="email" value={correo}
+                <div class="campo">
+                    <label for="correo">Correo electrónico</label>
+                    <input id="correo" type="email" autocomplete="email" value={correo}
                         data-campo="correo" oninput={cambiarCampo} onblur={salirCampo} aria-invalid={invalidoCorreo} />
-                    <p class="ayuda">Solo lo usamos para enviarte tu comprobante. Nunca se publica.</p>
+                    <p class="campo__ayuda">Solo para enviarte tu comprobante. Nunca se publica.</p>
                     <template lwc:if={mensajeCorreo}>
-                        <p class="error" role="alert">{mensajeCorreo}</p>
+                        <p class="campo__error" role="alert">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>
+                            <span>{mensajeCorreo}</span>
+                        </p>
                     </template>
                 </div>
 
                 <template lwc:if={esAnonima}>
-                    <p class="nota">Tu nombre no aparecerá en el sitio ni en tu comprobante.</p>
+                    <p class="taquilla__nota">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>
+                        <span>Tu nombre no aparecerá en el sitio ni en tu comprobante.</span>
+                    </p>
                 </template>
                 <template lwc:else>
-                    <div class="grupo">
-                        <label class="etiqueta-campo" for="nombre">{etiquetaNombre}</label>
-                        <input id="nombre" class="campo" type="text" maxlength="255" autocomplete="name" value={nombre}
+                    <div class="campo">
+                        <label for="nombre">{etiquetaNombre}</label>
+                        <input id="nombre" type="text" maxlength="255" autocomplete="name" value={nombre}
                             data-campo="nombre" oninput={cambiarCampo} onblur={salirCampo} aria-invalid={invalidoNombre} />
                         <template lwc:if={mensajeNombre}>
-                            <p class="error" role="alert">{mensajeNombre}</p>
+                            <p class="campo__error" role="alert">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>
+                                <span>{mensajeNombre}</span>
+                            </p>
                         </template>
                     </div>
-                    <div class="grupo">
-                        <label class="etiqueta-campo" for="nombrePublico">Nombre para el muro (opcional)</label>
-                        <input id="nombrePublico" class="campo" type="text" maxlength="80" value={nombrePublico}
+                    <div class="campo">
+                        <label for="nombrePublico">Nombre para el muro (opcional)</label>
+                        <input id="nombrePublico" type="text" maxlength="80" value={nombrePublico}
                             data-campo="nombrePublico" oninput={cambiarCampo} placeholder="Ej. Familia Pérez" />
-                        <p class="ayuda">Si lo dejas vacío, en el muro aparecerá el nombre de arriba. Tu correo y RFC nunca se publican.</p>
+                        <p class="campo__ayuda">Si lo dejas vacío usamos el nombre de arriba. Tu correo y tu RFC nunca se publican.</p>
                     </div>
                 </template>
 
                 <template lwc:if={esFactura}>
-                    <div class="grupo">
-                        <label class="etiqueta-campo" for="rfc">RFC</label>
-                        <input id="rfc" class="campo mayusculas" type="text" maxlength="13" autocomplete="off" value={rfc}
+                    <div class="campo">
+                        <label for="rfc">RFC</label>
+                        <input id="rfc" class="mayusculas" type="text" maxlength="13" autocomplete="off" value={rfc}
                             data-campo="rfc" oninput={cambiarCampo} onblur={salirCampo} aria-invalid={invalidoRfc} />
-                        <p class="ayuda">12 caracteres para empresas, 13 para personas. Este comprobante no es un CFDI.</p>
+                        <p class="campo__ayuda">12 caracteres para empresas, 13 para personas. Este comprobante no es un CFDI.</p>
                         <template lwc:if={mensajeRfc}>
-                            <p class="error" role="alert">{mensajeRfc}</p>
+                            <p class="campo__error" role="alert">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>
+                                <span>{mensajeRfc}</span>
+                            </p>
                         </template>
                     </div>
                 </template>
 
-                <template lwc:if={errorServidor}>
-                    <p class="error servidor" role="alert">{errorServidor}</p>
-                </template>
-
-                <button class="boton-primario enviar" type="submit" disabled={enviando}>{etiquetaBoton}</button>
-                <p class="ayuda centrada">El pago se hace en la página segura de Stripe (modo de prueba).</p>
+                <div class="taquilla__envio">
+                    <template lwc:if={errorServidor}>
+                        <p class="taquilla__servidor" role="alert">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>
+                            <span>{errorServidor}</span>
+                        </p>
+                    </template>
+                    <button class="boton boton--primario boton--ancho" type="submit" disabled={enviando}>
+                        <template lwc:if={enviando}>
+                            <svg class="girando" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.2-8.6"></path></svg>
+                        </template>
+                        <span>{etiquetaBoton}</span>
+                    </button>
+                    <p class="taquilla__seguro">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>
+                        <span>Pagas en la página segura de Stripe (modo de prueba).</span>
+                    </p>
+                </div>
             </form>
         </template>
         <template lwc:else>
-            <p class="cerrada">Esta campaña alcanzó su meta y ya no recibe donaciones. ¡Gracias!</p>
+            <p class="taquilla__cerrada">Esta campaña ya alcanzó su meta y no recibe más donaciones. ¡Gracias a quienes la hicieron posible!</p>
         </template>
 
         <!-- Confirmación de montos altos (US-02 AC4) -->
         <template lwc:if={confirmando}>
-            <div class="fondo-dialogo">
-                <div class="dialogo" role="dialog" aria-modal="true" aria-labelledby="titulo-dialogo"
-                    onkeydown={manejarTeclaDialogo}>
-                    <h3 class="titulo" id="titulo-dialogo">Confirma tu donación</h3>
-                    <p>Vas a donar <strong class="monto-dialogo">{montoFormateado}</strong>. ¿Es correcto?</p>
-                    <div class="acciones">
-                        <button type="button" class="boton-secundario" onclick={corregirMonto}>Corregir monto</button>
-                        <button type="button" class="boton-primario" onclick={confirmarMonto}>Sí, donar {montoFormateado}</button>
+            <div class="confirmar">
+                <div class="confirmar__caja" role="dialog" aria-modal="true" aria-labelledby="confirmar-titulo"
+                    aria-describedby="confirmar-texto" onkeydown={manejarTeclaDialogo}>
+                    <h2 id="confirmar-titulo">Confirma tu donación</h2>
+                    <p id="confirmar-texto">
+                        <span>Vas a donar</span>
+                        <strong class="confirmar__monto">{montoFormateado}</strong>
+                        <span>¿Es correcto?</span>
+                    </p>
+                    <div class="confirmar__acciones">
+                        <button type="button" class="boton boton--secundario" onclick={corregirMonto}>Corregir monto</button>
+                        <button type="button" class="boton boton--primario" onclick={confirmarMonto}>Sí, donar {montoFormateado}</button>
                     </div>
                 </div>
             </div>

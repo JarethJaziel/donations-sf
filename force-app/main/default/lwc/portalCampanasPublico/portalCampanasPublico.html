@@ -1,89 +1,207 @@
 <template>
     <div class="portal">
-        <template lwc:if={cargando}>
-            <div class="estado" role="status">
-                <lightning-spinner alternative-text="Cargando campañas" size="medium"></lightning-spinner>
-            </div>
-        </template>
-
-        <template lwc:if={error}>
-            <p class="estado aviso" role="alert">{error}</p>
-        </template>
-
-        <template lwc:if={mostrarVacio}>
-            <div class="estado">
-                <h2 class="titulo-seccion">No hay campañas activas por ahora</h2>
-                <p>Vuelve pronto: aquí aparecerán las próximas campañas de Mexico Dreamin 2026.</p>
-            </div>
-        </template>
-
-        <!-- Lista de campañas (US-01 AC1) -->
-        <template lwc:if={mostrarLista}>
-            <header class="encabezado">
-                <h1 class="titulo">Apoya a estudiantes rumbo a Mexico Dreamin 2026</h1>
-                <p class="subtitulo">Elige una campaña. Puedes donar de forma anónima, con reconocimiento público o con factura.</p>
-            </header>
-            <ul class="rejilla">
-                <template for:each={campanas} for:item="c">
-                    <li key={c.id} class="tarjeta">
-                        <template lwc:if={c.imagenUrl}>
-                            <img class="imagen" src={c.imagenUrl} alt={c.nombre} loading="lazy" />
-                        </template>
-                        <template lwc:else>
-                            <div class="imagen imagen-vacia" aria-hidden="true"></div>
-                        </template>
-                        <div class="cuerpo">
-                            <h2 class="nombre">{c.nombre}</h2>
-                            <p class="descripcion">{c.descripcion}</p>
-                            <div class="barra" role="progressbar" aria-valuemin="0" aria-valuemax="100"
-                                aria-valuenow={c.porcentaje} aria-label={c.porcentajeTexto}>
-                                <div class="relleno" style={c.barraEstilo}></div>
-                            </div>
-                            <p class="cifras"><strong>{c.recaudadoTexto}</strong><span>{c.restoCifras}</span></p>
-                            <p class="fecha">{c.cierraTexto}</p>
-                            <template lwc:if={c.cerrada}>
-                                <p class="cerrada">Cerrada para nuevas donaciones ({c.motivoCierre})</p>
-                            </template>
-                            <button class="boton" data-id={c.id} onclick={elegir} aria-label={c.etiquetaBoton}>{c.textoBoton}</button>
+        <!-- Vista de inicio: tablero de salidas y boletos (US-01 AC1) -->
+        <template lwc:if={vistaInicio}>
+            <div class="tablero">
+                <div class="tablero__panel">
+                    <div class="tablero__interior">
+                        <div class="tablero__cabeza" aria-hidden="true">
+                            <span>Salidas</span>
+                            <span class={claseCabezaEstado}>Estado</span>
                         </div>
-                    </li>
-                </template>
-            </ul>
+                        <p class="solo-lector">Mexico Dreamin 2026, Ciudad de México, 20 de noviembre de 2026.</p>
+                        <div class="tablero__filas" aria-hidden="true" lwc:dom="manual"></div>
+                    </div>
+                </div>
+                <div class="portal__contenedor">
+                    <h1 class="tablero__titular">Ayuda a un estudiante a llegar a Mexico Dreamin</h1>
+                    <p class="tablero__texto">Cada campaña es una salida rumbo a la Ciudad de México. Solo cuentan los pagos confirmados, y tú decides si tu nombre aparece en el muro.</p>
+                    <p class="tablero__dato">
+                        <span class="tablero__dias">Faltan<strong>{diasTexto}</strong>días para el evento</span>
+                        <span>Recaudado entre todas las campañas:<strong>{totalTexto}</strong></span>
+                    </p>
+                    <h2 class="salidas__titulo">Campañas vigentes</h2>
+                </div>
+            </div>
+
+            <div class="salidas">
+                <div class="portal__contenedor">
+                    <template lwc:if={cargando}>
+                        <ul class="salidas__lista" aria-busy="true">
+                            <li class="esqueleto"></li>
+                            <li class="esqueleto"></li>
+                        </ul>
+                        <p class="solo-lector" role="status">Cargando campañas…</p>
+                    </template>
+
+                    <template lwc:if={error}>
+                        <div class="estado-lista" role="alert">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 9v4M12 17h.01"></path><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"></path></svg>
+                            <h3>No pudimos cargar las campañas</h3>
+                            <p>{error}</p>
+                        </div>
+                    </template>
+
+                    <template lwc:if={mostrarVacio}>
+                        <div class="estado-lista">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 10h18M8 15h3"></path></svg>
+                            <h3>No hay campañas vigentes</h3>
+                            <p>Por ahora no hay salidas programadas. Vuelve pronto: aquí aparecerán las próximas campañas de Mexico Dreamin 2026.</p>
+                        </div>
+                    </template>
+
+                    <template lwc:if={mostrarLista}>
+                        <ul class="salidas__lista">
+                            <template for:each={campanas} for:item="c">
+                                <li key={c.id} class={c.claseBoleto}>
+                                    <div class="boleto__cuerpo">
+                                        <div class={c.claseImagen}>
+                                            <template lwc:if={c.imagenUrl}>
+                                                <img class="boleto__foto" src={c.imagenUrl} alt={c.nombre} loading="lazy" />
+                                            </template>
+                                            <template lwc:else>
+                                                <svg class="ilus" viewBox="0 0 200 250" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                                                    <rect class="ilus__fondo" width="200" height="250"></rect>
+                                                    <path class="ilus__rayas" d="M0 18h200M0 44h200M0 70h200M0 96h200M0 122h200M0 148h200M0 174h200M0 200h200M0 226h200"></path>
+                                                    <path class="ilus__trazo" d="M-10 190 C 40 150, 70 220, 120 170 S 190 120, 230 140" stroke-dasharray="10 8"></path>
+                                                    <circle class="ilus__acento" cx="28" cy="178" r="8"></circle>
+                                                    <circle class="ilus__trazo" cx="176" cy="128" r="11"></circle>
+                                                    <g class="ilus__autobus" transform="translate(52 64)">
+                                                        <rect x="0" y="0" width="96" height="58" rx="10"></rect>
+                                                        <path d="M0 22 H96 M12 8 h26 v10 h-26z M48 8 h20 v10 h-20z M76 8 h12 v10 h-12z"></path>
+                                                        <circle class="ilus__rueda" cx="22" cy="60" r="8"></circle>
+                                                        <circle class="ilus__rueda" cx="74" cy="60" r="8"></circle>
+                                                    </g>
+                                                </svg>
+                                                <span class="boleto__muestra"><span class="muestra-larga">Imagen de muestra</span><span class="muestra-corta">Muestra</span></span>
+                                            </template>
+                                        </div>
+                                        <div>
+                                            <h3 class="boleto__nombre">{c.nombre}</h3>
+                                            <p class="boleto__descripcion">{c.descripcion}</p>
+                                            <dl class="boleto__datos">
+                                                <div>
+                                                    <dt>Destino</dt>
+                                                    <dd>CDMX · Mexico Dreamin 2026</dd>
+                                                </div>
+                                            </dl>
+                                            <div class="ruta">
+                                                <div class="ruta__cifras">
+                                                    <span class="digitos" aria-hidden="true">
+                                                        <template for:each={c.digitosRecaudado} for:item="d">
+                                                            <span key={d.clave} class={d.clase}>{d.ch}</span>
+                                                        </template>
+                                                    </span>
+                                                    <span class="ruta__de" aria-hidden="true">{c.restoCifras}</span>
+                                                    <span class="solo-lector">{c.lectorCifras}</span>
+                                                </div>
+                                                <div class="ruta__linea" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                                                    aria-valuenow={c.avanceRedondeado} aria-label={c.etiquetaRuta}>
+                                                    <div class="ruta__avance" style={c.avanceEstilo}></div>
+                                                    <span class="ruta__parada ruta__parada--inicio"></span>
+                                                    <span class="ruta__parada ruta__parada--meta"></span>
+                                                    <span class="ruta__autobus" style={c.autobusEstilo}>
+                                                        <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="7" width="26" height="16" rx="4" fill="currentColor"></rect><rect x="6" y="10" width="6" height="5" rx="1" fill="#fff"></rect><rect x="14" y="10" width="6" height="5" rx="1" fill="#fff"></rect><rect x="22" y="10" width="4" height="5" rx="1" fill="#fff"></rect><circle cx="10" cy="24" r="3" fill="#fff" stroke="currentColor" stroke-width="2"></circle><circle cx="23" cy="24" r="3" fill="#fff" stroke="currentColor" stroke-width="2"></circle></svg>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="boleto__talon">
+                                        <div class="boleto__salida">
+                                            <p class="boleto__etiqueta">Cierra</p>
+                                            <span class="digitos" aria-hidden="true">
+                                                <template for:each={c.digitosCierre} for:item="d">
+                                                    <span key={d.clave} class={d.clase}>{d.ch}</span>
+                                                </template>
+                                            </span>
+                                            <span class="solo-lector">{c.cierreLargo}</span>
+                                        </div>
+                                        <template lwc:if={c.cerrada}>
+                                            <span class="sello">{c.selloTexto}</span>
+                                        </template>
+                                        <button type="button" class={c.claseBoton} data-id={c.id} onclick={elegir}
+                                            aria-label={c.etiquetaBoton}>{c.textoBoton}</button>
+                                    </div>
+                                </li>
+                            </template>
+                        </ul>
+                    </template>
+                </div>
+            </div>
         </template>
 
         <!-- Detalle de la campaña (US-01 AC7) -->
-        <template lwc:if={seleccionada}>
-            <article class="detalle">
-                <template lwc:if={puedeVolver}>
-                    <button class="volver" onclick={volver}>← Ver todas las campañas</button>
-                </template>
-                <template lwc:if={seleccionada.imagenUrl}>
-                    <img class="imagen-detalle" src={seleccionada.imagenUrl} alt={seleccionada.nombre} />
-                </template>
-                <h1 class="titulo">{seleccionada.nombre}</h1>
-                <p class="descripcion-detalle">{seleccionada.descripcion}</p>
-                <template lwc:if={seleccionada.proposito}>
-                    <section class="proposito">
-                        <h2 class="titulo-seccion">¿Para qué se usará el dinero?</h2>
-                        <p>{seleccionada.proposito}</p>
-                    </section>
-                </template>
-                <div class="barra grande" role="progressbar" aria-valuemin="0" aria-valuemax="100"
-                    aria-valuenow={seleccionada.porcentaje} aria-label={seleccionada.porcentajeTexto}>
-                    <div class="relleno" style={seleccionada.barraEstilo}></div>
-                </div>
-                <p class="cifras"><strong>{seleccionada.recaudadoTexto}</strong><span>{seleccionada.restoCifrasDetalle}</span></p>
-                <p class="fecha">{seleccionada.fechaLimiteTexto}</p>
+        <template lwc:else>
+            <div class="detalle">
+                <div class="portal__contenedor">
+                    <template lwc:if={puedeVolver}>
+                        <button type="button" class="detalle__volver" onclick={volver}>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg>
+                            <span>Ver todas las campañas</span>
+                        </button>
+                    </template>
+                    <article class="pase">
+                        <div class={seleccionada.claseImagenPase}>
+                            <template lwc:if={seleccionada.imagenUrl}>
+                                <img class="pase__foto" src={seleccionada.imagenUrl} alt={seleccionada.nombre} />
+                            </template>
+                            <template lwc:else>
+                                <svg class="ilus" viewBox="0 0 200 250" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                                    <rect class="ilus__fondo" width="200" height="250"></rect>
+                                    <path class="ilus__rayas" d="M0 18h200M0 44h200M0 70h200M0 96h200M0 122h200M0 148h200M0 174h200M0 200h200M0 226h200"></path>
+                                    <path class="ilus__trazo" d="M-10 190 C 40 150, 70 220, 120 170 S 190 120, 230 140" stroke-dasharray="10 8"></path>
+                                    <circle class="ilus__acento" cx="28" cy="178" r="8"></circle>
+                                    <circle class="ilus__trazo" cx="176" cy="128" r="11"></circle>
+                                    <g class="ilus__autobus" transform="translate(52 64)">
+                                        <rect x="0" y="0" width="96" height="58" rx="10"></rect>
+                                        <path d="M0 22 H96 M12 8 h26 v10 h-26z M48 8 h20 v10 h-20z M76 8 h12 v10 h-12z"></path>
+                                        <circle class="ilus__rueda" cx="22" cy="60" r="8"></circle>
+                                        <circle class="ilus__rueda" cx="74" cy="60" r="8"></circle>
+                                    </g>
+                                </svg>
+                                <span class="boleto__muestra"><span class="muestra-larga">Imagen de muestra</span><span class="muestra-corta">Muestra</span></span>
+                            </template>
+                        </div>
+                        <div class="pase__info">
+                            <h1 class="pase__nombre" tabindex="-1">{seleccionada.nombre}</h1>
+                            <p class="pase__descripcion">{seleccionada.descripcion}</p>
+                            <template lwc:if={seleccionada.proposito}>
+                                <section class="pase__proposito" aria-labelledby="titulo-proposito">
+                                    <h2 id="titulo-proposito">¿Para qué se usará el dinero?</h2>
+                                    <p>{seleccionada.proposito}</p>
+                                </section>
+                            </template>
+                            <div class="ruta">
+                                <div class="ruta__cifras">
+                                    <span class="digitos" aria-hidden="true">
+                                        <template for:each={seleccionada.digitosRecaudado} for:item="d">
+                                            <span key={d.clave} class={d.clase}>{d.ch}</span>
+                                        </template>
+                                    </span>
+                                    <span class="ruta__de" aria-hidden="true">{seleccionada.restoCifrasDetalle}</span>
+                                    <span class="solo-lector">{seleccionada.lectorCifras}</span>
+                                </div>
+                                <div class="ruta__linea" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                                    aria-valuenow={seleccionada.avanceRedondeado} aria-label={seleccionada.etiquetaRuta}>
+                                    <div class="ruta__avance" style={seleccionada.avanceEstilo}></div>
+                                    <span class="ruta__parada ruta__parada--inicio"></span>
+                                    <span class="ruta__parada ruta__parada--meta"></span>
+                                    <span class="ruta__autobus" style={seleccionada.autobusEstilo}>
+                                        <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="7" width="26" height="16" rx="4" fill="currentColor"></rect><rect x="6" y="10" width="6" height="5" rx="1" fill="#fff"></rect><rect x="14" y="10" width="6" height="5" rx="1" fill="#fff"></rect><rect x="22" y="10" width="4" height="5" rx="1" fill="#fff"></rect><circle cx="10" cy="24" r="3" fill="#fff" stroke="currentColor" stroke-width="2"></circle><circle cx="23" cy="24" r="3" fill="#fff" stroke="currentColor" stroke-width="2"></circle></svg>
+                                    </span>
+                                </div>
+                            </div>
+                            <p class="pase__cierre">{seleccionada.fechaLimiteTexto}</p>
+                        </div>
+                    </article>
 
-                <div class="columnas">
-                    <div class="columna-formulario">
+                    <div class="detalle__columnas">
                         <c-formulario-donacion-publico campana={seleccionada}></c-formulario-donacion-publico>
-                    </div>
-                    <div class="columna-muro">
                         <c-muro-donantes-publico campana-id={seleccionada.id}></c-muro-donantes-publico>
                     </div>
                 </div>
-            </article>
+            </div>
         </template>
     </div>
 </template>

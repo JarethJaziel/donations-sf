@@ -1,0 +1,9 @@
+Fuentes incluidas en este recurso estático:
+
+- Big Shoulders Display (pesos 600 y 800), Copyright The Big Shoulders Project Authors.
+- Barlow (pesos 400, 600 y 700), Copyright The Barlow Project Authors.
+
+Ambas se distribuyen bajo la SIL Open Font License, versión 1.1:
+https://openfontlicense.org/open-font-license-official-text/
+
+Archivos tomados de los paquetes de Fontsource (@fontsource/big-shoulders-display y @fontsource/barlow, subconjunto latino).

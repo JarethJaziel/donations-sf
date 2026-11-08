@@ -47,12 +47,6 @@ export default class FormularioDonacionPublico extends LightningElement {
     errorServidor;
     dialogoEnfocado = false;
 
-    opcionesModalidad = [
-        { label: 'Anónima: mi nombre no aparece en ningún lado', value: 'Anónima' },
-        { label: 'Con reconocimiento: mi nombre aparece en el muro', value: 'Con crédito' },
-        { label: 'Con factura: necesito factura (también apareces en el muro)', value: 'Con factura' }
-    ];
-
     // ---------- Estado derivado ----------
 
     get aceptaDonaciones() {
@@ -64,7 +58,7 @@ export default class FormularioDonacionPublico extends LightningElement {
         return MONTOS_SUGERIDOS.map((m) => ({
             valor: m,
             texto: FORMATO_MXN.format(m).replace('.00', ''),
-            clase: m === actual ? 'monto seleccionado' : 'monto',
+            clase: 'tarifa',
             presionado: m === actual ? 'true' : 'false'
         }));
     }
@@ -89,13 +83,29 @@ export default class FormularioDonacionPublico extends LightningElement {
         return this.modalidad === 'Con factura';
     }
 
+    get esCredito() {
+        return this.modalidad === 'Con crédito';
+    }
+
+    get claseAnonima() {
+        return this.esAnonima ? 'modalidad activa' : 'modalidad';
+    }
+
+    get claseCredito() {
+        return this.esCredito ? 'modalidad activa' : 'modalidad';
+    }
+
+    get claseFactura() {
+        return this.esFactura ? 'modalidad activa' : 'modalidad';
+    }
+
     get etiquetaNombre() {
         return this.esFactura ? 'Nombre o razón social' : 'Nombre';
     }
 
     get etiquetaBoton() {
         if (this.enviando) {
-            return 'Abriendo el pago seguro...';
+            return 'Abriendo el pago seguro…';
         }
         return this.montoNumero === null ? 'Continuar al pago' : `Donar ${this.montoFormateado}`;
     }
@@ -202,7 +212,7 @@ export default class FormularioDonacionPublico extends LightningElement {
     }
 
     cambiarModalidad(event) {
-        this.modalidad = event.detail.value;
+        this.modalidad = event.target.value;
         if (this.esAnonima) {
             // US-03 AC5: al cambiar a anónima se descartan los datos de identidad
             this.nombre = '';
@@ -218,7 +228,7 @@ export default class FormularioDonacionPublico extends LightningElement {
         this.intentoEnviar = true;
         this.errorServidor = undefined;
         if (!this.formularioValido || this.enviando) {
-            const primerError = this.template.querySelector('.error');
+            const primerError = this.template.querySelector('.campo__error');
             if (primerError) {
                 primerError.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
@@ -275,7 +285,7 @@ export default class FormularioDonacionPublico extends LightningElement {
 
     renderedCallback() {
         if (this.confirmando) {
-            const boton = this.template.querySelector('.dialogo .boton-primario');
+            const boton = this.template.querySelector('.confirmar__caja .boton--primario');
             if (boton && this.template.activeElement !== boton && !this.dialogoEnfocado) {
                 boton.focus();
                 this.dialogoEnfocado = true;

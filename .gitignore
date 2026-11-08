@@ -60,3 +60,6 @@ $RECYCLE.BIN/
 # Se despliegan desde la máquina local; no se publican en el repositorio (M3).
 force-app/main/default/networks/
 force-app/main/default/sites/
+
+# Carpeta de trabajo de la skill impeccable (diseño); no forma parte del proyecto.
+.impeccable/

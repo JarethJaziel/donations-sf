@@ -1,32 +1,35 @@
 <template>
     <section class="muro" aria-labelledby="titulo-muro">
-        <h2 class="titulo" id="titulo-muro">Muro de donantes</h2>
+        <h2 class="muro__titulo" id="titulo-muro">Muro de donantes</h2>
 
         <template lwc:if={cargando}>
-            <p class="estado">Cargando…</p>
+            <p class="muro__total" role="status">Cargando…</p>
         </template>
         <template lwc:if={error}>
-            <p class="estado" role="alert">{error}</p>
+            <p class="muro__total" role="alert">{error}</p>
         </template>
         <template lwc:if={sinDonantes}>
-            <p class="estado">Aún no hay donantes públicos. ¡Sé el primero en aparecer aquí!</p>
+            <div class="muro__vacio">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4l-5.2 2.7 1-5.8L3.5 9.2l5.9-.9L12 3Z"></path></svg>
+                <p>Aún no hay donantes públicos. ¡Sé el primero en aparecer aquí!</p>
+            </div>
         </template>
 
         <template lwc:if={hayDonantes}>
-            <p class="total">{totalTexto} con reconocimiento público</p>
-            <div class="ventana" tabindex="0" aria-label="Lista de donantes">
+            <p class="muro__total">{totalTexto} con reconocimiento público</p>
+            <div class={claseVentana} tabindex="0" aria-labelledby="titulo-muro">
                 <ul class={clasePista} style={estiloPista}>
                     <template for:each={donantes} for:item="d">
-                        <li key={d.clave} class="donante">
-                            <span class="nombre">{d.nombrePublico}</span>
-                            <span class="monto"><lightning-formatted-number value={d.monto} format-style="currency" currency-code="MXN"></lightning-formatted-number></span>
+                        <li key={d.clave} class="muro__fila">
+                            <span class="muro__nombre">{d.nombrePublico}</span>
+                            <span class="muro__monto">{d.montoTexto}</span>
                         </li>
                     </template>
                     <template lwc:if={desplazar}>
                         <template for:each={donantes} for:item="d">
-                            <li key={d.claveCopia} class="donante copia" aria-hidden="true">
-                                <span class="nombre">{d.nombrePublico}</span>
-                                <span class="monto"><lightning-formatted-number value={d.monto} format-style="currency" currency-code="MXN"></lightning-formatted-number></span>
+                            <li key={d.claveCopia} class="muro__fila copia" aria-hidden="true">
+                                <span class="muro__nombre">{d.nombrePublico}</span>
+                                <span class="muro__monto">{d.montoTexto}</span>
                             </li>
                         </template>
                     </template>

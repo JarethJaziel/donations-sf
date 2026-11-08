@@ -1,15 +1,80 @@
 /*
- * Your global styles here
+ * Tema del sitio Portal Donaciones MD2026 (tablero de salidas).
+ * Los componentes del portal leen estos tokens con var(--md-..., respaldo).
+ * Las fuentes (Big Shoulders Display y Barlow, OFL 1.1) vienen del recurso
+ * estático md2026Fuentes, enlazado en el head del sitio.
  */
+:root {
+    --md-tablero: #0f2a33;
+    --md-tablero-paleta: #173b47;
+    --md-tablero-borde: #08191f;
+    --md-tablero-texto: #f4f1e8;
+    --md-estado: #ffb000;
+    --md-primario: #e4007c;
+    --md-primario-oscuro: #b8005f;
+    --md-fondo: #eef2f1;
+    --md-papel: #ffffff;
+    --md-tinta: #12232a;
+    --md-tinta-suave: #4a5b61;
+    --md-linea: #cfd8d7;
+    --md-ruta: #0f2a33;
+    --md-sello: #b3261e;
+    --md-error: #b3261e;
+    --md-foco: #0f2a33;
+    --md-fuente-display: "Big Shoulders Display", "Arial Narrow", sans-serif;
+    --md-fuente-texto: "Barlow", "Segoe UI", system-ui, sans-serif;
+    --md-radio-boleto: 16px;
+    --md-radio-control: 10px;
+    --md-radio-paleta: 4px;
+    --md-sombra-boleto: 0 1px 2px rgba(15, 42, 51, .08), 0 18px 36px -22px rgba(15, 42, 51, .45);
+    --md-sombra-dialogo: 0 2px 6px rgba(8, 25, 31, .18), 0 30px 60px -20px rgba(8, 25, 31, .55);
+    --md-ancho-max: 1160px;
+    --md-curva-salida: cubic-bezier(.23, 1, .32, 1);
+    --md-curva-entrada-salida: cubic-bezier(.77, 0, .175, 1);
+    --dxp-g-root-font-family: var(--md-fuente-texto);
+    --dxp-s-html-font-family: var(--md-fuente-texto);
+    /* Secciones a sangre completa: el tablero y las franjas llegan al borde */
+    --dxp-s-section-content-spacing-block-start: 0;
+    --dxp-s-section-content-spacing-block-start-mobile: 0;
+    --dxp-s-section-content-spacing-inline-end: 0;
+    --dxp-s-section-content-spacing-inline-end-mobile: 0;
+    --dxp-s-section-content-spacing-block-end: 0;
+    --dxp-s-section-content-spacing-block-end-mobile: 0;
+    --dxp-s-section-content-spacing-inline-start: 0;
+    --dxp-s-section-content-spacing-inline-start-mobile: 0;
+}
+
 html,
 body {
     height: 100%;
 }
 
-html {
-    background: white;
+html:root {
+    background: var(--md-fondo);
 }
 
 body {
     margin: 0;
+    background: var(--md-fondo);
+    color: var(--md-tinta);
+    font-family: var(--md-fuente-texto);
+    -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+    background: var(--md-tablero);
+    color: var(--md-tablero-texto);
+}
+
+/* Encabezado y pie del tema (contenido HTML de las regiones del layout) */
+.md-encabezado__marca small {
+    font-weight: 600;
+    color: #b9c7c9;
+    font-size: 16px;
+}
+
+@media (max-width: 640px) {
+    .md-encabezado__marca small {
+        display: none;
+    }
 }
