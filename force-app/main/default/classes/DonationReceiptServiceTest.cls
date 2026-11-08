@@ -13,7 +13,9 @@ private class DonationReceiptServiceTest {
             Meta__c = 50000.00,
             Activa__c = true,
             Permitir_Sobrecupo__c = true,
-            Fecha_Fin__c = Date.today().addDays(30)
+            Fecha_Inicio__c = Date.today().addDays(-1),
+            Fecha_Fin__c = Date.today().addDays(30),
+            Proposito__c = 'Becas ficticias para estudiantes (dato de prueba).'
         );
         insert campana;
 
@@ -25,7 +27,7 @@ private class DonationReceiptServiceTest {
             Monto__c = 500.00,
             Modalidad__c = 'Anónima',
             Estado__c = 'Pendiente',
-            Correo__c = 'donante.anonimo@test-md2026.org',
+            Correo__c = 'donante.anonimo@example.com',
             Nombre_Donante__c = null,
             RFC__c = null
         ));
@@ -36,7 +38,7 @@ private class DonationReceiptServiceTest {
             Monto__c = 1500.00,
             Modalidad__c = 'Con crédito',
             Estado__c = 'Pendiente',
-            Correo__c = 'donante.credito@test-md2026.org',
+            Correo__c = 'donante.credito@example.com',
             Nombre_Donante__c = 'Carlos Donante Test',
             RFC__c = null
         ));
@@ -47,7 +49,7 @@ private class DonationReceiptServiceTest {
             Monto__c = 3000.00,
             Modalidad__c = 'Con factura',
             Estado__c = 'Pendiente',
-            Correo__c = 'donante.factura@test-md2026.org',
+            Correo__c = 'donante.factura@example.com',
             Nombre_Donante__c = 'Empresa Ficticia SA de CV',
             RFC__c = 'XAXX010101000'
         ));
@@ -61,9 +63,10 @@ private class DonationReceiptServiceTest {
      */
     @isTest
     static void testComprobanteModalidadAnonima() {
+        DonationReceiptService.simulacionEnvio = 'exito';
         Donacion__c don = [
             SELECT Id, Name, Monto__c, Modalidad__c, Estado__c, Nombre_Donante__c,
-                   Correo__c, RFC__c, Solicita_Factura__c, Comprobante_Enviado__c,
+                   Correo__c, RFC__c, Solicita_Factura__c, Comprobante_Enviado__c, Fecha_Pago__c, Nombre_Publico__c,
                    Campana__c, Campana__r.Name
             FROM Donacion__c
             WHERE Modalidad__c = 'Anónima'
@@ -74,12 +77,13 @@ private class DonationReceiptServiceTest {
 
         Test.startTest();
         don.Estado__c = 'Pagada';
+        don.Tipo_Confirmacion__c = 'Manual';
         update don;
         Test.stopTest();
 
         Donacion__c donRecargada = [
             SELECT Id, Name, Monto__c, Modalidad__c, Estado__c, Nombre_Donante__c,
-                   Correo__c, RFC__c, Solicita_Factura__c, Comprobante_Enviado__c,
+                   Correo__c, RFC__c, Solicita_Factura__c, Comprobante_Enviado__c, Fecha_Pago__c, Nombre_Publico__c,
                    Campana__c, Campana__r.Name
             FROM Donacion__c
             WHERE Id = :don.Id
@@ -109,9 +113,10 @@ private class DonationReceiptServiceTest {
      */
     @isTest
     static void testComprobanteModalidadConCredito() {
+        DonationReceiptService.simulacionEnvio = 'exito';
         Donacion__c don = [
             SELECT Id, Name, Monto__c, Modalidad__c, Estado__c, Nombre_Donante__c,
-                   Correo__c, RFC__c, Solicita_Factura__c, Comprobante_Enviado__c,
+                   Correo__c, RFC__c, Solicita_Factura__c, Comprobante_Enviado__c, Fecha_Pago__c, Nombre_Publico__c,
                    Campana__c, Campana__r.Name
             FROM Donacion__c
             WHERE Modalidad__c = 'Con crédito'
@@ -120,12 +125,13 @@ private class DonationReceiptServiceTest {
 
         Test.startTest();
         don.Estado__c = 'Pagada';
+        don.Tipo_Confirmacion__c = 'Manual';
         update don;
         Test.stopTest();
 
         Donacion__c donRecargada = [
             SELECT Id, Name, Monto__c, Modalidad__c, Estado__c, Nombre_Donante__c,
-                   Correo__c, RFC__c, Solicita_Factura__c, Comprobante_Enviado__c,
+                   Correo__c, RFC__c, Solicita_Factura__c, Comprobante_Enviado__c, Fecha_Pago__c, Nombre_Publico__c,
                    Campana__c, Campana__r.Name
             FROM Donacion__c
             WHERE Id = :don.Id
@@ -138,6 +144,7 @@ private class DonationReceiptServiceTest {
         System.assert(cuerpo.contains(donRecargada.Name), 'El cuerpo debe contener el folio de la donación');
         System.assert(cuerpo.contains('$1500.00 MXN'), 'El cuerpo debe contener el monto de la donación');
         System.assert(cuerpo.contains('muro público de reconocimiento'), 'Debe confirmar su reconocimiento en el muro público');
+        System.assert(cuerpo.contains('Fecha de Pago'), 'Debe usar la fecha de pago');
         System.assertEquals(null, donRecargada.RFC__c, 'No debe registrar RFC en modalidad Con crédito');
     }
 
@@ -146,9 +153,10 @@ private class DonationReceiptServiceTest {
      */
     @isTest
     static void testComprobanteModalidadConFactura() {
+        DonationReceiptService.simulacionEnvio = 'exito';
         Donacion__c don = [
             SELECT Id, Name, Monto__c, Modalidad__c, Estado__c, Nombre_Donante__c,
-                   Correo__c, RFC__c, Solicita_Factura__c, Comprobante_Enviado__c,
+                   Correo__c, RFC__c, Solicita_Factura__c, Comprobante_Enviado__c, Fecha_Pago__c, Nombre_Publico__c,
                    Campana__c, Campana__r.Name
             FROM Donacion__c
             WHERE Modalidad__c = 'Con factura'
@@ -157,12 +165,13 @@ private class DonationReceiptServiceTest {
 
         Test.startTest();
         don.Estado__c = 'Pagada';
+        don.Tipo_Confirmacion__c = 'Manual';
         update don;
         Test.stopTest();
 
         Donacion__c donRecargada = [
             SELECT Id, Name, Monto__c, Modalidad__c, Estado__c, Nombre_Donante__c,
-                   Correo__c, RFC__c, Solicita_Factura__c, Comprobante_Enviado__c,
+                   Correo__c, RFC__c, Solicita_Factura__c, Comprobante_Enviado__c, Fecha_Pago__c, Nombre_Publico__c,
                    Campana__c, Campana__r.Name
             FROM Donacion__c
             WHERE Id = :don.Id
@@ -175,7 +184,9 @@ private class DonationReceiptServiceTest {
         System.assert(cuerpo.contains('XAXX010101000'), 'Debe incluir el RFC válido del donante');
         System.assert(cuerpo.contains(donRecargada.Name), 'Debe incluir el folio');
         System.assert(cuerpo.contains('$3000.00 MXN'), 'Debe incluir el monto aportado');
-        System.assert(cuerpo.contains('Tesorería'), 'Debe indicar que el trámite fiscal está en curso con Tesorería');
+        System.assert(cuerpo.contains('Tesorería'), 'Debe indicar que la solicitud quedó registrada con Tesorería');
+        System.assert(cuerpo.contains('no es un CFDI'), 'Debe aclarar que el comprobante no es un CFDI (US-05 AC4)');
+        System.assertEquals(false, cuerpo.toLowerCase().contains('timbrado'), 'No debe mencionar timbrado');
     }
 
     /**
@@ -183,6 +194,7 @@ private class DonationReceiptServiceTest {
      */
     @isTest
     static void testIdempotenciaNoDuplicaComprobanteAlEditar() {
+        DonationReceiptService.simulacionEnvio = 'exito';
         Donacion__c don = [
             SELECT Id, Estado__c, Comprobante_Enviado__c
             FROM Donacion__c
@@ -191,6 +203,8 @@ private class DonationReceiptServiceTest {
         ];
 
         don.Estado__c = 'Pagada';
+
+        don.Tipo_Confirmacion__c = 'Manual';
         update don;
 
         Donacion__c donPagada = [
@@ -228,7 +242,9 @@ private class DonationReceiptServiceTest {
             Meta__c = 25000.00,
             Activa__c = true,
             Permitir_Sobrecupo__c = true,
-            Fecha_Fin__c = Date.today().addDays(20)
+            Fecha_Inicio__c = Date.today().addDays(-1),
+            Fecha_Fin__c = Date.today().addDays(20),
+            Proposito__c = 'Becas ficticias para estudiantes (dato de prueba).'
         );
         insert campana2;
 
@@ -240,6 +256,8 @@ private class DonationReceiptServiceTest {
         ];
 
         don.Estado__c = 'Pagada';
+
+        don.Tipo_Confirmacion__c = 'Manual';
         update don;
 
         Test.startTest();
@@ -264,6 +282,7 @@ private class DonationReceiptServiceTest {
      */
     @isTest
     static void testBulk200DonacionesPagadas() {
+        DonationReceiptService.simulacionEnvio = 'exito';
         Campana__c campana = [SELECT Id FROM Campana__c LIMIT 1];
 
         List<Donacion__c> bulkDonaciones = new List<Donacion__c>();
@@ -279,7 +298,7 @@ private class DonationReceiptServiceTest {
                 Modalidad__c = mod,
                 Nombre_Donante__c = nombre,
                 RFC__c = rfc,
-                Correo__c = 'bulk' + i + '@test-md2026.org',
+                Correo__c = 'bulk' + i + '@example.com',
                 Estado__c = 'Pendiente'
             ));
         }
@@ -289,6 +308,7 @@ private class DonationReceiptServiceTest {
         Test.startTest();
         for (Donacion__c don : bulkDonaciones) {
             don.Estado__c = 'Pagada';
+            don.Tipo_Confirmacion__c = 'Manual';
         }
         update bulkDonaciones;
         Test.stopTest();
@@ -323,9 +343,6 @@ private class DonationReceiptServiceTest {
             new List<Donacion__c>{ realDon },
             new Map<Id, Donacion__c>()
         );
-        DonacionTriggerHandler.recalcularMontoRecaudadoCampanas(null);
-        DonacionTriggerHandler.recalcularMontoRecaudadoCampanas(new Set<Id>());
-        DonacionTriggerHandler.recalcularMontoRecaudadoCampanas(new Set<Id>{ realDon.Campana__c });
 
         // Verificación de rama genérica y objetos vacíos en formateadores
         Donacion__c donacionGenerica = new Donacion__c(Modalidad__c = 'Efectivo');
@@ -335,5 +352,52 @@ private class DonationReceiptServiceTest {
 
         System.assert(asuntoVacio.contains('Folio Pendiente'), 'Asunto debe contener Folio Pendiente para objeto sin Name');
         System.assert(cuerpoVacio.contains('Campaña Mexico Dreamin 2026'), 'Cuerpo genérico debe incluir nombre por defecto');
+    }
+
+    /**
+     * @description Si el correo no se puede enviar, la donación queda Pagada pero sin marcar el comprobante
+     *              como enviado, y el motivo queda visible para el staff (US-08 AC5).
+     */
+    @isTest
+    static void testFalloDeEnvioRegistraErrorSinRevertirPago() {
+        Donacion__c don = [SELECT Id FROM Donacion__c WHERE Modalidad__c = 'Con crédito' LIMIT 1];
+
+        Test.startTest();
+        DonationReceiptService.simulacionEnvio = 'fallo';
+        don.Estado__c = 'Pagada';
+        don.Tipo_Confirmacion__c = 'Manual';
+        update don;
+        Test.stopTest();
+
+        Donacion__c resultado = [
+            SELECT Estado__c, Comprobante_Enviado__c, Error_Comprobante__c, Fecha_Pago__c
+            FROM Donacion__c WHERE Id = :don.Id
+        ];
+        System.assertEquals('Pagada', resultado.Estado__c, 'El pago no debe revertirse por un fallo de correo');
+        System.assertEquals(false, resultado.Comprobante_Enviado__c, 'No debe marcarse como enviado');
+        System.assert(String.isNotBlank(resultado.Error_Comprobante__c), 'Debe registrarse el motivo del fallo');
+        System.assertNotEquals(null, resultado.Fecha_Pago__c, 'Debe registrarse la fecha de pago');
+    }
+
+    /**
+     * @description Usa el envío real de la org (sin simulación). Sea cual sea la configuración de
+     *              entregabilidad, el estado debe quedar consistente: enviado sin error, o no enviado con motivo.
+     */
+    @isTest
+    static void testEnvioRealDejaEstadoConsistente() {
+        Donacion__c don = [SELECT Id FROM Donacion__c WHERE Modalidad__c = 'Anónima' LIMIT 1];
+
+        Test.startTest();
+        don.Estado__c = 'Pagada';
+        don.Tipo_Confirmacion__c = 'Manual';
+        update don;
+        Test.stopTest();
+
+        Donacion__c resultado = [SELECT Comprobante_Enviado__c, Error_Comprobante__c FROM Donacion__c WHERE Id = :don.Id];
+        if (resultado.Comprobante_Enviado__c) {
+            System.assertEquals(null, resultado.Error_Comprobante__c, 'Si se envió, no debe haber error');
+        } else {
+            System.assert(String.isNotBlank(resultado.Error_Comprobante__c), 'Si no se envió, debe registrarse el motivo');
+        }
     }
 }

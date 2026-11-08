@@ -27,6 +27,16 @@
                 <default>false</default>
                 <label>Duplicado Ignorado</label>
             </value>
+            <value>
+                <fullName>Ignorado</fullName>
+                <default>false</default>
+                <label>Ignorado</label>
+            </value>
+            <value>
+                <fullName>Error</fullName>
+                <default>false</default>
+                <label>Error</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

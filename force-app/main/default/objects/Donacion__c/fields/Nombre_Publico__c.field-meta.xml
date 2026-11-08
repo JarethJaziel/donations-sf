@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Nombre_Publico__c</fullName>
+    <description>Nombre que se muestra en el muro de reconocimiento; si está vacío se usa el nombre del donante (US-04 AC4).</description>
+    <externalId>false</externalId>
+    <label>Nombre Público</label>
+    <length>80</length>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

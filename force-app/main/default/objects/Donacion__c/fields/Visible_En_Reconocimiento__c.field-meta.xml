@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Visible_En_Reconocimiento__c</fullName>
+    <defaultValue>true</defaultValue>
+    <description>Si es falso, la donación no aparece en el muro público aunque sí cuenta en el avance (US-04 AC6, US-19).</description>
+    <externalId>false</externalId>
+    <label>Visible en Reconocimiento</label>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

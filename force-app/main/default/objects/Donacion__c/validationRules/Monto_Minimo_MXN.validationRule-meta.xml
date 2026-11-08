@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Monto_Minimo_MXN</fullName>
+    <active>true</active>
+    <description>Exige un monto mínimo de MXN $10.00, el cargo mínimo de Stripe para MXN (US-02 AC3; pendiente de confirmar P6).</description>
+    <errorConditionFormula>ISBLANK(Monto__c) || Monto__c &lt; 10</errorConditionFormula>
+    <errorDisplayField>Monto__c</errorDisplayField>
+    <errorMessage>El monto mínimo de donación es $10.00 MXN.</errorMessage>
+</ValidationRule>

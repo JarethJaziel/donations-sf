@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Vigente__c</fullName>
+    <description>Verdadero si la campaña está activa y hoy está entre su fecha de inicio y su fecha fin (US-01 AC6).</description>
+    <externalId>false</externalId>
+    <formula>Activa__c &amp;&amp; NOT(ISBLANK(Fecha_Inicio__c)) &amp;&amp; NOT(ISBLANK(Fecha_Fin__c)) &amp;&amp; Fecha_Inicio__c &lt;= TODAY() &amp;&amp; Fecha_Fin__c &gt;= TODAY()</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Vigente</label>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

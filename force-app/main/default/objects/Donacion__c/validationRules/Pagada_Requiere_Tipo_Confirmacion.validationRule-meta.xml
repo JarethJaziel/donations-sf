@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Pagada_Requiere_Tipo_Confirmacion</fullName>
+    <active>true</active>
+    <description>Una donación solo puede estar Pagada si tiene tipo de confirmación (Manual o Automática), que solo asignan la acción de confirmación y el webhook (US-12 AC5).</description>
+    <errorConditionFormula>ISPICKVAL(Estado__c, &apos;Pagada&apos;) &amp;&amp; ISBLANK(TEXT(Tipo_Confirmacion__c))</errorConditionFormula>
+    <errorDisplayField>Estado__c</errorDisplayField>
+    <errorMessage>Para marcar la donación como Pagada usa la acción Confirmar Pago Manual.</errorMessage>
+</ValidationRule>

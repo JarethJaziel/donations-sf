@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Fecha_Fin_Posterior_A_Inicio</fullName>
+    <active>true</active>
+    <description>Impide que la fecha fin sea anterior a la fecha de inicio (US-09 AC3).</description>
+    <errorConditionFormula>NOT(ISBLANK(Fecha_Inicio__c)) &amp;&amp; NOT(ISBLANK(Fecha_Fin__c)) &amp;&amp; Fecha_Fin__c &lt; Fecha_Inicio__c</errorConditionFormula>
+    <errorDisplayField>Fecha_Fin__c</errorDisplayField>
+    <errorMessage>La Fecha Fin no puede ser anterior a la Fecha Inicio.</errorMessage>
+</ValidationRule>

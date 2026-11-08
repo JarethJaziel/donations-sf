@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Tipo_Confirmacion_Inmutable</fullName>
+    <active>true</active>
+    <description>Impide cambiar el tipo de confirmación una vez asignado, para que la auditoría sea confiable (US-13 AC4).</description>
+    <errorConditionFormula>NOT(ISNEW()) &amp;&amp; ISCHANGED(Tipo_Confirmacion__c) &amp;&amp; NOT(ISBLANK(TEXT(PRIORVALUE(Tipo_Confirmacion__c))))</errorConditionFormula>
+    <errorDisplayField>Tipo_Confirmacion__c</errorDisplayField>
+    <errorMessage>El tipo de confirmación no se puede cambiar una vez asignado.</errorMessage>
+</ValidationRule>

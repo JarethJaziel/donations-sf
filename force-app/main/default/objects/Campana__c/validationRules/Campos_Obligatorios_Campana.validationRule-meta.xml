@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Campos_Obligatorios_Campana</fullName>
+    <active>true</active>
+    <description>Exige fecha de inicio, fecha fin y propósito en toda campaña (US-09 AC1).</description>
+    <errorConditionFormula>ISBLANK(Fecha_Inicio__c) || ISBLANK(Fecha_Fin__c) || ISBLANK(Proposito__c)</errorConditionFormula>
+    <errorMessage>La campaña necesita Fecha Inicio, Fecha Fin y Propósito.</errorMessage>
+</ValidationRule>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Meta_Bloqueada_Si_Vigente</fullName>
+    <active>true</active>
+    <description>Bloquea el cambio de meta una vez que la campaña inició (US-09 AC4; pendiente de confirmar P2).</description>
+    <errorConditionFormula>NOT(ISNEW()) &amp;&amp; ISCHANGED(Meta__c) &amp;&amp; NOT(ISBLANK(PRIORVALUE(Fecha_Inicio__c))) &amp;&amp; PRIORVALUE(Fecha_Inicio__c) &lt;= TODAY()</errorConditionFormula>
+    <errorDisplayField>Meta__c</errorDisplayField>
+    <errorMessage>No se puede cambiar la meta de una campaña que ya inició.</errorMessage>
+</ValidationRule>

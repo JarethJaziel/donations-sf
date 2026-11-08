@@ -111,7 +111,7 @@ public with sharing class DonationAdminController {
 
         ResultadoConfirmacionDTO resultado = new ResultadoConfirmacionDTO();
         resultado.exito = true;
-        resultado.mensaje = 'Pago confirmado manualmente con éxito. Comprobante generado y enviado.';
+        resultado.mensaje = 'Pago confirmado manualmente. El comprobante se envía por correo; si el envío falla, el motivo aparece en el campo Error de Comprobante.';
         resultado.nuevoEstado = 'Pagada';
         resultado.tipoConfirmacion = 'Manual';
         return resultado;

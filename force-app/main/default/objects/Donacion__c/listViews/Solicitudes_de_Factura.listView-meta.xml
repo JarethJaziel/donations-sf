@@ -5,6 +5,7 @@
     <columns>Campana__c</columns>
     <columns>Nombre_Donante__c</columns>
     <columns>RFC__c</columns>
+    <columns>Tipo_Persona__c</columns>
     <columns>Correo__c</columns>
     <columns>Monto__c</columns>
     <columns>Estado__c</columns>

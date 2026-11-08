@@ -101,7 +101,7 @@ Soy el **Integrante 1 (Líder Admin y Backend)**. Debo corregir el código que y
    - `Tipo_Evento__c` (Text 100).
    - `Estado_Aviso__c`: agrega los valores `Error` e `Ignorado`.
 4. Permission sets (US-13, US-19):
-   - Separa `Coordinacion_Tesoreria_Admin` en `Tesoreria_Donaciones` (campañas y donaciones) y `Moderacion_Reconocimiento` (solo editar `Nombre_Publico__c` y `Visible_En_Reconocimiento__c`; lectura del resto).
+   - Conserva `Coordinacion_Tesoreria_Admin` como permiso de Tesorería (ya está asignado al equipo; no lo borres) y crea `Moderacion_Reconocimiento` (solo editar `Nombre_Publico__c` y `Visible_En_Reconocimiento__c`; lectura del resto).
    - En ambos, `Aviso_Pasarela__c` es solo lectura (sin Edit ni Delete) y `Tipo_Confirmacion__c` es de solo lectura.
 5. NO agregues código postal, régimen fiscal ni uso de CFDI (pendiente de confirmar con el cliente, P3).
 

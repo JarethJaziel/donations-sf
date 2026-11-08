@@ -14,7 +14,9 @@ private class DonationAdminControllerTest {
             Meta__c = 100000.00,
             Activa__c = true,
             Permitir_Sobrecupo__c = true,
-            Fecha_Fin__c = Date.today().addDays(60)
+            Fecha_Inicio__c = Date.today().addDays(-1),
+            Fecha_Fin__c = Date.today().addDays(60),
+            Proposito__c = 'Becas ficticias para estudiantes (dato de prueba).'
         );
         insert campana;
 
@@ -26,7 +28,7 @@ private class DonationAdminControllerTest {
             Monto__c = 2500.00,
             Modalidad__c = 'Con crédito',
             Nombre_Donante__c = 'Donante Admin Test',
-            Correo__c = 'admin.donante@test-md2026.org',
+            Correo__c = 'admin.donante@example.com',
             Estado__c = 'Pendiente'
         ));
 
@@ -37,7 +39,7 @@ private class DonationAdminControllerTest {
             Modalidad__c = 'Con factura',
             Nombre_Donante__c = 'Empresa Fiscal SA de CV',
             RFC__c = 'XAXX010101000',
-            Correo__c = 'fiscal.admin@test-md2026.org',
+            Correo__c = 'fiscal.admin@example.com',
             Estado__c = 'Pendiente'
         ));
 
@@ -46,7 +48,7 @@ private class DonationAdminControllerTest {
             Campana__c = campana.Id,
             Monto__c = 1000.00,
             Modalidad__c = 'Anónima',
-            Correo__c = 'admin.expirada@test-md2026.org',
+            Correo__c = 'admin.expirada@example.com',
             Estado__c = 'Expirada'
         ));
 
@@ -92,6 +94,7 @@ private class DonationAdminControllerTest {
      */
     @isTest
     static void testConfirmarPagoManualExitoso() {
+        DonationReceiptService.simulacionEnvio = 'exito';
         Donacion__c don = [
             SELECT Id, Estado__c, Tipo_Confirmacion__c, Comprobante_Enviado__c
             FROM Donacion__c
@@ -206,7 +209,7 @@ private class DonationAdminControllerTest {
             Campana__c = c.Id,
             Monto__c = 100,
             Modalidad__c = 'Anónima',
-            Correo__c = 'temp@test-md2026.org'
+            Correo__c = 'temp@example.com'
         );
         insert temp;
         Id idEliminado = temp.Id;

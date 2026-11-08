@@ -3,6 +3,7 @@
     <fullName>Todos_los_Avisos</fullName>
     <columns>NAME</columns>
     <columns>Stripe_Event_Id__c</columns>
+    <columns>Tipo_Evento__c</columns>
     <columns>Estado_Aviso__c</columns>
     <columns>Motivo_Rechazo__c</columns>
     <columns>Fecha_Recepcion__c</columns>
