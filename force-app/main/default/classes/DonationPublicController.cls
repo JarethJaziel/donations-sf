@@ -22,6 +22,8 @@ public without sharing class DonationPublicController {
     private static final String STRIPE_ENDPOINT = 'https://api.stripe.com/v1/checkout/sessions';
     @TestVisible
     private static final Decimal MONTO_MINIMO = 10;
+    @TestVisible
+    private static final Decimal MONTO_MAXIMO_STRIPE = 999999.99;
     private static final Integer EXPIRACION_SEGUNDOS = 3600;
     private static final Integer MAX_DONANTES_MURO = 2000;
     private static final Set<String> MODALIDADES = new Set<String>{ 'Anónima', 'Con crédito', 'Con factura' };
@@ -214,6 +216,9 @@ public without sharing class DonationPublicController {
         // Monto (US-02 AC3/AC5): mínimo $10.00, máximo 2 decimales, sin máximo propio
         if (s.monto == null || s.monto < MONTO_MINIMO) {
             throw error('El monto mínimo es $10.00 MXN.');
+        }
+        if (s.monto > MONTO_MAXIMO_STRIPE) {
+            throw error('El monto máximo permitido por Stripe en una sola transacción es $999,999.99 MXN.');
         }
         if (s.monto != s.monto.setScale(2, System.RoundingMode.DOWN)) {
             throw error('El monto puede tener como máximo dos decimales.');

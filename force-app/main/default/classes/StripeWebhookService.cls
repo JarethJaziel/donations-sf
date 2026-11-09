@@ -84,6 +84,7 @@ global without sharing class StripeWebhookService {
             List<Aviso_Pasarela__c> previos = [
                 SELECT Id, Donacion__c FROM Aviso_Pasarela__c
                 WHERE Stripe_Event_Id__c = :eventId AND Estado_Aviso__c IN ('Procesado', 'Ignorado')
+                WITH SYSTEM_MODE
                 LIMIT 1
             ];
             if (!previos.isEmpty()) {
@@ -154,7 +155,7 @@ global without sharing class StripeWebhookService {
         if (String.isNotBlank(sessionId) && String.isBlank(don.Stripe_Session_Id__c)) {
             don.Stripe_Session_Id__c = sessionId;
         }
-        update don;
+        update as system don;
         return new Resultado('Procesado', null, 200, don.Id);
     }
 
@@ -163,7 +164,7 @@ global without sharing class StripeWebhookService {
             return new Resultado('Ignorado', 'Sesión expirada para una donación en estado ' + don.Estado__c, 200, don.Id);
         }
         don.Estado__c = 'Expirada';
-        update don;
+        update as system don;
         return new Resultado('Procesado', null, 200, don.Id);
     }
 
@@ -187,13 +188,13 @@ global without sharing class StripeWebhookService {
         if (String.isNotBlank(referencia)) {
             encontradas = [
                 SELECT Id, Estado__c, Monto__c, Tipo_Confirmacion__c, Stripe_Session_Id__c
-                FROM Donacion__c WHERE Referencia_Publica__c = :referencia LIMIT 1 FOR UPDATE
+                FROM Donacion__c WHERE Referencia_Publica__c = :referencia WITH SYSTEM_MODE LIMIT 1 FOR UPDATE
             ];
         }
         if (encontradas.isEmpty() && String.isNotBlank(sessionId)) {
             encontradas = [
                 SELECT Id, Estado__c, Monto__c, Tipo_Confirmacion__c, Stripe_Session_Id__c
-                FROM Donacion__c WHERE Stripe_Session_Id__c = :sessionId LIMIT 1 FOR UPDATE
+                FROM Donacion__c WHERE Stripe_Session_Id__c = :sessionId WITH SYSTEM_MODE LIMIT 1 FOR UPDATE
             ];
         }
         return encontradas.isEmpty() ? null : encontradas[0];
@@ -208,7 +209,7 @@ global without sharing class StripeWebhookService {
             Fecha_Recepcion__c = System.now(),
             Donacion__c = r.donacionId
         );
-        insert aviso;
+        insert as system aviso;
         return r;
     }
 

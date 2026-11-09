@@ -4,6 +4,7 @@ import iniciarDonacion from '@salesforce/apex/DonationPublicController.iniciarDo
 const MONTOS_SUGERIDOS = [100, 250, 500, 1000, 2000, 5000, 10000, 20000];
 const MONTO_MINIMO = 10;
 const MONTO_CONFIRMACION = 1000;
+const MONTO_MAXIMO_STRIPE = 999999.99;
 const PATRON_MONTO = /^\d+(\.\d{1,2})?$/;
 const PATRON_CORREO = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 const PATRON_RFC = /^[A-Z&Ñ]{3,4}(\d{2})(\d{2})(\d{2})[A-Z0-9]{3}$/;
@@ -121,6 +122,9 @@ export default class FormularioDonacionPublico extends LightningElement {
         }
         if (this.montoNumero < MONTO_MINIMO) {
             return 'El monto mínimo es $10.00 MXN.';
+        }
+        if (this.montoNumero > MONTO_MAXIMO_STRIPE) {
+            return 'El monto máximo por transacción en Stripe es $999,999.99 MXN.';
         }
         return null;
     }

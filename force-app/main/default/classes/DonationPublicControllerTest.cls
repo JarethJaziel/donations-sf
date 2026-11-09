@@ -245,6 +245,7 @@ private class DonationPublicControllerTest {
         System.assert(errorDe(solicitud('Anónima', 9.99)).contains('$10.00'), 'Mínimo $10 (US-02 AC3)');
         System.assert(errorDe(solicitud('Anónima', null)).contains('$10.00'));
         System.assert(errorDe(solicitud('Anónima', 10.555)).contains('dos decimales'));
+        System.assert(errorDe(solicitud('Anónima', 1000000.00)).contains('999,999.99'), 'Excede el límite técnico de 8 dígitos de Stripe');
         System.assertEquals(0, [SELECT COUNT() FROM Donacion__c WHERE Stripe_Session_Id__c = 'sesion_simulada_001'],
             'No se crea ningún registro (US-02 AC3)');
     }

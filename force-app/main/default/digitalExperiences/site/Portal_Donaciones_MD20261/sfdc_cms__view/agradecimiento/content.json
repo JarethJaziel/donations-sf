@@ -26,7 +26,7 @@
                     {
                       "attributes": {
                         "imageInfos": "",
-                        "richTextValue": "<div style=\"max-width: 640px; margin: 48px auto; padding: 0 16px; text-align: center;\"><h1 class=\"slds-text-heading_large slds-p-bottom_small\">¡Gracias por tu donación!</h1><p>Recibimos tu donación. Te enviaremos tu comprobante por correo cuando se confirme el pago.</p><p class=\"slds-p-top_medium\"><a href=\"./\">Volver a las campañas</a></p></div>"
+                        "richTextValue": "<div style=\"max-width: 640px; margin: 48px auto; padding: 0 16px; text-align: center;\"><h1 class=\"slds-text-heading_large slds-p-bottom_small\">¡Gracias por tu donación!</h1><p>Recibimos tu donación. Te enviaremos tu comprobante por correo cuando se confirme el pago.</p><div style=\"background: rgba(0,0,0,0.04); border-radius: 8px; padding: 16px; margin: 24px 0;\"><p style=\"font-weight: 600; margin-bottom: 8px;\">Impacto Mexico Dreamin 2026</p><p style=\"font-size: 0.95rem; color: #444;\">Tu contribución apoya directamente a estudiantes universitarios de México para asistir a Mexico Dreamin 2026, impulsando su formación y conexión con el ecosistema tecnológico.</p></div><p class=\"slds-p-top_medium\"><a href=\"./\">Volver a las campañas</a></p></div>"
                       },
                       "definition": "community_builder:htmlEditor",
                       "id": "1d6d3357-a5e6-4c5b-9422-e46aaf75ff79",

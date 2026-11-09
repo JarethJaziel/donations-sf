@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
     Perfil del usuario invitado del sitio "Portal Donaciones MD2026" (M2, US-14, US-15).
-    Única clase Apex permitida: DonationPublicController (solo entrega DTOs públicos).
+    Clases Apex permitidas: DonationPublicController (solo entrega DTOs públicos)
+    y StripeWebhookService (endpoint REST de la pasarela).
     Sin permisos sobre objetos.
 -->
 <Profile xmlns="http://soap.sforce.com/2006/04/metadata">
     <classAccesses>
         <apexClass>DonationPublicController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>StripeWebhookService</apexClass>
         <enabled>true</enabled>
     </classAccesses>
 </Profile>

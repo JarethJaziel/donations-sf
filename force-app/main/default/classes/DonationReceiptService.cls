@@ -37,6 +37,7 @@ public without sharing class DonationReceiptService {
             WHERE Id IN :donacionIds
               AND Estado__c = 'Pagada'
               AND Comprobante_Enviado__c = false
+            WITH SYSTEM_MODE
         ];
 
         if (donaciones.isEmpty()) {
@@ -66,7 +67,7 @@ public without sharing class DonationReceiptService {
         }
 
         if (!actualizaciones.isEmpty()) {
-            update actualizaciones;
+            update as system actualizaciones;
         }
     }
 
