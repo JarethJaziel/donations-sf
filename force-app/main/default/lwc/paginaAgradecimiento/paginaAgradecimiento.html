@@ -1,0 +1,98 @@
+<template>
+    <div class="portal">
+        <!-- Encabezado con estética de Tablero de Salidas -->
+        <header class="tablero">
+            <div class="tablero__panel">
+                <div class="tablero__interior">
+                    <div class="tablero__cabeza" aria-hidden="true">
+                        <span>Mexico Dreamin 2026 · Salidas</span>
+                        <span class="tablero__estado">Estado: Recibido</span>
+                    </div>
+                    <div class="tablero__splitflap" aria-hidden="true">
+                        <span class="paleta">C</span>
+                        <span class="paleta">D</span>
+                        <span class="paleta">M</span>
+                        <span class="paleta">X</span>
+                        <span class="paleta sep"> </span>
+                        <span class="paleta">2</span>
+                        <span class="paleta">0</span>
+                        <span class="paleta sep"> </span>
+                        <span class="paleta">N</span>
+                        <span class="paleta">O</span>
+                        <span class="paleta">V</span>
+                    </div>
+                </div>
+            </div>
+            <div class="portal__contenedor">
+                <h1 class="tablero__titular">¡Gracias por apoyar a los estudiantes!</h1>
+                <p class="tablero__texto">
+                    Cada aportación acerca a un estudiante a Mexico Dreamin 2026 en la Ciudad de México.
+                </p>
+            </div>
+        </header>
+
+        <!-- Contenedor principal con estética de Boleto de Salida -->
+        <main class="salidas">
+            <div class="portal__contenedor">
+                <article class="boleto" role="region" aria-label="Confirmación de recepción de donación">
+                    <div class="boleto__cuerpo">
+                        <div class="boleto__icono-bloque" aria-hidden="true">
+                            <svg class="boleto__icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                        </div>
+                        <div class="boleto__contenido">
+                            <h2 class="boleto__titulo">Donación registrada</h2>
+                            <p class="boleto__mensaje-principal">
+                                Recibimos tu donación; te enviaremos tu comprobante por correo cuando se confirme el pago.
+                            </p>
+
+                            <!-- Resumen del impacto de Mexico Dreamin 2026 -->
+                            <section class="impacto" aria-labelledby="titulo-impacto">
+                                <h3 id="titulo-impacto" class="impacto__titulo">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="impacto__icono" aria-hidden="true">
+                                        <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+                                        <line x1="4" y1="22" x2="4" y2="15"></line>
+                                    </svg>
+                                    Impacto de Mexico Dreamin 2026
+                                </h3>
+                                <p class="impacto__descripcion">
+                                    Tu contribución apoya directamente a estudiantes universitarios de México para asistir al evento el próximo <strong>20 de noviembre de 2026</strong> en la Ciudad de México, cubriendo sus gastos de viaje y formación tecnológica con líderes del ecosistema.
+                                </p>
+                            </section>
+
+                            <div class="nota-aviso">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nota-aviso__icono" aria-hidden="true">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                </svg>
+                                <p>
+                                    El comprobante oficial será emitido y enviado a tu correo en cuanto la pasarela valide la transferencia.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Talón perforado lateral con acciones -->
+                    <aside class="boleto__talon">
+                        <div class="talon__seccion">
+                            <span class="talon__etiqueta">Destino</span>
+                            <span class="talon__dato">CDMX · 2026</span>
+                        </div>
+                        <div class="talon__seccion">
+                            <span class="talon__etiqueta">Estado</span>
+                            <div class="sello">En proceso</div>
+                        </div>
+                        <div class="talon__accion">
+                            <a class="boton boton--primario boton--ancho" href={urlInicio} onclick={handleBack}>
+                                Volver a las campañas
+                            </a>
+                        </div>
+                    </aside>
+                </article>
+            </div>
+        </main>
+    </div>
+</template>

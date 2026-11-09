@@ -1,0 +1,96 @@
+<template>
+    <div class="portal">
+        <!-- Encabezado con estética de Tablero de Salidas -->
+        <header class="tablero">
+            <div class="tablero__panel">
+                <div class="tablero__interior">
+                    <div class="tablero__cabeza" aria-hidden="true">
+                        <span>Mexico Dreamin 2026 · Salidas</span>
+                        <span class="tablero__estado">Operación cancelada</span>
+                    </div>
+                    <div class="tablero__splitflap" aria-hidden="true">
+                        <span class="paleta">S</span>
+                        <span class="paleta">I</span>
+                        <span class="paleta">N</span>
+                        <span class="paleta sep"> </span>
+                        <span class="paleta">C</span>
+                        <span class="paleta">A</span>
+                        <span class="paleta">R</span>
+                        <span class="paleta">G</span>
+                        <span class="paleta">O</span>
+                    </div>
+                </div>
+            </div>
+            <div class="portal__contenedor">
+                <h1 class="tablero__titular">Tu pago no fue procesado</h1>
+                <p class="tablero__texto">
+                    No se completó la transferencia en la pasarela. No te preocupes: tu cuenta permanece intacta.
+                </p>
+            </div>
+        </header>
+
+        <!-- Contenedor principal con estética de Boleto -->
+        <main class="salidas">
+            <div class="portal__contenedor">
+                <article class="boleto boleto--cancelado" role="region" aria-label="Aviso de pago cancelado">
+                    <div class="boleto__cuerpo">
+                        <div class="boleto__icono-bloque" aria-hidden="true">
+                            <svg class="boleto__icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="15" y1="9" x2="9" y2="15"></line>
+                                <line x1="9" y1="9" x2="15" y2="15"></line>
+                            </svg>
+                        </div>
+                        <div class="boleto__contenido">
+                            <h2 class="boleto__titulo">Ningún cargo realizado</h2>
+                            <p class="boleto__mensaje-principal">
+                                No se realizó ningún cargo a tu tarjeta o cuenta bancaria. Tu donación no se registró como pagada en este momento.
+                            </p>
+
+                            <!-- Pasos para reintentar -->
+                            <section class="reintento" aria-labelledby="titulo-reintento">
+                                <h3 id="titulo-reintento" class="reintento__titulo">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="reintento__icono" aria-hidden="true">
+                                        <polyline points="1 4 1 10 7 10"></polyline>
+                                        <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                                    </svg>
+                                    ¿Deseas intentarlo de nuevo?
+                                </h3>
+                                <p class="reintento__descripcion">
+                                    Puedes regresar a la página de campañas para seleccionar nuevamente el monto de tu preferencia y elegir entre donación Anónima, Con crédito o Con factura.
+                                </p>
+                            </section>
+
+                            <div class="nota-seguridad">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nota-seguridad__icono" aria-hidden="true">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                </svg>
+                                <p>
+                                    Tus datos y fondos están seguros. No se generó ningún comprobante ni compromiso fiscal.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Talón perforado lateral con acciones -->
+                    <aside class="boleto__talon">
+                        <div class="talon__seccion">
+                            <span class="talon__etiqueta">Total cargado</span>
+                            <span class="talon__dato">$0.00 MXN</span>
+                        </div>
+                        <div class="talon__seccion">
+                            <span class="talon__etiqueta">Estado</span>
+                            <div class="sello sello--cancelado">Sin cargo</div>
+                        </div>
+                        <div class="talon__accion">
+                            <a class="boton boton--primario boton--ancho" href={urlInicio} onclick={handleBack}>
+                                Volver a las campañas
+                            </a>
+                        </div>
+                    </aside>
+                </article>
+            </div>
+        </main>
+    </div>
+</template>

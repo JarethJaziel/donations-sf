@@ -24,11 +24,8 @@
                 {
                   "children": [
                     {
-                      "attributes": {
-                        "imageInfos": "",
-                        "richTextValue": "<div style=\"max-width: 640px; margin: 48px auto; padding: 0 16px; text-align: center;\"><h1 class=\"slds-text-heading_large slds-p-bottom_small\">Pago cancelado</h1><p>No se realizó ningún cargo y tu donación no se registró como pagada.</p><p>Si quieres intentarlo de nuevo, vuelve a elegir la campaña y el monto.</p><p class=\"slds-p-top_medium\"><a href=\"./\">Volver a las campañas</a></p></div>"
-                      },
-                      "definition": "community_builder:htmlEditor",
+                      "attributes": {},
+                      "definition": "c:paginaPagoCancelado",
                       "id": "0f949d93-7e65-4fb6-9c6d-1c72b2d6d1d0",
                       "type": "component"
                     }
