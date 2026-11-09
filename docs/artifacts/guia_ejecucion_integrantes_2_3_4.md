@@ -180,7 +180,7 @@ Soy el **Integrante 2 (Líder de Portal Público)** y me corresponde implementar
      - `'Con factura'`: exige nombre legal y RFC válido con `RfcValidator` (creado por el Integrante 1); `Solicita_Factura__c = true`; `Nombre_Publico__c` opcional (si viene vacío, se usa el nombre legal) (US-05, US-04 AC4).
    - Genera `referencia = UUID.randomUUID().toString()`.
    - `POST https://api.stripe.com/v1/checkout/sessions` (`application/x-www-form-urlencoded`) con:
-     - `mode=payment`, `submit_type=donate`, `payment_method_types[0]=card`, `locale=es`;
+     - `mode=payment`, `submit_type=donate`, `locale=es` (sin `payment_method_types`: Stripe ya no lo acepta; los métodos de pago se activan en el Dashboard);
      - `client_reference_id=<referencia>` y `metadata[referencia]=<referencia>` (nunca el Id);
      - `customer_email=<correo codificado>`;
      - `line_items[0][price_data][currency]=mxn`, `line_items[0][price_data][unit_amount]=<monto * 100 como Long>`, `line_items[0][price_data][product_data][name]=<'Donación: ' + nombre de la campaña, codificado>`, `line_items[0][quantity]=1`;

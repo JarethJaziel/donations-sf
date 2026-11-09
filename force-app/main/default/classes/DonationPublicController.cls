@@ -274,7 +274,8 @@ public without sharing class DonationPublicController {
         List<String> partes = new List<String>{
             par('mode', 'payment'),
             par('submit_type', 'donate'),
-            par('payment_method_types[0]', 'card'),
+            // Sin payment_method_types: Stripe ya no lo acepta; los métodos (tarjeta)
+            // se configuran en el Dashboard (Settings > Payment methods).
             par('locale', 'es'),
             par('client_reference_id', referencia),
             par('metadata[referencia]', referencia),

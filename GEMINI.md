@@ -168,7 +168,7 @@ Open client questions are tagged **(P#)**. Build the provisional decision; it ma
    - Validates the campaign is in force and eligible, the amount (≥ 10, two decimals), the email and the modality rules, plus RFC via `RfcValidator`.
    - Calls Stripe (section 3.4), then inserts the `Pendiente` donation.
    - Returns only the Checkout URL. Stripe errors → `AuraHandledException` with a generic Spanish message and nothing inserted.
-   - Stripe parameters: `mode=payment`, `submit_type=donate`, `payment_method_types[0]=card`, `locale=es`, `customer_email`, line item `Donación: <campaign>`, `expires_at`, `success_url` / `cancel_url` from `Stripe_Config__c`. URL-encode every value.
+   - Stripe parameters: `mode=payment`, `submit_type=donate`, `locale=es` (do not send `payment_method_types`: Stripe rejects it; payment methods are set in the Dashboard), `customer_email`, line item `Donación: <campaign>`, `expires_at`, `success_url` / `cancel_url` from `Stripe_Config__c`. URL-encode every value.
 4. `DonationPublicControllerTest` with `HttpCalloutMock`, using `DonacionTestFactory` for data. Cover each acceptance criterion, positive and negative, with >90% coverage.
 
 ### 6.3 LWC (targets `lightningCommunity__Page`, `lightningCommunity__Default`)
