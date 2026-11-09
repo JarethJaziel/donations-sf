@@ -1,0 +1,20 @@
+<template>
+    <lightning-card title="Agradecimiento" icon-name="standard:thanks">
+        <div class="slds-p-around_medium slds-text-align_center">
+            <h1 class="slds-m-bottom_medium">¡Gracias por tu apoyo!</h1>
+            <p class="slds-m-bottom_medium">
+                Recibimos tu donación; te enviaremos tu comprobante por correo cuando se confirme el pago.
+            </p>
+            <div class="slds-box slds-theme_shade slds-m-vertical_medium">
+                <h2 class="slds-text-heading_small slds-m-bottom_small">Impacto de Mexico Dreamin 2026</h2>
+                <p>Tu contribución ayuda a crear oportunidades para estudiantes de toda la región, impulsando su formación académica y profesional en el corazón de México.</p>
+            </div>
+            <lightning-button 
+                label="Volver a las campañas" 
+                variant="brand" 
+                onclick={handleBack}
+                class="slds-m-top_medium">
+            </lightning-button>
+        </div>
+    </lightning-card>
+</template>

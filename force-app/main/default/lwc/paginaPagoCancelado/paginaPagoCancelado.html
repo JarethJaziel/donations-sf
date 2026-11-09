@@ -1,0 +1,19 @@
+<template>
+    <lightning-card title="Pago Cancelado" icon-name="standard:error">
+        <div class="slds-p-around_medium slds-text-align_center">
+            <h1 class="slds-m-bottom_medium">Tu pago no fue procesado</h1>
+            <p class="slds-m-bottom_medium">
+                No se realizó ningún cargo a tu cuenta. Tu donación no se registró como pagada en este momento.
+            </p>
+            <p class="slds-m-bottom_medium">
+                Puedes intentar realizar el proceso nuevamente si lo deseas.
+            </p>
+            <lightning-button 
+                label="Volver a las campañas" 
+                variant="brand" 
+                onclick={handleBack}
+                class="slds-m-top_medium">
+            </lightning-button>
+        </div>
+    </lightning-card>
+</template>
