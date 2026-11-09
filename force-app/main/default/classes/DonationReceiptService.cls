@@ -3,6 +3,10 @@
  *              personalizados por modalidad de donación (US-05 AC4, US-08, RF-D5, RF-S3).
  *              Solo marca Comprobante_Enviado__c cuando el correo se envió con éxito; si falla,
  *              registra el motivo en Error_Comprobante__c sin revertir el pago (US-08 AC5).
+ *              Soporta toggle Modo_Produccion_Correos__c en Stripe_Config__c:
+ *              - false (Modo Test, por defecto): Salesforce envía comprobante en todas las modalidades.
+ *              - true (Modo Producción): Stripe envía el recibo de pago estándar y Salesforce solo
+ *                envía el comprobante con datos fiscales para la modalidad Con factura.
  */
 @SuppressWarnings('PMD.ApexCRUDViolation, PMD.CyclomaticComplexity')
 public without sharing class DonationReceiptService {
@@ -44,17 +48,40 @@ public without sharing class DonationReceiptService {
             return;
         }
 
+        Stripe_Config__c config = Stripe_Config__c.getOrgDefaults();
+        Boolean soloFacturaEnProd = (config != null && config.Modo_Produccion_Correos__c == true);
+        Id orgWideEmailId = obtenerOrgWideEmailVerificado();
+        Boolean esGuestSinOwea = (UserInfo.getUserType() == 'Guest' && orgWideEmailId == null && !Test.isRunningTest());
+
         List<Messaging.SingleEmailMessage> mensajes = new List<Messaging.SingleEmailMessage>();
         List<Donacion__c> conCorreo = new List<Donacion__c>();
         List<Donacion__c> actualizaciones = new List<Donacion__c>();
 
         for (Donacion__c donacion : donaciones) {
+            if (soloFacturaEnProd && donacion.Modalidad__c != 'Con factura') {
+                // En Modo Producción, Stripe envía el recibo de pago estándar para Anónima y Con crédito;
+                // Salesforce únicamente envía el comprobante fiscal para Con factura.
+                continue;
+            }
             if (String.isBlank(donacion.Correo__c)) {
                 actualizaciones.add(resultado(donacion.Id, false, 'La donación no tiene correo electrónico.'));
                 continue;
             }
+            if (esGuestSinOwea) {
+                actualizaciones.add(resultado(
+                    donacion.Id,
+                    false,
+                    'Pendiente de verificar dirección en Organization-Wide Addresses (Setup) para envíos desde Guest User.'
+                ));
+                continue;
+            }
             Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
             mail.setToAddresses(new List<String>{ donacion.Correo__c.trim() });
+            if (orgWideEmailId != null) {
+                mail.setOrgWideEmailAddressId(orgWideEmailId);
+            } else {
+                mail.setSenderDisplayName('Mexico Dreamin 2026 - Donaciones');
+            }
             mail.setSubject(construirAsuntoCorreo(donacion));
             mail.setPlainTextBody(construirCuerpoCorreo(donacion));
             mail.setSaveAsActivity(false);
@@ -69,6 +96,21 @@ public without sharing class DonationReceiptService {
         if (!actualizaciones.isEmpty()) {
             update as system actualizaciones;
         }
+    }
+
+    /**
+     * @description Obtiene el Id de la primera dirección de correo de toda la organización (OrgWideEmailAddress)
+     *              que se encuentre verificada. Requerido por Salesforce para envíos desde Site Guest User.
+     */
+    private static Id obtenerOrgWideEmailVerificado() {
+        List<OrgWideEmailAddress> direcciones = [
+            SELECT Id
+            FROM OrgWideEmailAddress
+            WHERE IsVerified = true
+            WITH SYSTEM_MODE
+            LIMIT 1
+        ];
+        return direcciones.isEmpty() ? null : direcciones[0].Id;
     }
 
     /**

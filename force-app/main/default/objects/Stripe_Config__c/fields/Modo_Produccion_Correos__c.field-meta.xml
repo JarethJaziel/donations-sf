@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Modo_Produccion_Correos__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Si es false (Modo Test, por defecto), Salesforce envía comprobante por correo para todas las modalidades (Anónima, Con crédito, Con factura). Si es true (Modo Producción), Stripe envía el recibo de pago estándar y Salesforce únicamente envía el comprobante fiscal para la modalidad Con factura.</description>
+    <label>Modo Producción Correos (Solo Factura)</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

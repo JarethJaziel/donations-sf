@@ -285,6 +285,7 @@ public without sharing class DonationPublicController {
             par('client_reference_id', referencia),
             par('metadata[referencia]', referencia),
             par('customer_email', s.correo),
+            par('payment_intent_data[receipt_email]', s.correo),
             par('line_items[0][quantity]', '1'),
             par('line_items[0][price_data][currency]', 'mxn'),
             par('line_items[0][price_data][unit_amount]', String.valueOf(centavos)),

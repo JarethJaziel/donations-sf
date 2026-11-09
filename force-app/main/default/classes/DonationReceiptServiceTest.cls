@@ -400,4 +400,44 @@ private class DonationReceiptServiceTest {
             System.assert(String.isNotBlank(resultado.Error_Comprobante__c), 'Si no se envió, debe registrarse el motivo');
         }
     }
+
+    /**
+     * @description Verifica que cuando Modo_Produccion_Correos__c = true en Stripe_Config__c,
+     *              Salesforce omite el envío para Anónima y Con crédito (delegado a Stripe) y
+     *              únicamente envía el comprobante fiscal para la modalidad Con factura.
+     */
+    @isTest
+    static void testModoProduccionSoloEnviaComprobanteFactura() {
+        DonationReceiptService.simulacionEnvio = 'exito';
+        insert new Stripe_Config__c(
+            SetupOwnerId = UserInfo.getOrganizationId(),
+            Modo_Produccion_Correos__c = true
+        );
+
+        List<Donacion__c> todas = [
+            SELECT Id, Modalidad__c, Estado__c, Tipo_Confirmacion__c
+            FROM Donacion__c
+        ];
+
+        Test.startTest();
+        for (Donacion__c d : todas) {
+            d.Estado__c = 'Pagada';
+            d.Tipo_Confirmacion__c = 'Automática';
+        }
+        update todas;
+        Test.stopTest();
+
+        for (Donacion__c d : [
+            SELECT Modalidad__c, Comprobante_Enviado__c, Error_Comprobante__c
+            FROM Donacion__c
+        ]) {
+            if (d.Modalidad__c == 'Con factura') {
+                System.assertEquals(true, d.Comprobante_Enviado__c, 'En modo producción sí debe enviarse el comprobante Con factura');
+                System.assertEquals(null, d.Error_Comprobante__c, 'No debe registrar error en Con factura');
+            } else {
+                System.assertEquals(false, d.Comprobante_Enviado__c, 'En modo producción no debe enviarse correo Salesforce para ' + d.Modalidad__c);
+                System.assertEquals(null, d.Error_Comprobante__c, 'No es un error omitir el correo en modo producción para ' + d.Modalidad__c);
+            }
+        }
+    }
 }
