@@ -1,6 +1,6 @@
 # Project Context & System Rules: SF Vibe Lab — Mexico Dreamin 2026 Donation Portal
 
-> **Version 2 (2026-11-08).** Aligned with the updated backlog (GitHub issues US-01 to US-20), the member execution guide [`docs/artifacts/guia_ejecucion_integrantes_2_3_4.md`](./docs/artifacts/guia_ejecucion_integrantes_2_3_4.md) and the member 1 corrections already deployed ([`docs/artifacts/walkthrough_correcciones_modelo_y_backend.md`](./docs/artifacts/walkthrough_correcciones_modelo_y_backend.md)).
+> **Version 2 (2026-11-08).** Aligned with the updated backlog (GitHub issues US-01 to US-20) and the member 1 corrections already deployed ([`docs/artifacts/walkthrough_correcciones_modelo_y_backend.md`](./docs/artifacts/walkthrough_correcciones_modelo_y_backend.md)).
 > **Source of truth for each story:** the acceptance criteria of its GitHub issue. If this file and an issue disagree, follow the issue and point out the conflict.
 > `CLAUDE.md`, `GEMINI.md` and `.agents/rules/donation-portal.md` must stay identical.
 
@@ -203,14 +203,14 @@ All three use Spanish texts, are responsive, and never store donor data in `loca
 
 ## 8. Mandatory Documentation Workflow (Criterion C3)
 Whenever you (the AI agent) generate code, fix a bug, or design a component, end your response with a ready-to-paste row for `docs/bitacora_ia.md` with these exact fields:
-- **Fecha:** `YYYY-MM-DD`
-- **Autor:** `[Nombre del integrante]`
-- **Herramienta:** `[Nombre del modelo/IDE]`
-- **Historia relacionada:** `[US-XX / RF-XX]`
-- **Qué se pidió (Prompt/Resumen):** `[Resumen claro de la solicitud]`
-- **Qué se obtuvo:** `[Artefacto o código generado]`
-- **Qué se verificó y cómo:** `[Prueba en Org, test unitario o documentación oficial revisada]`
-- **Qué se corrigió (¿Error de IA?):** `[Sí/No, qué error cometió la IA, cómo se detectó y cómo se corrigió]`
-- **Aceleración estimada:** `[Ej. Ahorró ~2 horas frente a hacerlo sin IA]`
+- **Date:** `YYYY-MM-DD`
+- **Author:** `[Team member name]`
+- **Tool:** `[Model/IDE name]`
+- **Related Story:** `[US-XX / RF-XX]`
+- **Prompt / Summary:** `[Clear summary of the request]`
+- **Output:** `[Artifact or code generated]`
+- **Verification & Method:** `[Org test, unit test, or official docs reviewed]`
+- **Corrections (AI Error?):** `[Yes/No, what error the AI made, how it was detected, and how it was fixed]`
+- **Estimated Speedup:** `[e.g., Saved ~2 hours compared to doing it without AI]`
 
 Never write names of people outside the team or of the reviewers in public files (backlog, docs, commits).

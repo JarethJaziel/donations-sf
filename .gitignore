@@ -56,10 +56,10 @@ $RECYCLE.BIN/
 **/.venv/
 **/venv/
 
-# Metadatos del sitio que contienen datos personales (correo remitente, usuario administrador).
-# Se despliegan desde la máquina local; no se publican en el repositorio (M3).
+# Site metadata containing personal data (sender email, admin username).
+# Deployed from a local machine only; not committed to the repository (M3).
 force-app/main/default/networks/
 force-app/main/default/sites/
 
-# Carpeta de trabajo de la skill impeccable (diseño); no forma parte del proyecto.
+# Working directory for the impeccable design skill; not part of the project.
 .impeccable/

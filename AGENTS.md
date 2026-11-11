@@ -1,13 +1,15 @@
 # Antigravity & Agent Instructions: Mexico Dreamin 2026 Donation Portal
 
-Este repositorio cuenta con reglas estrictas de arquitectura, seguridad y desarrollo con Salesforce y Stripe.
+This repository enforces strict architecture, security, and development rules for Salesforce and Stripe.
 
-## Reglas Principales y Mínimos Críticos
-- Consulta las reglas detalladas y requisitos en [`.agents/rules/donation-portal.md`](./.agents/rules/donation-portal.md) o [`GEMINI.md`](./GEMINI.md).
-- **M1:** 100% Modo de prueba (Sandbox Org y Stripe Test Mode). Prohibido datos reales.
-- **M2:** Menor privilegio en Guest User Profile. Prohibido acceso CRUD directo a `Donacion__c`. Exponer únicamente Wrapper/DTOs en Apex.
-- **M3:** Cero secretos en código o historial de Git. `Stripe_Config__c` se configura en la Org.
+## Core Rules & Critical Minimums
 
-## Documentación Obligatoria
-- Toda sesión relevante debe registrarse en [`docs/bitacora_ia.md`](./docs/bitacora_ia.md) (Criterio C3).
-- Las dudas y acuerdos de negocio se registran en [`docs/preguntas_y_reportes.md`](./docs/preguntas_y_reportes.md) (Criterio C7).
+- Review the detailed rules and requirements in [`.agents/rules/donation-portal.md`](./.agents/rules/donation-portal.md) or [`GEMINI.md`](./GEMINI.md).
+- **M1:** 100% Test Mode (Sandbox Org and Stripe Test Mode). Real personal data is strictly prohibited.
+- **M2:** Least privilege on the Guest User Profile. Direct CRUD access to `Donacion__c` is prohibited. Expose only Wrapper/DTO classes in Apex.
+- **M3:** Zero secrets in code or Git history. `Stripe_Config__c` is configured directly in the Org.
+
+## Mandatory Documentation
+
+- Every relevant session must be logged in [`docs/bitacora_ia.md`](./docs/bitacora_ia.md) (Criterion C3).
+- Business questions and agreements are recorded in [`docs/preguntas_y_reportes.md`](./docs/preguntas_y_reportes.md) (Criterion C7).
