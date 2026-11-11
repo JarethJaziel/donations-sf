@@ -1,43 +1,43 @@
-# Plan de Pruebas, Seguridad y Checklist Pre-Entrega — SF Vibe Lab
+# Test Plan, Security & Pre-Delivery Checklist — SF Vibe Lab
 
-> **Propósito:** Garantizar el cumplimiento de los criterios de aceptación (positivos y negativos), los mínimos de aprobación (**M1**, **M2**, **M3**) y la calidad de código (**C6**) antes de cada entrega o Pull Request.
+> **Purpose:** Ensure compliance with all acceptance criteria (positive and negative), pass/fail minimums (**M1**, **M2**, **M3**), and code quality standards (**C6**) prior to each delivery or Pull Request.
 
-## 1. Verificación de Mínimos Críticos (Zero Tolerance)
+## 1. Critical Minimums Verification (Zero Tolerance)
 
-- [x] **M1 (100% Modo Prueba y Datos Ficticios):**
-  - [x] Solo se usan tarjetas de prueba de Stripe (`4242...`) y correos con dominio reservado `@example.com`.
-  - [x] Ningún RFC real de terceros ha sido ingresado en pruebas ni en base de datos.
-- [x] **M2 (Mínimo Privilegio en Guest User Profile):**
-  - [x] El perfil del Guest User en Experience Cloud (`Portal Donaciones MD2026 Perfil`) tiene `Read = false`, `Create = false`, `Edit = false`, `Delete = false` en `Donacion__c`, `Campana__c` y `Aviso_Pasarela__c`.
-  - [x] Ningún método `@AuraEnabled` devuelve instancias directas de `Donacion__c`; todos usan DTOs que omiten `Correo__c` y `RFC__c`.
-  - [x] Ningún método público recibe ni devuelve el Id de una donación; solo se utiliza `Referencia_Publica__c` (UUID opaco).
-- [x] **M3 (Cero Secretos en Código o Git):**
-  - [x] Auditoría limpia en historial de Git: ningún archivo contiene prefijos de llaves reales (`sk_test_...`, `whsec_...`).
-  - [x] `Stripe_Config__c` (Custom Setting protegido) configurado manualmente en la Org.
+- [x] **M1 (100% Test Mode & Fictitious Data):**
+  - [x] Only Stripe test cards (`4242...`) and reserved-domain emails (`@example.com`) are used.
+  - [x] No real third-party RFCs have been entered in tests or the database.
+- [x] **M2 (Least Privilege on Guest User Profile):**
+  - [x] The Experience Cloud Guest User Profile (`Portal Donaciones MD2026 Perfil`) has `Read = false`, `Create = false`, `Edit = false`, `Delete = false` on `Donacion__c`, `Campana__c`, and `Aviso_Pasarela__c`.
+  - [x] No `@AuraEnabled` method returns raw `Donacion__c` SObjects; all methods use DTOs omitting `Correo__c` and `RFC__c`.
+  - [x] No public method accepts or returns a donation record Id; only `Referencia_Publica__c` (opaque UUID) is used.
+- [x] **M3 (Zero Secrets in Code or Git):**
+  - [x] Clean Git history audit: no file contains real key prefixes (`sk_test_...`, `whsec_...`).
+  - [x] `Stripe_Config__c` (Protected Custom Setting) is configured manually in the Org.
 
 ---
 
-## 2. Matriz de Pruebas Funcionales y Casos Negativos
+## 2. Functional & Negative Test Case Matrix
 
-| ID Caso | Historia / RF | Escenario | Entrada | Resultado Esperado | Estado |
+| Case ID | Story / RF | Scenario | Input | Expected Result | Status |
 |---|---|---|---|---|---|
-| TC-01 | `RF-D1a` | Campaña vencida por fecha | `Fecha_Fin__c < TODAY()` | El portal muestra campaña cerrada y Apex rechaza nuevas donaciones. | ✅ Pasando |
-| TC-02 | `RF-D1a` | Campaña en 100% sin sobrecupo | `Monto_Recaudado__c >= Meta__c` y `Permitir_Sobrecupo__c = false` | No permite iniciar checkout; muestra mensaje "Meta alcanzada". | ✅ Pasando |
-| TC-03 | `RF-D1a` | Campaña en 100% con sobrecupo | `Monto_Recaudado__c >= Meta__c` y `Permitir_Sobrecupo__c = true` | Permite donar normalmente mientras `Vigente__c = true`. | ✅ Pasando |
-| TC-04 | `RF-D2` | Donación Anónima | `Modalidad = 'Anónima'`, Correo, Monto | Guarda `Nombre_Donante__c = null`; nunca aparece en muro público ni en recibo con nombre. | ✅ Pasando |
-| TC-05 | `RF-C1` | Donación Con Crédito | `Modalidad = 'Con crédito'`, Nombre, Correo, Monto | Mientras es `Pendiente` no suma ni aparece; al pasar a `Pagada` aparece Nombre Público y Monto en el muro. | ✅ Pasando |
-| TC-06 | `RF-F1` | Donación Con Factura (RFC válido) | `Modalidad = 'Con factura'`, Razón Social, RFC válido (`EKU9003173C9`), Correo, Monto | Activa `Solicita_Factura__c = true`; al pagarse aparece en muro público (oculta RFC y Correo). | ✅ Pasando |
-| TC-07 | `RF-F1` | Donación Con Factura (RFC inválido/fecha inexistente) | RFC con 30 de febrero (`GODE560230GR8`) | LWC y Apex bloquean el registro indicando que la fecha no existe. | ✅ Pasando |
-| TC-08 | `US-02` | Monto menor al mínimo de Stripe ($10.00 MXN) | Monto $9.99 MXN | LWC y Apex bloquean el checkout ("El monto mínimo es $10.00 MXN"). | ✅ Pasando |
-| TC-09 | `US-02` | Monto mayor al límite de Stripe ($999,999.99 MXN) | Monto $1,000,000.00 MXN | LWC y Apex bloquean el checkout ("El monto máximo por transacción en Stripe es $999,999.99 MXN"). | ✅ Pasando |
-| TC-10 | `US-02` | Confirmación en montos altos | Monto $1,000.00 MXN o superior | Se despliega diálogo modal con el monto exacto antes de redirigir a Stripe. | ✅ Pasando |
-| TC-11 | `US-06` | Generación de referencia pública opaca | Inicio de checkout | Se genera UUID único; Stripe recibe `metadata[referencia]` y nunca el Id del registro. | ✅ Pasando |
-| TC-12 | `US-07` | Cancelación de pago en pasarela | Usuario pulsa "Volver" o cancelar en Stripe | Redirección a `/md2026/pago-cancelado`; aclara que no hubo cargos. | ✅ Pasando |
-| TC-13 | `US-08` | Fallo de entregabilidad de correo en Salesforce | Envío de correo rechazado por configuración | Se registra el motivo en `Error_Comprobante__c` sin revertir el estado de la donación pagada. | ✅ Pasando |
-| TC-14 | `US-12` | Confirmación Manual por Tesorería | Donación en estado Pendiente | Pasa a `Pagada` con `Tipo_Confirmacion__c = 'Manual'`, inmutable ante ediciones posteriores. | ✅ Pasando |
-| TC-15 | `US-16` | Webhook de pago confirmado | Evento `checkout.session.completed` firmado | Pasa a `Pagada` con `Tipo_Confirmacion__c = 'Automática'`, fecha de pago actual y aviso `Procesado`. | ✅ Pasando |
-| TC-16 | `US-16` | Webhook con monto o moneda alterada | `amount_total` o `currency` no coinciden | Donación permanece en `Pendiente`; genera aviso con estado `Rechazado`. | ✅ Pasando |
-| TC-17 | `US-16` | Webhook de sesión expirada | Evento `checkout.session.expired` | Donación `Pendiente` pasa a `Expirada`; aviso `Procesado`. | ✅ Pasando |
-| TC-18 | `US-17` | Webhook con firma inválida o ausente | Firma HMAC incorrecta o header ausente | Retorna HTTP 400 y genera aviso `Rechazado`. | ✅ Pasando |
-| TC-19 | `US-17` | Webhook con timestamp expirado (> 5 min) | Firma antigua (posible replay attack) | Retorna HTTP 400 y genera aviso `Rechazado`. | ✅ Pasando |
-| TC-20 | `US-17` | Webhook duplicado (Idempotencia) | Mismo `evt_...` enviado por segunda vez | Retorna HTTP 200 y registra aviso `Duplicado Ignorado` sin duplicar comprobantes. | ✅ Pasando |
+| TC-01 | `RF-D1a` | Expired campaign by date | `Fecha_Fin__c < TODAY()` | Portal shows campaign as closed and Apex rejects new donations. | ✅ Passing |
+| TC-02 | `RF-D1a` | Campaign at 100% without overfunding | `Monto_Recaudado__c >= Meta__c` and `Permitir_Sobrecupo__c = false` | Checkout is blocked; displays `"Meta alcanzada"` (Goal reached). | ✅ Passing |
+| TC-03 | `RF-D1a` | Campaign at 100% with overfunding allowed | `Monto_Recaudado__c >= Meta__c` and `Permitir_Sobrecupo__c = true` | Allows donating normally while `Vigente__c = true`. | ✅ Passing |
+| TC-04 | `RF-D2` | Anonymous donation | `Modalidad = 'Anónima'`, Email, Amount | Stores `Nombre_Donante__c = null`; never appears on public wall or in receipt with a name. | ✅ Passing |
+| TC-05 | `RF-C1` | Credited donation | `Modalidad = 'Con crédito'`, Name, Email, Amount | While `Pendiente`, does not count or appear; once `Pagada`, public name and amount appear on wall. | ✅ Passing |
+| TC-06 | `RF-F1` | Invoiced donation (valid RFC) | `Modalidad = 'Con factura'`, Legal Name, valid RFC (`EKU9003173C9`), Email, Amount | Sets `Solicita_Factura__c = true`; once paid, appears on public wall (hiding RFC and Email). | ✅ Passing |
+| TC-07 | `RF-F1` | Invoiced donation (invalid RFC / nonexistent date) | RFC with Feb 30 (`GODE560230GR8`) | Both LWC and Apex reject the entry indicating the date does not exist. | ✅ Passing |
+| TC-08 | `US-02` | Amount below Stripe minimum ($10.00 MXN) | Amount $9.99 MXN | LWC and Apex block checkout (`"El monto mínimo es $10.00 MXN"` / Minimum amount is $10.00 MXN). | ✅ Passing |
+| TC-09 | `US-02` | Amount above Stripe limit ($999,999.99 MXN) | Amount $1,000,000.00 MXN | LWC and Apex block checkout (`"El monto máximo por transacción en Stripe es $999,999.99 MXN"` / Max per Stripe transaction is $999,999.99 MXN). | ✅ Passing |
+| TC-10 | `US-02` | High-amount confirmation dialog | Amount >= $1,000.00 MXN | Displays confirmation modal showing exact amount before redirecting to Stripe. | ✅ Passing |
+| TC-11 | `US-06` | Opaque public reference generation | Checkout initiation | Unique UUID generated; Stripe receives `metadata[referencia]` and never the record Id. | ✅ Passing |
+| TC-12 | `US-07` | Payment cancelled on gateway | User clicks "Back" or cancels in Stripe | Redirects to `/md2026/pago-cancelado`; clarifies that no charges were made. | ✅ Passing |
+| TC-13 | `US-08` | Salesforce email deliverability failure | Email send rejected by org configuration | Reason recorded in `Error_Comprobante__c` without rolling back the paid donation status. | ✅ Passing |
+| TC-14 | `US-12` | Manual confirmation by Treasury | Donation in `Pendiente` status | Transitions to `Pagada` with `Tipo_Confirmacion__c = 'Manual'`, immutable on subsequent edits. | ✅ Passing |
+| TC-15 | `US-16` | Confirmed payment webhook | Signed `checkout.session.completed` event | Transitions to `Pagada` with `Tipo_Confirmacion__c = 'Automática'`, current payment timestamp, and `Procesado` notice. | ✅ Passing |
+| TC-16 | `US-16` | Webhook with tampered amount or currency | `amount_total` or `currency` mismatch | Donation stays `Pendiente`; creates audit notice with `Rechazado` status. | ✅ Passing |
+| TC-17 | `US-16` | Expired session webhook | `checkout.session.expired` event | `Pendiente` donation transitions to `Expirada`; notice logged as `Procesado`. | ✅ Passing |
+| TC-18 | `US-17` | Webhook with invalid or missing signature | Incorrect HMAC signature or missing header | Returns HTTP 400 and logs notice with `Rechazado` status. | ✅ Passing |
+| TC-19 | `US-17` | Webhook with expired timestamp (> 5 min) | Old signature (potential replay attack) | Returns HTTP 400 and logs notice with `Rechazado` status. | ✅ Passing |
+| TC-20 | `US-17` | Duplicate webhook (Idempotency) | Same `evt_...` sent a second time | Returns HTTP 200 and logs notice as `Duplicado Ignorado` without duplicating receipts. | ✅ Passing |

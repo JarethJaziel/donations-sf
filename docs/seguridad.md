@@ -1,109 +1,114 @@
-# Arquitectura y Verificación de Seguridad: Usuario Invitado y Pasarela (US-15, M2, M3)
+# Security Architecture & Verification: Guest User and Gateway (`US-15`, `M2`, `M3`)
 
-Este documento describe la arquitectura de seguridad, la clasificación de datos y los procedimientos reproducibles de verificación para garantizar el cumplimiento de los mínimos críticos **M2** (menor privilegio para el usuario invitado en Experience Cloud) y **M3** (resguardo estricto de secretos y llaves de pasarela).
+This document describes the security architecture, data classification, and reproducible verification procedures ensuring strict compliance with critical minimums **M2** (least privilege for the Experience Cloud Guest User) and **M3** (strict protection of payment gateway secrets and keys).
 
 ---
 
-## 1. Pasos Reproducibles de Verificación del Usuario Invitado (US-15)
+## 1. Reproducible Guest User Verification Steps (`US-15`)
 
-Cualquier evaluador externo o auditor de seguridad puede reproducir estas pruebas sin autenticación en Salesforce:
+Any external evaluator or security auditor can reproduce these tests without authenticating into Salesforce:
 
-### Prueba 1.1: Navegación Pública en Ventana de Incógnito
-1. Abrir una ventana de incógnito en el navegador (sin sesión activa de Salesforce).
-2. Navegar a la URL pública del portal: `https://<dominio-sandbox>.sandbox.my.site.com/md2026/`.
-3. **Resultado esperado:**
-   - La página carga sin solicitar inicio de sesión (`US-14`).
-   - Se visualizan las campañas activas y vigentes.
-   - En el Muro de Reconocimiento se muestran únicamente el nombre público (o nombre) y el monto de donaciones pagadas. No aparece ninguna fecha, correo ni RFC.
+### Test 1.1: Public Browsing in an Incognito Window
 
-### Prueba 1.2: Inspección de Respuestas de Red en DevTools
-1. Abrir las herramientas de desarrollador del navegador (F12) e ir a la pestaña **Network (Red)**.
-2. Filtrar por `DonationPublicController` o `obtenerMuroDonantes`.
-3. Recargar la página o seleccionar una campaña para cargar el muro.
-4. Inspeccionar el payload JSON de la respuesta devuelta por Apex.
-5. **Resultado esperado:**
-   - El arreglo de objetos contiene únicamente las propiedades `nombrePublico` y `monto`.
-   - No contiene campos como `Id`, `Correo__c`, `RFC__c`, `Nombre_Donante__c`, `CreatedDate` ni `Fecha_Pago__c`.
+1. Open an incognito/private browser window (with no active Salesforce session).
+2. Navigate to the public portal URL: `https://<sandbox-domain>.sandbox.my.site.com/md2026/`.
+3. **Expected result:**
+   - The page loads without prompting for login (`US-14`).
+   - Active and in-force campaigns (`Vigente__c = true`) are displayed.
+   - The Recognition Wall displays only the public name (or donor name) and amount for paid donations. No date, email, or RFC is shown.
 
-### Prueba 1.3: Intento de Acceso Directo por REST API Estándar sin Sesión
-1. Ejecutar una solicitud `curl` contra el endpoint REST estándar de Salesforce para el objeto `Donacion__c`:
+### Test 1.2: Network Payload Inspection in DevTools
+
+1. Open browser Developer Tools (`F12`) and go to the **Network** tab.
+2. Filter by `DonationPublicController` or `obtenerMuroDonantes`.
+3. Reload the page or select a campaign to load the wall.
+4. Inspect the JSON response payload returned by Apex.
+5. **Expected result:**
+   - Each object in the array contains only the `nombrePublico` and `monto` properties.
+   - It contains no fields such as `Id`, `Correo__c`, `RFC__c`, `Nombre_Donante__c`, `CreatedDate`, or `Fecha_Pago__c`.
+
+### Test 1.3: Unauthenticated Direct Access Attempt via Standard REST API
+
+1. Run a `curl` request against the standard Salesforce REST endpoint for `Donacion__c`:
    ```bash
-   curl -i -X GET "https://<dominio-sandbox>.sandbox.my.site.com/services/data/v60.0/sobjects/Donacion__c"
+   curl -i -X GET "https://<sandbox-domain>.sandbox.my.site.com/services/data/v60.0/sobjects/Donacion__c"
    ```
-2. **Resultado esperado:**
-   - Código de respuesta **`401 Unauthorized`** o **`404 Not Found`**.
-   - El usuario invitado carece de token OAuth y el objeto no está expuesto a la API pública estándar.
+2. **Expected result:**
+   - HTTP **`401 Unauthorized`** or **`404 Not Found`** response code.
+   - The Guest User lacks an OAuth token, and the object is not exposed through the standard public API.
 
-### Prueba 1.4: Intento de Manipulación de Parámetros en Métodos Públicos (Aura/Apex)
-1. Intentar llamar al método `obtenerMuroDonantes` pasando como argumento el ID de una donación o un ID arbitrario de otro objeto:
-   - El método valida en servidor `campanaId.getSobjectType() == Campana__c.SObjectType`.
-   - Si se envía un ID de `Donacion__c`, devuelve una lista vacía de inmediato (`US-15 AC5`).
-2. Intentar llamar a `iniciarDonacion`:
-   - Ningún parámetro acepta el ID de un registro de donación. El servidor genera un UUID nuevo e inmutable en cada solicitud (`Referencia_Publica__c`).
+### Test 1.4: Parameter Tampering Attempt on Public Methods (Aura/Apex)
+
+1. Attempt to call `obtenerMuroDonantes` passing a donation Id or an arbitrary Id from another object:
+   - The server validates `campanaId.getSobjectType() == Campana__c.SObjectType`.
+   - If a `Donacion__c` Id is supplied, it immediately returns an empty list (`US-15 AC5`).
+2. Attempt to call `iniciarDonacion`:
+   - No parameter accepts a donation record Id. The server generates a new, immutable UUID (`Referencia_Publica__c`) on every request.
 
 ---
 
-## 2. Matriz de Permisos del Perfil del Usuario Invitado (`Portal Donaciones MD2026 Perfil`)
+## 2. Guest User Profile Permission Matrix (`Portal Donaciones MD2026 Perfil`)
 
-| Recurso / Objeto | Permiso Concedido | Justificación de Seguridad (M2) |
+| Resource / Object | Granted Permission | Security Justification (`M2`) |
 |---|---|---|
-| `Donacion__c` | **Ninguno** (Read=false, Create=false, Edit=false, Delete=false) | Impide que cualquier atacante consulte o modifique donaciones ajenas a través de APIs de Salesforce. |
-| `Campana__c` | **Ninguno** (Read=false, Create=false, Edit=false, Delete=false) | Las campañas se exponen únicamente mediante DTOs filtrados en `obtenerCampanasActivas()`. |
-| `Aviso_Pasarela__c` | **Ninguno** (Read=false, Create=false, Edit=false, Delete=false) | La auditoría del webhook es interna; un visitante público no debe ver avisos ni reintentos. |
-| Apex: `DonationPublicController` | **Habilitado** | Expone los 3 métodos públicos seguros que operan exclusivamente con DTOs. |
-| Apex: `StripeWebhookService` | **Habilitado** | Permite recibir los webhooks firmados de Stripe en el endpoint público del sitio. |
-| Resto de clases Apex | **Deshabilitadas** | Menor privilegio absoluto; controladores administrativos y de utilidades inaccesibles para el invitado. |
+| `Donacion__c` | **None** (`Read=false`, `Create=false`, `Edit=false`, `Delete=false`) | Prevents any attacker from querying or modifying other donors' records via Salesforce APIs. |
+| `Campana__c` | **None** (`Read=false`, `Create=false`, `Edit=false`, `Delete=false`) | Campaigns are exposed exclusively through filtered DTOs in `obtenerCampanasActivas()`. |
+| `Aviso_Pasarela__c` | **None** (`Read=false`, `Create=false`, `Edit=false`, `Delete=false`) | Webhook auditing is strictly internal; public visitors must not see gateway logs or retries. |
+| Apex: `DonationPublicController` | **Enabled** | Exposes the 3 secure public methods operating exclusively with DTOs. |
+| Apex: `StripeWebhookService` | **Enabled** | Allows receiving signed Stripe webhooks on the site's public REST endpoint. |
+| All other Apex classes | **Disabled** | Strict least privilege; administrative controllers and utilities remain inaccessible to guests. |
 
-> **Implementación técnica de acceso:** Debido a que el perfil invitado tiene cero permisos sobre el esquema de datos, los controladores públicos utilizan internamente `WITH SYSTEM_MODE` e `insert as system` / `update as system`. Toda la lógica de autorización y filtrado se ejecuta de forma centralizada en el código Apex.
-
----
-
-## 3. Resguardo de Secretos y Llaves de Pasarela (M3)
-
-- **Ubicación:** Las credenciales de Stripe (`Secret_Key__c` y `Webhook_Secret__c`) se almacenan de manera exclusiva dentro del Custom Setting de tipo Jerarquía Protegida **`Stripe_Config__c`** en la Org de Salesforce.
-- **Cero secretos en código o control de versiones:** Ningún archivo del repositorio Git (`.cls`, `.js`, `.xml`, `.json`, `.md`) contiene prefijos de llaves reales ni de prueba (`sk_test_...`, `whsec_...`).
-- **Lectura en servidor:** Las llaves son leídas únicamente en transacciones Apex del lado del servidor mediante `Stripe_Config__c.getOrgDefaults()`.
-
-### Protocolo de Respuesta ante Filtración Accidental de Llaves
-1. **Invalidación Inmediata en Stripe:**
-   - Acceder de inmediato al Dashboard de Stripe (Developers → API Keys / Webhooks) y revocar la clave comprometida.
-2. **Generación de Nueva Clave:**
-   - Generar un nuevo Secret Key o Signing Secret en Stripe.
-3. **Actualización en Salesforce:**
-   - Ir a **Setup → Custom Settings → Stripe Config → Manage** y actualizar el campo correspondiente con el nuevo valor.
-4. **Auditoría del Historial:**
-   - Revisar con `git log -S` y herramientas de escaneo que la clave no haya sido confirmada en ramas locales ni remotas.
+> **Technical access implementation:** Because the Guest User Profile has zero schema/object permissions, public controllers internally execute queries with `WITH SYSTEM_MODE` and DML with `insert as system` / `update as system`. All authorization and filtering logic runs centrally inside Apex.
 
 ---
 
-## 4. Clasificación y Tratamiento de Datos Personales
+## 3. Protection of Gateway Secrets and Keys (`M3`)
 
-| Dato | Clasificación | Almacenamiento | Exposición Pública |
+- **Storage location:** Stripe credentials (`Secret_Key__c` and `Webhook_Secret__c`) live exclusively inside the Protected Hierarchy Custom Setting **`Stripe_Config__c`** in the Salesforce Org.
+- **Zero secrets in code or version control:** No file in the Git repository (`.cls`, `.js`, `.xml`, `.json`, `.md`) contains live or test key prefixes (`sk_test_...`, `whsec_...`).
+- **Server-side retrieval:** Keys are read only inside server-side Apex transactions via `Stripe_Config__c.getOrgDefaults()`.
+
+### Incident Response Protocol for Accidental Key Exposure
+
+1. **Immediate Revocation in Stripe:**
+   - Immediately open the Stripe Dashboard (Developers → API Keys / Webhooks) and revoke the compromised key.
+2. **New Key Generation:**
+   - Generate a new Secret Key or Signing Secret in Stripe.
+3. **Update in Salesforce:**
+   - Navigate to **Setup → Custom Settings → Stripe Config → Manage** and update the corresponding field with the new value.
+4. **Git History Audit:**
+   - Verify with `git log -S` and secret-scanning tools that the key was never committed to local or remote branches.
+
+---
+
+## 4. Personal Data Classification & Handling
+
+| Data Element | Classification | Storage | Public Exposure |
 |---|---|---|---|
-| **Número de tarjeta, CVC, fecha exp.** | Crítico / PCI-DSS | **Solo en Stripe** (Salesforce jamás recibe ni almacena datos de tarjeta) | Ninguna |
-| **Correo electrónico (`Correo__c`)** | Personal Confidencial | `Donacion__c.Correo__c` (privado) | **Nunca.** Usado únicamente para el envío del comprobante digital. |
-| **Nombre o Razón Social (`Nombre_Donante__c`)** | Personal Confidencial | `Donacion__c.Nombre_Donante__c` (privado) | Oculto si existe un nombre público alternativo o si la donación es anónima. |
-| **RFC (`RFC__c`)** | Fiscal Confidencial | `Donacion__c.RFC__c` (privado) | **Nunca.** Solo visible para Tesorería en la vista interna de facturación. |
-| **Nombre para el Muro (`Nombre_Publico__c`)** | Público Consentido | `Donacion__c.Nombre_Publico__c` | Visible en el muro si el donante eligió modalidad con crédito o factura. |
-| **Monto aportado (`Monto__c`)** | Financiero Consentido | `Donacion__c.Monto__c` | Visible en el muro y acumulado en la meta de la campaña. |
+| **Card number, CVC, expiry** | Critical / PCI-DSS | **Stripe only** (Salesforce never receives or stores card details) | None |
+| **Email address (`Correo__c`)** | Confidential Personal | `Donacion__c.Correo__c` (private) | **Never.** Used solely to deliver the digital receipt. |
+| **Donor / Legal Name (`Nombre_Donante__c`)** | Confidential Personal | `Donacion__c.Nombre_Donante__c` (private) | Hidden when an alternative public name is provided or when the donation is anonymous. |
+| **Tax ID / RFC (`RFC__c`)** | Confidential Tax Data | `Donacion__c.RFC__c` (private) | **Never.** Visible only to Treasury staff in the internal invoicing list view. |
+| **Public Wall Name (`Nombre_Publico__c`)** | Consented Public | `Donacion__c.Nombre_Publico__c` | Shown on the recognition wall when the donor selected `Con crédito` or `Con factura`. |
+| **Donation Amount (`Monto__c`)** | Consented Financial | `Donacion__c.Monto__c` | Shown on the recognition wall and aggregated into the campaign goal progress. |
 
 ---
 
-## 5. Matriz de Riesgos Conocidos y Mitigaciones
+## 5. Known Risks & Mitigations
 
-| Riesgo Identificado | Impacto | Mitigación Implementada |
+| Identified Risk | Impact | Implemented Mitigation |
 |---|---|---|
-| **Manipulación de montos en frontend** | Alto | El servidor (`DonationPublicController`) valida nuevamente que el monto sea ≥ $10.00 MXN, ≤ $999,999.99 MXN y tenga máximo 2 decimales. Stripe Checkout cobra el `unit_amount` verificado por Apex. |
-| **Alteración de monto en Webhook** | Alto | `StripeWebhookService` compara `amount_total == Monto__c * 100` y `currency == 'mxn'`. Si difieren, la donación no se marca como Pagada y se genera un aviso `Rechazado`. |
-| **Ataque de repetición (Replay Attack)** | Medio | Verificación del header `Stripe-Signature`: se rechazan firmas con más de 300 segundos (5 minutos) de diferencia respecto al reloj del servidor. |
-| **Eventos duplicados de Stripe** | Bajo | Control de idempotencia en `Aviso_Pasarela__c` por `Stripe_Event_Id__c`: retornos automáticos HTTP 200 sin duplicar cobros ni correos. |
-| **Fallo en servicio de correos** | Bajo | `DonationReceiptService` captura errores de `Messaging.sendEmail()` en `Error_Comprobante__c` sin hacer rollback del pago ni bloquear la transacción. |
+| **Client-side amount tampering** | High | The server (`DonationPublicController`) re-validates that the amount is >= $10.00 MXN, <= $999,999.99 MXN, and has at most 2 decimals. Stripe Checkout charges the Apex-verified `unit_amount`. |
+| **Webhook amount tampering** | High | `StripeWebhookService` verifies `amount_total == Monto__c * 100` and `currency == 'mxn'`. On mismatch, the donation is not marked `Pagada` and an `Aviso_Pasarela__c` notice with `Rechazado` (Rejected) status is logged. |
+| **Replay attack** | Medium | `Stripe-Signature` header timestamp check: signatures older than 300 seconds (5 minutes) relative to server time are rejected. |
+| **Duplicate Stripe events** | Low | Idempotency control in `Aviso_Pasarela__c` via `Stripe_Event_Id__c`: automatic HTTP 200 responses without duplicating payments or receipts. |
+| **Email delivery failure** | Low | `DonationReceiptService` captures `Messaging.sendEmail()` failures in `Error_Comprobante__c` without rolling back the payment or blocking the transaction. |
 
 ---
 
-## 6. Seguridad del Endpoint Webhook de Stripe
+## 6. Stripe Webhook Endpoint Security
 
-- **URL Oficial en LWR:** `https://<dominio-sandbox>.sandbox.my.site.com/md2026vforcesite/services/apexrest/stripe/webhook`
-- **Autenticación Criptográfica:** HMAC-SHA256 utilizando la firma `v1` calculada sobre `timestamp.rawBody` con el secreto `Webhook_Secret__c`.
-- **Búsqueda por Referencia Opaca:** La donación se localiza exclusivamente mediante `Referencia_Publica__c` (UUID) o `Stripe_Session_Id__c`, bloqueando la fila con `FOR UPDATE`. Nunca se acepta ni consulta por el ID interno de Salesforce.
-- **Auditoría:** Cada solicitud procesada, rechazada o duplicada genera un registro de auditoría en `Aviso_Pasarela__c`.
+- **Official LWR URL:** `https://<sandbox-domain>.sandbox.my.site.com/md2026vforcesite/services/apexrest/stripe/webhook`
+- **Cryptographic Authentication:** HMAC-SHA256 using the `v1` signature computed over `timestamp.rawBody` with `Webhook_Secret__c`.
+- **Opaque Reference Lookup:** The donation is resolved exclusively by `Referencia_Publica__c` (UUID) or `Stripe_Session_Id__c`, locking the row with `FOR UPDATE`. The internal Salesforce record Id is never accepted or queried.
+- **Audit Trail:** Every processed, rejected, or duplicate request creates an audit record in `Aviso_Pasarela__c`.
