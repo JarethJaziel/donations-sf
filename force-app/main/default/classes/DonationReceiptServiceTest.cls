@@ -190,6 +190,88 @@ private class DonationReceiptServiceTest {
     }
 
     /**
+     * @description US-20 AC1/AC2: la donación Con factura recibe un solo correo con la factura simulada en PDF,
+     *              y tanto el correo como el documento dicen "Sin validez fiscal – no es un CFDI".
+     */
+    @isTest
+    static void testFacturaSimuladaAdjuntaSoloEnConFactura() {
+        DonationReceiptService.simulacionEnvio = 'exito';
+        List<Donacion__c> todas = [SELECT Id, Modalidad__c FROM Donacion__c];
+        for (Donacion__c d : todas) {
+            d.Estado__c = 'Pagada';
+            d.Tipo_Confirmacion__c = 'Manual';
+        }
+        Test.startTest();
+        update todas;
+        Test.stopTest();
+
+        Integer conFactura = 0;
+        for (Messaging.SingleEmailMessage m : DonationReceiptService.mensajesPreparados) {
+            Boolean esFactura = m.getToAddresses()[0] == 'donante.factura@example.com';
+            List<Messaging.EmailFileAttachment> adjuntos = m.getFileAttachments();
+            if (esFactura) {
+                conFactura++;
+                Assert.areEqual(1, adjuntos.size(), 'US-20 AC1: un PDF adjunto');
+                Assert.isTrue(adjuntos[0].getFileName().startsWith('Factura_simulada_DON-'));
+                Assert.isTrue(m.getSubject().contains('factura simulada'));
+                Assert.isTrue(m.getPlainTextBody().contains(DonationReceiptService.LEYENDA_FISCAL), 'US-20 AC2: leyenda en el correo');
+            } else {
+                Assert.isTrue(adjuntos == null || adjuntos.isEmpty(), 'US-20 AC3: sin factura para Anónima o Con crédito');
+            }
+        }
+        Assert.areEqual(1, conFactura, 'Un solo correo para la donación con factura');
+
+        Donacion__c factura = [
+            SELECT Name, Monto__c, Modalidad__c, Nombre_Donante__c, RFC__c, Fecha_Pago__c, Campana__r.Name
+            FROM Donacion__c WHERE Modalidad__c = 'Con factura' LIMIT 1
+        ];
+        String html = DonationReceiptService.construirFacturaHtml(factura);
+        Assert.isTrue(html.contains('Empresa Ficticia SA de CV'), 'Razón social');
+        Assert.isTrue(html.contains('XAXX010101000'), 'RFC');
+        Assert.isTrue(html.contains(factura.Name), 'Folio');
+        Assert.isTrue(html.contains('$3000.00 MXN'), 'Monto');
+        Assert.isTrue(html.contains('Mexico Dreamin 2026 Test'), 'Campaña (la ñ se escapa en HTML)');
+        Assert.isTrue(html.contains('no es un CFDI'), 'US-20 AC2: leyenda en el documento');
+    }
+
+    /**
+     * @description US-20 AC4: si la factura ya se envió, editar la donación o llamar otra vez al servicio no la reenvía.
+     */
+    @isTest
+    static void testFacturaSimuladaNoSeDuplica() {
+        DonationReceiptService.simulacionEnvio = 'exito';
+        Donacion__c don = [SELECT Id FROM Donacion__c WHERE Modalidad__c = 'Con factura' LIMIT 1];
+        don.Estado__c = 'Pagada';
+        don.Tipo_Confirmacion__c = 'Automática';
+        update don;
+
+        Test.startTest();
+        DonacionTriggerHandler.limpiarCacheTransaccion();
+        DonationReceiptService.mensajesPreparados = new List<Messaging.SingleEmailMessage>();
+        DonationReceiptService.enviarComprobantes(new Set<Id>{ don.Id });
+        update new Donacion__c(Id = don.Id, Monto__c = 3100);
+        Test.stopTest();
+
+        Assert.areEqual(0, DonationReceiptService.mensajesPreparados.size(), 'US-20 AC4: no se envía una segunda factura');
+    }
+
+    /**
+     * @description Con la casilla de US-24, el correo de factura no promete que el nombre aparecerá en el muro.
+     */
+    @isTest
+    static void testCorreoFacturaRespetaOcultarDelMuro() {
+        Donacion__c don = [
+            SELECT Name, Monto__c, Modalidad__c, Nombre_Donante__c, Nombre_Publico__c, RFC__c, Fecha_Pago__c,
+                   Visible_En_Reconocimiento__c, Campana__r.Name
+            FROM Donacion__c WHERE Modalidad__c = 'Con factura' LIMIT 1
+        ];
+        don.Visible_En_Reconocimiento__c = false;
+        String cuerpo = DonationReceiptService.construirCuerpoCorreo(don);
+        Assert.isTrue(cuerpo.contains('no se muestre en el muro'));
+        Assert.isFalse(cuerpo.contains('aparecerán en el muro'));
+    }
+
+    /**
      * @description Verifica la idempotencia en envíos posteriores evitando duplicación de correos (US-08 AC2/AC4).
      */
     @isTest

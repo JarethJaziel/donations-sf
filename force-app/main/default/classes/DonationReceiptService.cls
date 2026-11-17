@@ -1,6 +1,9 @@
 /**
  * @description Servicio encargado de la generación y envío automatizado de comprobantes
- *              personalizados por modalidad de donación (US-05 AC4, US-08, RF-D5, RF-S3).
+ *              personalizados por modalidad de donación (US-05 AC4, US-08, US-20, RF-D5, RF-S3).
+ *              En la modalidad Con factura el mismo correo lleva adjunta una factura simulada en PDF
+ *              con la leyenda "Sin validez fiscal – no es un CFDI" (US-20). Al ir en el mismo correo
+ *              hereda la idempotencia de Comprobante_Enviado__c: nunca se envía dos veces.
  *              Solo marca Comprobante_Enviado__c cuando el correo se envió con éxito; si falla,
  *              registra el motivo en Error_Comprobante__c sin revertir el pago (US-08 AC5).
  *              Soporta toggle Modo_Produccion_Correos__c en Stripe_Config__c:
@@ -20,6 +23,12 @@ public without sharing class DonationReceiptService {
 
     private static final String ZONA_HORARIA = 'America/Mexico_City';
     private static final Integer MAX_ERROR = 255;
+    @TestVisible
+    private static final String LEYENDA_FISCAL = 'Sin validez fiscal – no es un CFDI';
+
+    /** Solo en pruebas: correos armados en la última llamada, para revisar asunto y adjuntos. */
+    @TestVisible
+    private static List<Messaging.SingleEmailMessage> mensajesPreparados = new List<Messaging.SingleEmailMessage>();
 
     private class EnvioComprobanteException extends Exception {}
 
@@ -36,7 +45,7 @@ public without sharing class DonationReceiptService {
         List<Donacion__c> donaciones = [
             SELECT Id, Name, Monto__c, Modalidad__c, Estado__c, Nombre_Donante__c, Nombre_Publico__c,
                    Correo__c, RFC__c, Solicita_Factura__c, Comprobante_Enviado__c, Fecha_Pago__c,
-                   Campana__r.Name
+                   Visible_En_Reconocimiento__c, Campana__r.Name
             FROM Donacion__c
             WHERE Id IN :donacionIds
               AND Estado__c = 'Pagada'
@@ -85,10 +94,16 @@ public without sharing class DonationReceiptService {
             mail.setSubject(construirAsuntoCorreo(donacion));
             mail.setPlainTextBody(construirCuerpoCorreo(donacion));
             mail.setSaveAsActivity(false);
+            if (donacion.Modalidad__c == 'Con factura') {
+                adjuntarFacturaSimulada(mail, donacion);
+            }
             mensajes.add(mail);
             conCorreo.add(donacion);
         }
 
+        if (Test.isRunningTest()) {
+            mensajesPreparados = mensajes;
+        }
         if (!mensajes.isEmpty()) {
             actualizaciones.addAll(enviar(mensajes, conCorreo));
         }
@@ -147,6 +162,56 @@ public without sharing class DonationReceiptService {
         return actualizaciones;
     }
 
+    /**
+     * @description Adjunta la factura simulada en PDF (US-20). Si el PDF no se puede generar, el correo
+     *              se envía igual: su cuerpo ya contiene los datos de la factura y la leyenda fiscal.
+     */
+    private static void adjuntarFacturaSimulada(Messaging.SingleEmailMessage mail, Donacion__c donacion) {
+        try {
+            Messaging.EmailFileAttachment adjunto = new Messaging.EmailFileAttachment();
+            adjunto.setFileName('Factura_simulada_' + (String.isNotBlank(donacion.Name) ? donacion.Name : 'donacion') + '.pdf');
+            adjunto.setContentType('application/pdf');
+            adjunto.setBody(Blob.toPdf(construirFacturaHtml(donacion)));
+            mail.setFileAttachments(new List<Messaging.EmailFileAttachment>{ adjunto });
+        } catch (Exception ex) {
+            System.debug(LoggingLevel.WARN, 'No se pudo generar el PDF de la factura simulada: ' + ex.getMessage());
+        }
+    }
+
+    /**
+     * @description HTML de la factura simulada: razón social, RFC, folio, campaña, fecha, monto y la leyenda
+     *              "Sin validez fiscal – no es un CFDI" en el encabezado y al pie (US-20 AC1, AC2).
+     * @param donacion Donación Con factura ya pagada.
+     * @return HTML listo para convertir a PDF.
+     */
+    public static String construirFacturaHtml(Donacion__c donacion) {
+        String campana = (donacion.Campana__r != null && String.isNotBlank(donacion.Campana__r.Name))
+            ? donacion.Campana__r.Name : 'Campaña Mexico Dreamin 2026';
+        String fecha = (donacion.Fecha_Pago__c != null ? donacion.Fecha_Pago__c : System.now()).format('dd/MM/yyyy', ZONA_HORARIA);
+        String monto = '$' + (donacion.Monto__c != null ? String.valueOf(donacion.Monto__c.setScale(2)) : '0.00') + ' MXN';
+        String celda = 'style="border:1px solid #9aa9ad;padding:6px 8px;"';
+        return '<html><body style="font-family: Arial Unicode MS, sans-serif; font-size: 12px; color: #12232a;">'
+            + '<p style="border:2px solid #b3261e;color:#b3261e;font-weight:bold;font-size:14px;padding:8px;text-align:center;">'
+            + 'FACTURA SIMULADA &#8211; ' + LEYENDA_FISCAL.escapeHtml4() + '</p>'
+            + '<h1 style="font-size:20px;margin:12px 0 4px;">Mexico Dreamin 2026 &#8211; Donaciones</h1>'
+            + '<p style="margin:0 0 14px;">Documento de prueba generado por el portal de donaciones. No es un comprobante fiscal digital (CFDI).</p>'
+            + '<table style="border-collapse:collapse;width:100%;">'
+            + fila(celda, 'Folio', donacion.Name)
+            + fila(celda, 'Fecha de pago', fecha)
+            + fila(celda, 'Nombre o razón social', donacion.Nombre_Donante__c)
+            + fila(celda, 'RFC', donacion.RFC__c)
+            + fila(celda, 'Concepto', 'Donación a la campaña ' + campana)
+            + fila(celda, 'Importe total', monto)
+            + '</table>'
+            + '<p style="margin-top:18px;font-weight:bold;color:#b3261e;">' + LEYENDA_FISCAL.escapeHtml4() + '.</p>'
+            + '</body></html>';
+    }
+
+    private static String fila(String celda, String etiqueta, String valor) {
+        return '<tr><td ' + celda + '><b>' + etiqueta.escapeHtml4() + '</b></td><td ' + celda + '>'
+            + (String.isBlank(valor) ? '—' : valor.escapeHtml4()) + '</td></tr>';
+    }
+
     private static Donacion__c resultado(Id donacionId, Boolean exito, String error) {
         String motivo = exito ? null : (String.isBlank(error) ? 'No se pudo enviar el comprobante.' : error);
         return new Donacion__c(
@@ -154,6 +219,11 @@ public without sharing class DonationReceiptService {
             Comprobante_Enviado__c = exito,
             Error_Comprobante__c = motivo == null ? null : motivo.abbreviate(MAX_ERROR)
         );
+    }
+
+    /** El campo puede no venir en la consulta del llamador; si falta, se asume visible (comportamiento previo). */
+    private static Boolean visibleEnMuro(Donacion__c donacion) {
+        return !donacion.isSet('Visible_En_Reconocimiento__c') || donacion.Visible_En_Reconocimiento__c == true;
     }
 
     /**
@@ -164,6 +234,9 @@ public without sharing class DonationReceiptService {
     @TestVisible
     private static String construirAsuntoCorreo(Donacion__c donacion) {
         String folio = String.isNotBlank(donacion.Name) ? donacion.Name : 'Folio Pendiente';
+        if (donacion.Modalidad__c == 'Con factura') {
+            return 'Comprobante y factura simulada - ' + folio + ' | Mexico Dreamin 2026';
+        }
         return 'Comprobante de Donación - ' + folio + ' | Mexico Dreamin 2026';
     }
 
@@ -225,8 +298,11 @@ public without sharing class DonationReceiptService {
                    + '- Fecha de Pago: ' + fecha + '\n'
                    + '- Monto Aportado: ' + montoFormateado + '\n\n'
                    + 'Tu solicitud de factura quedó registrada con nuestro equipo de Tesorería.\n'
-                   + 'Este comprobante no es un CFDI y no tiene validez fiscal.\n\n'
-                   + 'Tu nombre público (' + nombrePublico + ') y el monto aparecerán en el muro público de donantes de la campaña.\n\n'
+                   + 'Adjuntamos tu factura simulada en PDF con estos mismos datos.\n'
+                   + LEYENDA_FISCAL + '. Este comprobante no es un CFDI y no tiene validez fiscal.\n\n'
+                   + (visibleEnMuro(donacion)
+                        ? 'Tu nombre público (' + nombrePublico + ') y el monto aparecerán en el muro público de donantes de la campaña.\n\n'
+                        : 'Pediste que tu donación no se muestre en el muro público: tu nombre y tu monto no se publican.\n\n')
                    + 'Agradecemos tu valioso apoyo para los estudiantes de Mexico Dreamin 2026.';
         } else {
             cuerpo = 'Comprobante de Donación Confirmada\n\n'
