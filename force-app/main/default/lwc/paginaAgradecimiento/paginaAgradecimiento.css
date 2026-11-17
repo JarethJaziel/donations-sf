@@ -207,6 +207,30 @@
     color: var(--md-primario, #e4007c);
 }
 
+/* En qué ayuda la aportación */
+.ayuda { margin-bottom: 20px; }
+.ayuda__titulo {
+    font-family: var(--md-fuente-display, "Big Shoulders Display", "Arial Narrow", sans-serif);
+    font-weight: 800; text-transform: uppercase; font-size: 24px; line-height: 1; margin: 0 0 12px;
+    color: var(--md-tinta, #12232a);
+}
+.ayuda__lista { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.ayuda__item {
+    display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: start;
+    padding: 14px; border-radius: 12px; border: 1px solid var(--md-linea, #cfd8d7); background: var(--md-papel, #fff);
+}
+.ayuda__icono {
+    width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center;
+    background: var(--md-tablero, #0f2a33); color: var(--md-estado, #ffb000);
+}
+.ayuda__icono svg { width: 22px; height: 22px; }
+.ayuda__texto { margin: 0; font-size: 15px; line-height: 1.45; color: var(--md-tinta-suave, #4a5b61); }
+.ayuda__monto { display: block; font-size: 20px; color: var(--md-tinta, #12232a); font-variant-numeric: tabular-nums; }
+.ayuda__nota { margin: 10px 0 0; font-size: 13px; color: var(--md-tinta-suave, #4a5b61); }
+@media (max-width: 600px) {
+    .ayuda__lista { grid-template-columns: minmax(0, 1fr); }
+}
+
 .impacto__descripcion {
     font-size: 16px;
     color: var(--md-tinta-suave, #4a5b61);
@@ -316,6 +340,10 @@
 .boton--primario:hover {
     background: var(--md-primario-oscuro, #b8005f);
 }
+
+/* El tema del sitio cambia el color de los enlaces; el botón es un <a>, así que se refuerza */
+.portal a.boton--primario, .portal a.boton--primario:visited { background: var(--md-primario, #e4007c); color: #fff; text-decoration: none; }
+.portal a.boton--primario:hover { background: var(--md-primario-oscuro, #b8005f); color: #fff; }
 
 .boton--ancho {
     width: 100%;

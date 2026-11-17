@@ -62,6 +62,33 @@
                                 </p>
                             </section>
 
+                            <!-- En qué ayuda la aportación (montos de referencia) -->
+                            <section class="ayuda" aria-labelledby="titulo-ayuda">
+                                <h3 id="titulo-ayuda" class="ayuda__titulo">¿En qué ayuda tu aportación?</h3>
+                                <ul class="ayuda__lista">
+                                    <template for:each={usos} for:item="u">
+                                        <li key={u.clave} class="ayuda__item">
+                                            <span class="ayuda__icono" aria-hidden="true">
+                                                <template lwc:if={u.esComida}>
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h18a8 8 0 0 1-8 7h-2a8 8 0 0 1-8-7Z"></path><path d="M9 9c0-2 2-2 2-4M13 9c0-2 2-2 2-4"></path></svg>
+                                                </template>
+                                                <template lwc:if={u.esMetro}>
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="15" rx="3"></rect><path d="M5 11h14M9 21l-2-3M15 21l2-3"></path><circle cx="9" cy="14.5" r="1"></circle><circle cx="15" cy="14.5" r="1"></circle></svg>
+                                                </template>
+                                                <template lwc:if={u.esCama}>
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18V7M3 14h18v4M21 14v-2a3 3 0 0 0-3-3h-7v5"></path><circle cx="7" cy="11" r="2"></circle></svg>
+                                                </template>
+                                                <template lwc:if={u.esAutobus}>
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="3"></rect><path d="M3 10h18M7 20v-3M17 20v-3"></path></svg>
+                                                </template>
+                                            </span>
+                                            <p class="ayuda__texto"><strong class="ayuda__monto">{u.monto}</strong> {u.texto}</p>
+                                        </li>
+                                    </template>
+                                </ul>
+                                <p class="ayuda__nota">Montos de referencia. El uso final depende de cada campaña.</p>
+                            </section>
+
                             <div class="nota-aviso">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nota-aviso__icono" aria-hidden="true">
                                     <circle cx="12" cy="12" r="10"></circle>
