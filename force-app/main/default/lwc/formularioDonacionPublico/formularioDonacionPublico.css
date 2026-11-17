@@ -51,6 +51,16 @@
 .campo input[aria-invalid="true"] { border-color: var(--md-error, #b3261e); }
 .campo input.mayusculas { text-transform: uppercase; letter-spacing: .04em; }
 .campo__ayuda { font-size: 14px; color: var(--md-tinta-suave, #4a5b61); margin: 0; }
+
+/* Casilla "No mostrar mi donación en el muro" (US-24) */
+.casilla {
+    display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: start;
+    padding: 14px 16px; margin: 0 0 18px; border-radius: var(--md-radio-control, 10px);
+    background: #f5f8f8; border: 1px solid var(--md-linea, #cfd8d7); cursor: pointer;
+}
+.casilla input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--md-tablero, #0f2a33); }
+.casilla strong { display: block; font-size: 16px; }
+.casilla span span { display: block; font-size: 14px; color: var(--md-tinta-suave, #4a5b61); }
 .campo__error { display: flex; gap: 6px; align-items: flex-start; font-size: 15px; font-weight: 600; color: var(--md-error, #b3261e); margin: 0; }
 .campo__error svg { width: 18px; height: 18px; flex: 0 0 auto; margin-top: 2px; }
 

@@ -71,6 +71,8 @@ public without sharing class DonationPublicController {
         @AuraEnabled public String nombre { get; set; }
         @AuraEnabled public String nombrePublico { get; set; }
         @AuraEnabled public String rfc { get; set; }
+        /** Solo aplica a "Con factura": la donación no aparece en el muro público (US-24). */
+        @AuraEnabled public Boolean ocultarDelMuro { get; set; }
     }
 
     private class StripeException extends Exception {}
@@ -218,7 +220,8 @@ public without sharing class DonationPublicController {
             RFC__c = solicitud.rfc,
             Estado__c = 'Pendiente',
             Referencia_Publica__c = referencia,
-            Stripe_Session_Id__c = String.valueOf(sesion.get('id'))
+            Stripe_Session_Id__c = String.valueOf(sesion.get('id')),
+            Visible_En_Reconocimiento__c = solicitud.ocultarDelMuro != true
         );
         try {
             insert as system donacion;
@@ -272,6 +275,7 @@ public without sharing class DonationPublicController {
             s.nombre = null;
             s.nombrePublico = null;
             s.rfc = null;
+            s.ocultarDelMuro = false;
         } else {
             if (String.isBlank(s.nombre)) {
                 throw error(s.modalidad == 'Con factura'
@@ -283,7 +287,14 @@ public without sharing class DonationPublicController {
             }
             if (s.modalidad == 'Con crédito') {
                 s.rfc = null;
+                // Con crédito significa nombre visible: la casilla no aplica (US-24 AC6)
+                s.ocultarDelMuro = false;
             } else {
+                s.ocultarDelMuro = s.ocultarDelMuro == true;
+                if (s.ocultarDelMuro) {
+                    // Si no aparece en el muro no se guarda un nombre para el muro (US-24 AC2)
+                    s.nombrePublico = null;
+                }
                 s.rfc = RfcValidator.normalizar(s.rfc);
                 if (!RfcValidator.esValido(s.rfc)) {
                     throw error('Escribe un RFC válido (12 o 13 caracteres, con una fecha que exista).');

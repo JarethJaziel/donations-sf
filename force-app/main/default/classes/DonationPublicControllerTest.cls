@@ -260,6 +260,64 @@ private class DonationPublicControllerTest {
     }
 
     @IsTest
+    static void facturaConCasillaNoApareceEnElMuro() {
+        mockExitoso();
+        DonationPublicController.SolicitudDonacionDTO s = solicitud('Con factura', 750);
+        s.nombre = 'Empresa Discreta SA de CV';
+        s.nombrePublico = 'No debe guardarse';
+        s.ocultarDelMuro = true;
+
+        Test.startTest();
+        DonationPublicController.iniciarDonacion(s);
+        Test.stopTest();
+
+        Donacion__c don = [
+            SELECT Id, Visible_En_Reconocimiento__c, Nombre_Donante__c, Nombre_Publico__c, RFC__c, Solicita_Factura__c, Campana__c
+            FROM Donacion__c WHERE Stripe_Session_Id__c = 'sesion_simulada_001'
+        ];
+        Assert.isFalse(don.Visible_En_Reconocimiento__c, 'US-24 AC2: marcada como oculta del muro');
+        Assert.isNull(don.Nombre_Publico__c, 'Sin nombre para el muro');
+        Assert.areEqual('Empresa Discreta SA de CV', don.Nombre_Donante__c, 'US-24 AC4: staff conserva el nombre');
+        Assert.areEqual('EKU9003173C9', don.RFC__c, 'US-24 AC4: staff conserva el RFC');
+        Assert.isTrue(don.Solicita_Factura__c, 'Sigue marcada como solicita factura (RF-F2)');
+
+        // Ya pagada, no aparece en el muro pero sí cuenta en el avance (US-24 AC2, AC5)
+        Decimal antes = [SELECT Monto_Recaudado__c FROM Campana__c WHERE Id = :don.Campana__c].Monto_Recaudado__c;
+        don.Estado__c = 'Pagada';
+        don.Tipo_Confirmacion__c = 'Manual';
+        don.Comprobante_Enviado__c = true;
+        update don;
+        Decimal despues = [SELECT Monto_Recaudado__c FROM Campana__c WHERE Id = :don.Campana__c].Monto_Recaudado__c;
+        Assert.areEqual(antes + 750, despues, 'US-24 AC5: el monto cuenta en la meta');
+        for (DonationPublicController.DonanteReconocimientoDTO d : DonationPublicController.obtenerMuroDonantes(don.Campana__c)) {
+            Assert.areNotEqual('Empresa Discreta SA de CV', d.nombrePublico, 'US-24 AC2: no aparece en el muro');
+        }
+    }
+
+    @IsTest
+    static void facturaSinCasillaSiApareceEnElMuro() {
+        mockExitoso();
+        DonationPublicController.SolicitudDonacionDTO s = solicitud('Con factura', 300);
+        Test.startTest();
+        DonationPublicController.iniciarDonacion(s);
+        Test.stopTest();
+        Donacion__c don = [SELECT Visible_En_Reconocimiento__c FROM Donacion__c WHERE Stripe_Session_Id__c = 'sesion_simulada_001'];
+        Assert.isTrue(don.Visible_En_Reconocimiento__c, 'US-24 AC3: sin la casilla aparece como siempre');
+    }
+
+    @IsTest
+    static void casillaNoAplicaFueraDeFactura() {
+        mockExitoso();
+        DonationPublicController.SolicitudDonacionDTO s = solicitud('Con crédito', 300);
+        s.ocultarDelMuro = true;
+        Test.startTest();
+        DonationPublicController.iniciarDonacion(s);
+        Test.stopTest();
+        Donacion__c don = [SELECT Visible_En_Reconocimiento__c FROM Donacion__c WHERE Stripe_Session_Id__c = 'sesion_simulada_001'];
+        Assert.isTrue(don.Visible_En_Reconocimiento__c, 'US-24 AC6: con crédito el nombre siempre es visible');
+    }
+
+    @IsTest
     static void donacionConFacturaNormalizaRfcYGuardaNombrePublico() {
         mockExitoso();
         DonationPublicController.SolicitudDonacionDTO s = solicitud('Con factura', 20000);

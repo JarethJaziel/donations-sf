@@ -45,7 +45,7 @@
                         <label class={claseFactura}>
                             <input type="radio" name="modalidad" value="Con factura" checked={esFactura} onchange={cambiarModalidad} />
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3Z"></path><path d="M9 8h6M9 12h6M9 16h3"></path></svg>
-                            <span><strong>Con factura</strong><span>Pides factura y también apareces en el muro.</span></span>
+                            <span><strong>Con factura</strong><span>Pides factura y eliges si apareces en el muro.</span></span>
                         </label>
                     </div>
                 </fieldset>
@@ -81,12 +81,14 @@
                             </p>
                         </template>
                     </div>
-                    <div class="campo">
-                        <label for="nombrePublico">Nombre para el muro (opcional)</label>
-                        <input id="nombrePublico" type="text" maxlength="80" value={nombrePublico}
-                            data-campo="nombrePublico" oninput={cambiarCampo} placeholder="Ej. Familia Pérez" />
-                        <p class="campo__ayuda">Si lo dejas vacío usamos el nombre de arriba. Tu correo y tu RFC nunca se publican.</p>
-                    </div>
+                    <template lwc:if={pideNombrePublico}>
+                        <div class="campo">
+                            <label for="nombrePublico">Nombre para el muro (opcional)</label>
+                            <input id="nombrePublico" type="text" maxlength="80" value={nombrePublico}
+                                data-campo="nombrePublico" oninput={cambiarCampo} placeholder="Ej. Familia Pérez" />
+                            <p class="campo__ayuda">Si lo dejas vacío usamos el nombre de arriba. Tu correo y tu RFC nunca se publican.</p>
+                        </div>
+                    </template>
                 </template>
 
                 <template lwc:if={esFactura}>
@@ -102,6 +104,14 @@
                             </p>
                         </template>
                     </div>
+                    <!-- US-24: quien pide factura puede no aparecer en el muro -->
+                    <label class="casilla">
+                        <input type="checkbox" checked={ocultarDelMuro} onchange={cambiarOcultar} />
+                        <span>
+                            <strong>No mostrar mi donación en el muro</strong>
+                            <span>Tu nombre y tu monto no se publican. Igual recibes tu comprobante y tu donación cuenta para la meta.</span>
+                        </span>
+                    </label>
                 </template>
 
                 <div class="taquilla__envio">

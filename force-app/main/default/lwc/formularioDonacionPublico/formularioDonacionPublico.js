@@ -41,6 +41,7 @@ export default class FormularioDonacionPublico extends LightningElement {
     nombre = '';
     nombrePublico = '';
     rfc = '';
+    ocultarDelMuro = false;
     intentoEnviar = false;
     tocados = {};
     confirmando = false;
@@ -98,6 +99,11 @@ export default class FormularioDonacionPublico extends LightningElement {
 
     get claseFactura() {
         return this.esFactura ? 'modalidad activa' : 'modalidad';
+    }
+
+    /** El nombre para el muro solo se pide si la donación va a aparecer en él (US-24). */
+    get pideNombrePublico() {
+        return !(this.esFactura && this.ocultarDelMuro);
     }
 
     get etiquetaNombre() {
@@ -215,8 +221,17 @@ export default class FormularioDonacionPublico extends LightningElement {
         this.tocados = { ...this.tocados, [event.target.dataset.campo === 'montoTexto' ? 'monto' : event.target.dataset.campo]: true };
     }
 
+    cambiarOcultar(event) {
+        this.ocultarDelMuro = event.target.checked;
+        if (this.ocultarDelMuro) {
+            this.nombrePublico = '';
+        }
+    }
+
     cambiarModalidad(event) {
         this.modalidad = event.target.value;
+        // US-24 AC6: la casilla solo existe en "Con factura"
+        this.ocultarDelMuro = false;
         if (this.esAnonima) {
             // US-03 AC5: al cambiar a anónima se descartan los datos de identidad
             this.nombre = '';
@@ -275,8 +290,9 @@ export default class FormularioDonacionPublico extends LightningElement {
                     monto: this.montoNumero,
                     correo: this.correo.trim(),
                     nombre: this.esAnonima ? null : this.nombre.trim(),
-                    nombrePublico: this.esAnonima ? null : this.nombrePublico.trim() || null,
-                    rfc: this.esFactura ? this.rfc.trim().toUpperCase() : null
+                    nombrePublico: this.esAnonima || !this.pideNombrePublico ? null : this.nombrePublico.trim() || null,
+                    rfc: this.esFactura ? this.rfc.trim().toUpperCase() : null,
+                    ocultarDelMuro: this.esFactura && this.ocultarDelMuro
                 }
             });
             window.location.assign(url);
