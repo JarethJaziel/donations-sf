@@ -56,7 +56,16 @@ private class DonationPublicControllerTest {
 
         Campana__c inactiva = DonacionTestFactory.campanaVigente('Campaña Inactiva', 1000);
         inactiva.Activa__c = false;
-        insert new List<Campana__c>{ vigente, llena, futura, inactiva };
+
+        Campana__c finalizada = DonacionTestFactory.campanaVigente('Campaña Finalizada', 500);
+        finalizada.Fecha_Inicio__c = Date.today().addDays(-30);
+        finalizada.Fecha_Fin__c = Date.today().addDays(-1);
+
+        Campana__c finalizadaInactiva = DonacionTestFactory.campanaVigente('Campaña Finalizada Inactiva', 500);
+        finalizadaInactiva.Fecha_Inicio__c = Date.today().addDays(-30);
+        finalizadaInactiva.Fecha_Fin__c = Date.today().addDays(-2);
+        finalizadaInactiva.Activa__c = false;
+        insert new List<Campana__c>{ vigente, llena, futura, inactiva, finalizada, finalizadaInactiva };
 
         // Donaciones ya pagadas (se insertan como Pagada con comprobante enviado para no disparar correos)
         List<Donacion__c> pagadas = new List<Donacion__c>();
@@ -121,6 +130,51 @@ private class DonationPublicControllerTest {
         System.assert(nombres.contains('Campaña Llena Sin Sobrecupo'));
         System.assertEquals(false, nombres.contains('Campaña Futura'), 'Una campaña futura no se muestra (US-01 AC6)');
         System.assertEquals(false, nombres.contains('Campaña Inactiva'), 'Una campaña inactiva no se muestra');
+    }
+
+    @IsTest
+    static void finalizadasSoloIncluyeCampanasActivasConFechaFinPasada() {
+        Test.startTest();
+        List<DonationPublicController.CampanaPublicaDTO> finalizadas = DonationPublicController.obtenerCampanasFinalizadas();
+        Test.stopTest();
+
+        Assert.areEqual(1, finalizadas.size(), 'Solo la campaña activa con fecha fin pasada (US-18 AC1, AC4)');
+        DonationPublicController.CampanaPublicaDTO dto = finalizadas[0];
+        Assert.areEqual('Campaña Finalizada', dto.nombre);
+        Assert.isTrue(dto.finalizada, 'Marcada como finalizada');
+        Assert.isFalse(dto.elegibleParaDonar, 'Una campaña finalizada no acepta donaciones (US-18 AC2)');
+        Assert.areEqual('Finalizada', dto.motivoCierre);
+        Assert.areEqual(Date.today().addDays(-1), dto.fechaFin);
+        Assert.areEqual(500, dto.meta);
+    }
+
+    @IsTest
+    static void vigentesNoIncluyenFinalizadas() {
+        for (DonationPublicController.CampanaPublicaDTO dto : DonationPublicController.obtenerCampanasActivas()) {
+            Assert.areNotEqual('Campaña Finalizada', dto.nombre, 'Las finalizadas solo aparecen en su vista (US-18)');
+            Assert.isFalse(dto.finalizada);
+        }
+    }
+
+    @IsTest
+    static void finalizadaNoAceptaDonaciones() {
+        Id finalizadaId = [SELECT Id FROM Campana__c WHERE Name = 'Campaña Finalizada' LIMIT 1].Id;
+        mockExitoso();
+        DonationPublicController.SolicitudDonacionDTO s = new DonationPublicController.SolicitudDonacionDTO();
+        s.campanaId = finalizadaId;
+        s.modalidad = 'Anónima';
+        s.monto = 100;
+        s.correo = 'finalizada@example.com';
+        String mensaje;
+        Test.startTest();
+        try {
+            DonationPublicController.iniciarDonacion(s);
+        } catch (AuraHandledException ex) {
+            mensaje = ex.getMessage();
+        }
+        Test.stopTest();
+        Assert.areEqual('Esta campaña ya no acepta donaciones.', mensaje, 'US-18 AC2: no se puede donar a una campaña finalizada');
+        Assert.areEqual(0, [SELECT COUNT() FROM Donacion__c WHERE Correo__c = 'finalizada@example.com']);
     }
 
     @IsTest

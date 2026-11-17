@@ -1,5 +1,5 @@
 /**
- * @description Controlador público del portal de donaciones (US-01 a US-06, US-14).
+ * @description Controlador público del portal de donaciones (US-01 a US-06, US-14, US-18).
  *              Lo llama el usuario invitado del sitio de Experience Cloud.
  *
  *              Seguridad (M2):
@@ -49,6 +49,7 @@ public without sharing class DonationPublicController {
         @AuraEnabled public Date fechaFin;
         @AuraEnabled public Boolean elegibleParaDonar;
         @AuraEnabled public String motivoCierre;
+        @AuraEnabled public Boolean finalizada;
     }
 
     /**
@@ -97,6 +98,34 @@ public without sharing class DonationPublicController {
         return resultado;
     }
 
+    // ---------- Campañas finalizadas (US-18) ----------
+
+    /**
+     * @description Campañas activas cuya fecha fin ya pasó, de la más reciente a la más antigua.
+     *              Expone los mismos datos públicos que las vigentes y nunca aceptan donaciones (US-18 AC1, AC2, AC4).
+     * @return Lista de campañas finalizadas.
+     */
+    @AuraEnabled(cacheable=true)
+    public static List<CampanaPublicaDTO> obtenerCampanasFinalizadas() {
+        List<CampanaPublicaDTO> resultado = new List<CampanaPublicaDTO>();
+        for (Campana__c c : [
+            SELECT Id, Name, Descripcion__c, Proposito__c, Imagen_URL__c, Meta__c, Monto_Recaudado__c,
+                   Fecha_Fin__c, Permitir_Sobrecupo__c
+            FROM Campana__c
+            WHERE Activa__c = true AND Fecha_Fin__c < TODAY
+            WITH SYSTEM_MODE
+            ORDER BY Fecha_Fin__c DESC, Name ASC
+            LIMIT 200
+        ]) {
+            CampanaPublicaDTO dto = aDto(c);
+            dto.elegibleParaDonar = false;
+            dto.motivoCierre = 'Finalizada';
+            dto.finalizada = true;
+            resultado.add(dto);
+        }
+        return resultado;
+    }
+
     private static CampanaPublicaDTO aDto(Campana__c c) {
         Decimal meta = c.Meta__c == null ? 0 : c.Meta__c;
         Decimal recaudado = c.Monto_Recaudado__c == null ? 0 : c.Monto_Recaudado__c;
@@ -112,6 +141,7 @@ public without sharing class DonationPublicController {
         dto.fechaFin = c.Fecha_Fin__c;
         dto.elegibleParaDonar = aceptaDonaciones(c);
         dto.motivoCierre = dto.elegibleParaDonar ? null : 'Meta alcanzada';
+        dto.finalizada = false;
         return dto;
     }
 

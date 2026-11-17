@@ -1,7 +1,9 @@
 import { LightningElement, wire } from 'lwc';
 import { loadStyle } from 'lightning/platformResourceLoader';
 import FUENTES from '@salesforce/resourceUrl/md2026Fuentes';
+import basePath from '@salesforce/community/basePath';
 import obtenerCampanasActivas from '@salesforce/apex/DonationPublicController.obtenerCampanasActivas';
+import obtenerCampanasFinalizadas from '@salesforce/apex/DonationPublicController.obtenerCampanasFinalizadas';
 
 const FORMATO_MXN = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' });
 const FORMATO_MXN_CORTO = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 });
@@ -50,6 +52,15 @@ function diasAlEvento() {
     return Math.max(0, Math.ceil((EVENTO.getTime() - Date.now()) / 86400000));
 }
 
+/** La vista de campañas finalizadas se abre con ?vista=finalizadas para que tenga su propio enlace (US-18). */
+function vistaDeLaUrl() {
+    try {
+        return new URLSearchParams(window.location.search).get('vista') === 'finalizadas' ? 'finalizadas' : 'vigentes';
+    } catch (e) {
+        return 'vigentes';
+    }
+}
+
 function reducirMovimiento() {
     return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
@@ -83,8 +94,13 @@ export default class PortalCampanasPublico extends LightningElement {
         }
     };
 
+    vista = vistaDeLaUrl();
+
     @wire(obtenerCampanasActivas)
     recibirCampanas({ data, error }) {
+        if (this.esFinalizadas) {
+            return;
+        }
         if (data) {
             this.campanas = [...data]
                 .sort(
@@ -104,6 +120,21 @@ export default class PortalCampanasPublico extends LightningElement {
             this.error = 'Revisa tu conexión y recarga la página para intentarlo de nuevo.';
             this.cargando = false;
         }
+    }
+
+    cargarFinalizadas() {
+        obtenerCampanasFinalizadas()
+            .then((data) => {
+                this.campanas = (data || []).map((c, i) => this.decorar(c, i));
+                this.error = undefined;
+            })
+            .catch(() => {
+                this.campanas = [];
+                this.error = 'Revisa tu conexión y recarga la página para intentarlo de nuevo.';
+            })
+            .finally(() => {
+                this.cargando = false;
+            });
     }
 
     decorar(c, indice) {
@@ -127,12 +158,13 @@ export default class PortalCampanasPublico extends LightningElement {
             recaudadoTexto: FORMATO_MXN_CORTO.format(recaudado),
             metaTexto: `recaudados de ${meta}`,
             cierreLargo: fechaLarga(c.fechaFin),
-            diasCierreTexto: textoDiasRestantes(diasParaCierre(c.fechaFin)),
-            fechaLimiteTexto: `Cierra el ${fechaLarga(c.fechaFin)}`,
-            selloTexto: c.motivoCierre === 'Meta alcanzada' ? 'Cupo lleno' : 'Cerrada',
+            etiquetaCierre: c.finalizada ? 'Cerró el' : 'Cierra el',
+            diasCierreTexto: c.finalizada ? '' : textoDiasRestantes(diasParaCierre(c.fechaFin)),
+            fechaLimiteTexto: `${c.finalizada ? 'Cerró' : 'Cierra'} el ${fechaLarga(c.fechaFin)}`,
+            selloTexto: c.finalizada ? 'Finalizada' : c.motivoCierre === 'Meta alcanzada' ? 'Cupo lleno' : 'Cerrada',
             claseBoton: cerrada ? 'boton boton--secundario' : 'boton boton--primario',
-            textoBoton: cerrada ? 'Ver campaña' : 'Donar',
-            etiquetaBoton: `${cerrada ? 'Ver campaña' : 'Donar'}: ${c.nombre}`
+            textoBoton: c.finalizada ? 'Ver resultados' : cerrada ? 'Ver campaña' : 'Donar',
+            etiquetaBoton: `${c.finalizada ? 'Ver resultados' : cerrada ? 'Ver campaña' : 'Donar'}: ${c.nombre}`
         };
     }
 
@@ -155,7 +187,61 @@ export default class PortalCampanasPublico extends LightningElement {
     }
 
     get puedeVolver() {
-        return this.campanas.length > 1;
+        return this.esFinalizadas || this.campanas.length > 1;
+    }
+
+    get esFinalizadas() {
+        return this.vista === 'finalizadas';
+    }
+
+    get esVigentes() {
+        return !this.esFinalizadas;
+    }
+
+    get tituloLista() {
+        return this.esFinalizadas ? 'Campañas finalizadas' : 'Campañas vigentes';
+    }
+
+    get etiquetaTotal() {
+        return this.esFinalizadas ? 'Recaudado en campañas finalizadas' : 'Recaudado en campañas vigentes';
+    }
+
+    get textoVolver() {
+        return this.esFinalizadas ? 'Ver todas las campañas finalizadas' : 'Ver todas las campañas';
+    }
+
+    get urlVigentes() {
+        return basePath ? `${basePath}/` : './';
+    }
+
+    get urlFinalizadas() {
+        return `${this.urlVigentes}?vista=finalizadas`;
+    }
+
+    get actualVigentes() {
+        return this.esVigentes ? 'page' : null;
+    }
+
+    get actualFinalizadas() {
+        return this.esFinalizadas ? 'page' : null;
+    }
+
+    get claseVistaVigentes() {
+        return this.esVigentes ? 'vistas__enlace activa' : 'vistas__enlace';
+    }
+
+    get claseVistaFinalizadas() {
+        return this.esFinalizadas ? 'vistas__enlace activa' : 'vistas__enlace';
+    }
+
+    get textoVacioTitulo() {
+        return this.esFinalizadas ? 'Aún no hay campañas finalizadas' : 'No hay campañas vigentes';
+    }
+
+    get textoVacio() {
+        return this.esFinalizadas
+            ? 'Cuando una campaña llegue a su fecha de cierre aparecerá aquí con lo que logró recaudar.'
+            : 'Por ahora no hay salidas programadas. Vuelve pronto: aquí aparecerán las próximas campañas de Mexico Dreamin 2026.';
     }
 
     get diasTexto() {
@@ -179,6 +265,9 @@ export default class PortalCampanasPublico extends LightningElement {
         loadStyle(this, `${FUENTES}/fonts.css`).catch(() => {
             // Sin las fuentes el portal usa las de respaldo; no es un error para el donante.
         });
+        if (this.esFinalizadas) {
+            this.cargarFinalizadas();
+        }
         this.anchoPrevio = window.innerWidth;
         window.addEventListener('resize', this.alRedimensionar);
         // eslint-disable-next-line @lwc/lwc/no-async-operation
