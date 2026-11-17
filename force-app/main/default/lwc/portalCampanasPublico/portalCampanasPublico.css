@@ -75,9 +75,14 @@
     color: var(--md-tablero-texto, #f4f1e8);
 }
 .tablero__texto { max-width: 60ch; color: #c9d5d7; font-size: 18px; margin: 0; }
-.tablero__dato { margin: 16px 0 0; display: flex; flex-wrap: wrap; gap: 8px 28px; color: #c9d5d7; font-size: 16px; }
-.tablero__dato strong { color: var(--md-tablero-texto, #f4f1e8); font-weight: 700; font-variant-numeric: tabular-nums; margin-left: .3em; }
-.tablero__dias strong { margin-right: .3em; }
+/* Cifras generales en texto plano (US-22): legibles a simple vista */
+.cifras { margin: 22px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 12px; }
+.cifras__item {
+    display: grid; gap: 4px; padding: 12px 18px; border-radius: 12px;
+    background: rgba(244, 241, 232, .08); border: 1px solid rgba(244, 241, 232, .14);
+}
+.cifras dt { font-size: 14px; font-weight: 600; color: #c9d5d7; }
+.cifras dd { margin: 0; font-size: 28px; font-weight: 700; line-height: 1.1; color: var(--md-tablero-texto, #f4f1e8); font-variant-numeric: tabular-nums; }
 
 /* ---------- Lista de boletos ---------- */
 .salidas { margin-top: -60px; position: relative; padding-bottom: 72px; }
@@ -128,7 +133,8 @@
     padding: 22px; display: flex; flex-direction: column; gap: 16px; justify-content: flex-start;
 }
 .boleto__etiqueta { font: 700 12px/1 var(--md-fuente-texto, sans-serif); letter-spacing: .12em; text-transform: uppercase; color: var(--md-tinta-suave, #4a5b61); margin: 0 0 8px; }
-.boleto__talon .digitos span { min-width: 22px; height: 32px; font-size: 24px; }
+.boleto__fecha { margin: 0; font-size: 20px; font-weight: 700; line-height: 1.25; color: var(--md-tinta, #12232a); }
+.boleto__restan { margin: 4px 0 0; font-size: 15px; font-weight: 600; color: var(--md-tinta-suave, #4a5b61); }
 
 /* Ilustración de respaldo cuando la campaña no tiene imagen */
 .ilus { width: 100%; height: 100%; display: block; }
@@ -144,19 +150,13 @@
 
 /* ---------- Progreso como ruta ---------- */
 .ruta { display: grid; gap: 8px; }
-.ruta__cifras { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; }
-.digitos { display: inline-flex; gap: 2px; }
-.digitos span {
-    display: grid; place-items: center; min-width: 19px; height: 28px; padding: 0 1px;
-    background: linear-gradient(var(--md-tablero-paleta, #173b47) 0 50%, #143440 50% 100%);
-    color: var(--md-tablero-texto, #f4f1e8); border-radius: 3px;
-    font-family: var(--md-fuente-display, "Big Shoulders Display", "Arial Narrow", sans-serif); font-weight: 800; font-size: 22px; line-height: 1;
-    position: relative;
-}
-.digitos span::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: var(--md-tablero-borde, #08191f); }
-.digitos span.sep { background: none; color: var(--md-tinta, #12232a); min-width: 6px; }
-.digitos span.sep::after { display: none; }
+.ruta__cifras { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 8px; margin: 0; }
+.ruta__monto { font-size: 26px; font-weight: 700; line-height: 1.1; color: var(--md-tinta, #12232a); font-variant-numeric: tabular-nums; }
 .ruta__de { color: var(--md-tinta-suave, #4a5b61); font-weight: 600; font-variant-numeric: tabular-nums; }
+.ruta__porcentaje {
+    font-size: 15px; font-weight: 700; color: var(--md-tinta, #12232a); font-variant-numeric: tabular-nums;
+    background: var(--md-fondo, #eef2f1); border-radius: 999px; padding: 2px 10px;
+}
 .ruta__linea { position: relative; height: 22px; }
 .ruta__linea::before {
     content: ""; position: absolute; left: 0; right: 0; top: 10px; height: 2px;
@@ -252,7 +252,8 @@
 .pase__proposito { background: var(--md-fondo, #eef2f1); border-radius: 12px; padding: 16px 18px; }
 .pase__proposito h2 { font-size: 17px; margin: 0 0 4px; font-weight: 700; }
 .pase__proposito p { margin: 0; }
-.pase__cierre { color: var(--md-tinta-suave, #4a5b61); margin: 0; font-weight: 600; }
+.pase__cierre { color: var(--md-tinta, #12232a); margin: 0; font-weight: 600; display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.pase__restan { color: var(--md-tinta-suave, #4a5b61); }
 .detalle__columnas { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); gap: 24px; margin-top: 24px; align-items: start; }
 
 /* ---------- Pantallas angostas ---------- */
@@ -281,7 +282,8 @@
     .tablero { padding: 0 0 76px; }
     .tablero__titular { margin-top: 20px; }
     .tablero__texto { font-size: 16px; }
-    .tablero__dias { display: none; }
+    .cifras__item { flex: 1 1 140px; padding: 10px 14px; }
+    .cifras dd { font-size: 24px; }
     .salidas__titulo { margin-top: 20px; font-size: 26px; }
 }
 

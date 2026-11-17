@@ -16,10 +16,16 @@
                 <div class="portal__contenedor">
                     <h1 class="tablero__titular">Ayuda a un estudiante a llegar a Mexico Dreamin</h1>
                     <p class="tablero__texto">Cada campaña es una salida rumbo a la Ciudad de México. Solo cuentan los pagos confirmados, y tú decides si tu nombre aparece en el muro.</p>
-                    <p class="tablero__dato">
-                        <span class="tablero__dias">Faltan<strong>{diasTexto}</strong>días para el evento</span>
-                        <span>Recaudado entre todas las campañas:<strong>{totalTexto}</strong></span>
-                    </p>
+                    <dl class="cifras">
+                        <div class="cifras__item">
+                            <dt>Días para el evento</dt>
+                            <dd>{diasTexto}</dd>
+                        </div>
+                        <div class="cifras__item">
+                            <dt>Recaudado en todas las campañas</dt>
+                            <dd>{totalTexto}</dd>
+                        </div>
+                    </dl>
                     <h2 class="salidas__titulo">Campañas vigentes</h2>
                 </div>
             </div>
@@ -86,15 +92,11 @@
                                                 </div>
                                             </dl>
                                             <div class="ruta">
-                                                <div class="ruta__cifras">
-                                                    <span class="digitos" aria-hidden="true">
-                                                        <template for:each={c.digitosRecaudado} for:item="d">
-                                                            <span key={d.clave} class={d.clase}>{d.ch}</span>
-                                                        </template>
-                                                    </span>
-                                                    <span class="ruta__de" aria-hidden="true">{c.restoCifras}</span>
-                                                    <span class="solo-lector">{c.lectorCifras}</span>
-                                                </div>
+                                                <p class="ruta__cifras">
+                                                    <strong class="ruta__monto">{c.recaudadoTexto}</strong>
+                                                    <span class="ruta__de">{c.metaTexto}</span>
+                                                    <span class="ruta__porcentaje">{c.porcentajeTexto}</span>
+                                                </p>
                                                 <div class="ruta__linea" role="progressbar" aria-valuemin="0" aria-valuemax="100"
                                                     aria-valuenow={c.avanceRedondeado} aria-label={c.etiquetaRuta}>
                                                     <div class="ruta__avance" style={c.avanceEstilo}></div>
@@ -109,13 +111,9 @@
                                     </div>
                                     <div class="boleto__talon">
                                         <div class="boleto__salida">
-                                            <p class="boleto__etiqueta">Cierra</p>
-                                            <span class="digitos" aria-hidden="true">
-                                                <template for:each={c.digitosCierre} for:item="d">
-                                                    <span key={d.clave} class={d.clase}>{d.ch}</span>
-                                                </template>
-                                            </span>
-                                            <span class="solo-lector">{c.cierreLargo}</span>
+                                            <p class="boleto__etiqueta">Cierra el</p>
+                                            <p class="boleto__fecha">{c.cierreLargo}</p>
+                                            <p class="boleto__restan">{c.diasCierreTexto}</p>
                                         </div>
                                         <template lwc:if={c.cerrada}>
                                             <span class="sello">{c.selloTexto}</span>
@@ -173,15 +171,11 @@
                                 </section>
                             </template>
                             <div class="ruta">
-                                <div class="ruta__cifras">
-                                    <span class="digitos" aria-hidden="true">
-                                        <template for:each={seleccionada.digitosRecaudado} for:item="d">
-                                            <span key={d.clave} class={d.clase}>{d.ch}</span>
-                                        </template>
-                                    </span>
-                                    <span class="ruta__de" aria-hidden="true">{seleccionada.restoCifrasDetalle}</span>
-                                    <span class="solo-lector">{seleccionada.lectorCifras}</span>
-                                </div>
+                                <p class="ruta__cifras">
+                                    <strong class="ruta__monto">{seleccionada.recaudadoTexto}</strong>
+                                    <span class="ruta__de">{seleccionada.metaTexto}</span>
+                                    <span class="ruta__porcentaje">{seleccionada.porcentajeTexto}</span>
+                                </p>
                                 <div class="ruta__linea" role="progressbar" aria-valuemin="0" aria-valuemax="100"
                                     aria-valuenow={seleccionada.avanceRedondeado} aria-label={seleccionada.etiquetaRuta}>
                                     <div class="ruta__avance" style={seleccionada.avanceEstilo}></div>
@@ -192,7 +186,10 @@
                                     </span>
                                 </div>
                             </div>
-                            <p class="pase__cierre">{seleccionada.fechaLimiteTexto}</p>
+                            <p class="pase__cierre">
+                                <span>{seleccionada.fechaLimiteTexto}</span>
+                                <span class="pase__restan">{seleccionada.diasCierreTexto}</span>
+                            </p>
                         </div>
                     </article>
 

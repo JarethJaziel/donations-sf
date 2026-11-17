@@ -6,7 +6,6 @@ import obtenerCampanasActivas from '@salesforce/apex/DonationPublicController.ob
 const FORMATO_MXN = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' });
 const FORMATO_MXN_CORTO = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 });
 const FORMATO_FECHA = new Intl.DateTimeFormat('es-MX', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
-const FORMATO_MES = new Intl.DateTimeFormat('es-MX', { month: 'short', timeZone: 'UTC' });
 
 // Mexico Dreamin 2026: Ciudad de México, 20 de noviembre de 2026
 const EVENTO = new Date('2026-11-20T00:00:00-06:00');
@@ -27,27 +26,28 @@ function fechaLarga(isoFecha) {
     return isoFecha ? FORMATO_FECHA.format(new Date(`${isoFecha}T00:00:00Z`)) : '';
 }
 
-/** "17 NOV": fecha corta para las paletas del talón. */
-function fechaCorta(isoFecha) {
+/** Días naturales que faltan para la fecha de cierre (0 si cierra hoy). */
+function diasParaCierre(isoFecha) {
     if (!isoFecha) {
+        return null;
+    }
+    const hoy = new Date();
+    const inicioHoy = Date.UTC(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+    return Math.max(0, Math.round((new Date(`${isoFecha}T00:00:00Z`).getTime() - inicioHoy) / 86400000));
+}
+
+function textoDiasRestantes(dias) {
+    if (dias === null) {
         return '';
     }
-    const fecha = new Date(`${isoFecha}T00:00:00Z`);
-    const mes = FORMATO_MES.format(fecha).replace('.', '').toUpperCase().slice(0, 3);
-    return `${fecha.getUTCDate()} ${mes}`;
+    if (dias === 0) {
+        return 'Cierra hoy';
+    }
+    return dias === 1 ? 'Queda 1 día' : `Quedan ${dias} días`;
 }
 
 function diasAlEvento() {
     return Math.max(0, Math.ceil((EVENTO.getTime() - Date.now()) / 86400000));
-}
-
-/** Convierte un texto en paletas (una por carácter) para pintarlas como tablero. */
-function paletas(texto, prefijo) {
-    return Array.from(texto).map((ch, i) => ({
-        clave: `${prefijo}-${i}`,
-        ch,
-        clase: /[0-9A-ZÑ]/.test(ch) ? '' : 'sep'
-    }));
 }
 
 function reducirMovimiento() {
@@ -110,7 +110,7 @@ export default class PortalCampanasPublico extends LightningElement {
         const porcentaje = Number(c.porcentaje) || 0;
         const avance = Math.min(Math.max(porcentaje, 0), 100);
         const ajusteAutobus = avance < 6 ? 15 : avance > 94 ? -15 : 0;
-        const meta = FORMATO_MXN.format(Number(c.meta) || 0);
+        const meta = FORMATO_MXN_CORTO.format(Number(c.meta) || 0);
         const recaudado = Number(c.recaudado) || 0;
         const cerrada = !c.elegibleParaDonar;
         return {
@@ -124,13 +124,11 @@ export default class PortalCampanasPublico extends LightningElement {
             etiquetaRuta: `Avance ${porcentaje}%`,
             avanceEstilo: `width: ${avance}%`,
             autobusEstilo: `left: calc(${avance}% + ${ajusteAutobus}px)`,
-            digitosRecaudado: paletas(FORMATO_MXN_CORTO.format(recaudado), `r-${c.id}`),
-            restoCifras: `de ${meta} · ${porcentaje}%`,
-            restoCifrasDetalle: `recaudados de ${meta} · ${porcentaje}%`,
-            lectorCifras: `${FORMATO_MXN.format(recaudado)} recaudados de ${meta}`,
-            digitosCierre: paletas(fechaCorta(c.fechaFin), `f-${c.id}`),
+            recaudadoTexto: FORMATO_MXN_CORTO.format(recaudado),
+            metaTexto: `recaudados de ${meta}`,
             cierreLargo: fechaLarga(c.fechaFin),
-            fechaLimiteTexto: `Fecha límite: ${fechaLarga(c.fechaFin)}`,
+            diasCierreTexto: textoDiasRestantes(diasParaCierre(c.fechaFin)),
+            fechaLimiteTexto: `Cierra el ${fechaLarga(c.fechaFin)}`,
             selloTexto: c.motivoCierre === 'Meta alcanzada' ? 'Cupo lleno' : 'Cerrada',
             claseBoton: cerrada ? 'boton boton--secundario' : 'boton boton--primario',
             textoBoton: cerrada ? 'Ver campaña' : 'Donar',
