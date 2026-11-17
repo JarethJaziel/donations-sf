@@ -54,6 +54,66 @@
 
 ---
 
+### Entry #3 — Stripe Checkout Rejects the `payment_method_types` Parameter
+
+- **Date:** 2026-11-09
+- **Author:** Mauricio Dzay
+- **Type:** Technical Blocker Report
+1. **What we were trying to achieve (Story & Criterion):** `US-06` (`RF-D3`): register the pending donation and redirect the donor to Stripe Checkout. Also `US-02` and `US-03`, which depend on the same flow.
+2. **What we did (Concrete steps):** Opened the published site as an anonymous visitor, filled the form with a fictitious donor and pressed *Donate* in all three modes. Every attempt showed the generic message "No pudimos iniciar tu donación". We then reproduced the Checkout Session callout from `DonationPublicController` with the test key and read the full Stripe response.
+3. **What we expected to happen:** Stripe returns a Checkout Session (`id` and `url`), the donation is saved as `Pendiente` and the browser opens the Stripe payment page.
+4. **What happened (Response / Finding / Exact error):** Stripe answered `HTTP 400` (`invalid_request_error`) because the request included `payment_method_types[0]=card`. No donation was created, which is correct: the controller only inserts the record after Stripe answers successfully (single-transaction design, `RF-D3`).
+5. **What we consulted with AI or documentation and the outcome:** Claude Code (Claude Opus 5.5) compared the request with the Stripe API reference for Checkout Sessions. Stripe now manages payment methods from the Dashboard (*Settings → Payment methods*), so the parameter is no longer needed. Card payments stay enabled in the test account.
+- **What we did afterward (Resolution):**
+  - Removed the parameter from the callout (commit [`1631b28`](https://github.com/JarethJaziel/donations-sf/commit/1631b28)). `DonationPublicControllerTest` passed 14/14 on deploy.
+  - Verified on the published site as a guest that *Donate* now opens Stripe Checkout.
+  - Updated the Stripe parameter list in `CLAUDE.md`, `GEMINI.md` and the agent rules so the parameter is not added back.
+
+---
+
+### Entry #4 — Login Page Appearing on the Public Portal
+
+- **Date:** 2026-11-10
+- **Author:** Mauricio Dzay
+- **Type:** Technical Finding
+1. **What we were trying to achieve (Story & Criterion):** `US-14` (`RF-V1`): the portal is public and never asks the donor to log in.
+2. **What we did (Concrete steps):** After leaving the site open for several hours, reloading it showed a Salesforce login page at `/md2026/login`. Nobody on the team had added a login page. We listed the site routes in the metadata, checked the public access setting of each page, and opened the home page again in a new private window.
+3. **What we expected to happen:** The home page with the active campaigns, with no login.
+4. **What happened (Response / Finding / Exact error):**
+   - The *Build Your Own (LWR)* template creates the Login, Register, Forgot Password, Check Password, Error, Service Not Available and Too Many Requests pages automatically. All site pages inherit public access.
+   - The redirect came from an expired internal Salesforce session in the same browser (the team member was also logged into the org). A visitor with no Salesforce session never sees it.
+   - In the private window, the home page loaded without login.
+5. **What we consulted with AI or documentation and the outcome:** Claude Code (Claude Opus 5.5) reviewed the site metadata (`sfdc_cms__route`, `sfdc_cms__view`) and the Experience Cloud documentation on LWR template pages. The finding: the login page is part of the template and is not linked from the portal.
+- **What we did afterward (Resolution):**
+  - No change to the site configuration.
+  - Took the `US-14` evidence from a clean session ([`US-14_portal_publico_sin_login.png`](./evidencias/portal-actual/US-14_portal_publico_sin_login.png)).
+  - Recommendation for the team: test the public site in a private window, not in a browser that is logged into the org.
+
+---
+
+### Entry #5 — Can an Invoice Donor Stay Off the Public Wall?
+
+- **Date:** 2026-11-17
+- **Author:** Mauricio Dzay
+- **Type:** Business Question to Client
+1. **What we were trying to achieve (Story & Criterion):** Define how the invoice mode (`US-05`, `RF-F1`) relates to the public wall (`US-04`, `RF-C1`) and the anonymous mode (`US-03`, `RF-D2`).
+2. **What we did (Concrete steps):**
+   - Feedback after Delivery 1 asked that a donor who requests an invoice could also be anonymous.
+   - We compared the request with the guide. `RF-D2` CA3 (a minimum) says the anonymous mode does not include an invoice. The guide also lists this open question: "Can an invoice donor ask not to appear on the public wall?"
+3. **What we expected to happen:** A rule we could write as *Given / When / Then* criteria without breaking a minimum.
+4. **What happened (Response / Finding / Exact error):**
+   - An "anonymous with invoice" mode breaks `RF-D2` CA3, so we did not build it.
+   - The version that fits the guide: the invoice donor still gives a legal name and RFC (`RF-F1`, `RF-F2`) and only chooses not to appear on the public wall.
+   - We raised the question with the client. **Pending client confirmation (`P1`).**
+5. **What we consulted with AI or documentation and the outcome:** Claude Code (Claude Opus 5.5) reviewed sections 4 and "Open questions" of the guide against the request and confirmed the contradiction with `RF-D2` CA3. The first story draft did allow an anonymous invoice; we rejected it for that reason.
+- **What we did afterward (Resolution):**
+  - Closed the first draft (`US-21`) as *not planned*.
+  - Created `US-24`: a "No mostrar mi donación en el muro" checkbox, shown only in the invoice mode.
+  - Implemented it: the donation is saved with `Visible_En_Reconocimiento__c = false`, still counts toward the goal, and staff still sees the invoice flag, name and RFC.
+  - If the client rejects it, we remove the checkbox and close `US-24`.
+
+---
+
 ## Template for New Entries (Copy & Paste)
 
 ### Entry #X — [Descriptive Title of Question or Technical Blocker]
