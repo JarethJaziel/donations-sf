@@ -23,7 +23,7 @@
 .tablero {
     background: var(--md-tablero, #0f2a33);
     color: var(--md-tablero-texto, #f4f1e8);
-    padding: 0 0 84px;
+    padding: 0 0 56px;
     position: relative;
     overflow: hidden;
 }
@@ -85,11 +85,13 @@
 .cifras dd { margin: 0; font-size: 28px; font-weight: 700; line-height: 1.1; color: var(--md-tablero-texto, #f4f1e8); font-variant-numeric: tabular-nums; }
 
 /* ---------- Lista de boletos ---------- */
-.salidas { margin-top: -60px; position: relative; padding-bottom: 72px; }
+.salidas { position: relative; padding: 48px 0 72px; }
 .salidas__titulo {
     font-family: var(--md-fuente-display, "Big Shoulders Display", "Arial Narrow", sans-serif); font-weight: 800; text-transform: uppercase;
-    font-size: 30px; letter-spacing: .01em; margin: 30px 0 0; color: var(--md-tablero-texto, #f4f1e8);
+    font-size: 30px; letter-spacing: .01em; margin: 0 0 20px; color: var(--md-tablero, #0f2a33);
+    scroll-margin-top: 16px;
 }
+.salidas__titulo:focus { outline: none; }
 .salidas__lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 22px; }
 
 .boleto {
@@ -279,12 +281,13 @@
     .esqueleto::before { width: 112px; }
 }
 @media (max-width: 480px) {
-    .tablero { padding: 0 0 76px; }
+    .tablero { padding: 0 0 40px; }
     .tablero__titular { margin-top: 20px; }
     .tablero__texto { font-size: 16px; }
     .cifras__item { flex: 1 1 140px; padding: 10px 14px; }
     .cifras dd { font-size: 24px; }
-    .salidas__titulo { margin-top: 20px; font-size: 26px; }
+    .salidas { padding-top: 36px; }
+    .salidas__titulo { font-size: 26px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

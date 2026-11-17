@@ -26,12 +26,15 @@
                             <dd>{totalTexto}</dd>
                         </div>
                     </dl>
-                    <h2 class="salidas__titulo">Campañas vigentes</h2>
                 </div>
             </div>
 
+            <!-- Explicación del programa antes de pedir la donación (US-23) -->
+            <c-seccion-como-ayudar onvercampanas={irACampanas}></c-seccion-como-ayudar>
+
             <div class="salidas">
                 <div class="portal__contenedor">
+                    <h2 class="salidas__titulo" tabindex="-1">Campañas vigentes</h2>
                     <template lwc:if={cargando}>
                         <ul class="salidas__lista" aria-busy="true">
                             <li class="esqueleto"></li>

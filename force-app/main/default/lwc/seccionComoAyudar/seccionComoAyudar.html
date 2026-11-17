@@ -1,0 +1,164 @@
+<template>
+    <section class="ayuda" aria-labelledby="ayuda-titulo">
+        <div class="ayuda__contenedor">
+            <div class="ayuda__intro">
+                <div class="ayuda__texto">
+                    <p class="ayuda__antetitulo">Sobre el programa</p>
+                    <h2 class="ayuda__titulo" id="ayuda-titulo">¿Cómo puedes ayudar?</h2>
+                    <p>Mexico Dreamin reúne a la comunidad de Salesforce en la Ciudad de México. Para muchos estudiantes universitarios, el viaje es el mayor obstáculo: transporte, hospedaje y comidas suman más de lo que pueden pagar.</p>
+                    <p>Cada campaña junta dinero para que un grupo de estudiantes llegue al evento. Tu donación, del monto que sea, se suma a la meta de la campaña que elijas.</p>
+                </div>
+                <svg class="ayuda__figura" viewBox="0 0 360 260" role="img" aria-labelledby="fig-estudiantes">
+                    <title id="fig-estudiantes">Ilustración: tres estudiantes con mochila junto a un letrero que apunta a la Ciudad de México.</title>
+                    <rect width="360" height="260" rx="18" class="f-cielo"></rect>
+                    <circle cx="292" cy="62" r="26" class="f-sol"></circle>
+                    <path d="M0 196 C 80 176, 150 206, 230 188 S 330 176, 360 184 V260 H0Z" class="f-suelo"></path>
+                    <g class="f-ciudad">
+                        <rect x="214" y="120" width="26" height="70"></rect>
+                        <rect x="244" y="98" width="22" height="92"></rect>
+                        <rect x="270" y="132" width="30" height="58"></rect>
+                        <rect x="304" y="110" width="20" height="80"></rect>
+                        <path d="M255 98 V82 M251 86 h8"></path>
+                    </g>
+                    <g class="f-letrero">
+                        <rect x="170" y="112" width="6" height="84" rx="2"></rect>
+                        <path d="M146 112 h66 l14 14 -14 14 h-66z"></path>
+                        <text x="160" y="132" class="f-letrero__texto">CDMX</text>
+                    </g>
+                    <g class="f-persona f-persona--a" transform="translate(48 104)">
+                        <rect x="-15" y="34" width="20" height="34" rx="6" class="f-mochila"></rect>
+                        <circle cx="12" cy="16" r="15" class="f-piel"></circle>
+                        <path d="M-3 12 C -2 -2, 26 -4, 27 12 C 20 6, 6 6, -3 12Z" class="f-pelo"></path>
+                        <rect x="-4" y="32" width="32" height="50" rx="12" class="f-ropa"></rect>
+                        <rect x="0" y="80" width="10" height="24" rx="4" class="f-pantalon"></rect>
+                        <rect x="14" y="80" width="10" height="24" rx="4" class="f-pantalon"></rect>
+                    </g>
+                    <g class="f-persona f-persona--b" transform="translate(96 92)">
+                        <rect x="26" y="38" width="20" height="34" rx="6" class="f-mochila"></rect>
+                        <circle cx="16" cy="18" r="16" class="f-piel"></circle>
+                        <path d="M0 18 C 0 0, 32 0, 32 18 C 32 30, 36 40, 30 46 C 30 30, 2 30, 2 46 C -4 40, 0 30, 0 18Z" class="f-pelo"></path>
+                        <rect x="0" y="36" width="32" height="54" rx="12" class="f-ropa f-ropa--b"></rect>
+                        <rect x="4" y="88" width="10" height="28" rx="4" class="f-pantalon"></rect>
+                        <rect x="18" y="88" width="10" height="28" rx="4" class="f-pantalon"></rect>
+                    </g>
+                    <g class="f-persona f-persona--c" transform="translate(132 116)">
+                        <circle cx="12" cy="14" r="13" class="f-piel"></circle>
+                        <path d="M-1 12 C 0 -1, 24 -1, 25 12 Z" class="f-pelo"></path>
+                        <rect x="-2" y="28" width="28" height="44" rx="10" class="f-ropa f-ropa--c"></rect>
+                        <rect x="1" y="70" width="9" height="22" rx="4" class="f-pantalon"></rect>
+                        <rect x="14" y="70" width="9" height="22" rx="4" class="f-pantalon"></rect>
+                    </g>
+                </svg>
+            </div>
+
+            <h3 class="ayuda__subtitulo">¿Qué cubre tu donación?</h3>
+            <ul class="usos">
+                <li class="uso">
+                    <svg class="uso__imagen" viewBox="0 0 320 180" role="img" aria-labelledby="fig-transporte">
+                        <title id="fig-transporte">Ilustración: autobús en carretera rumbo a la ciudad.</title>
+                        <rect width="320" height="180" class="f-cielo"></rect>
+                        <g class="f-ciudad">
+                            <rect x="196" y="58" width="24" height="70"></rect>
+                            <rect x="224" y="40" width="20" height="88"></rect>
+                            <rect x="248" y="70" width="28" height="58"></rect>
+                            <rect x="280" y="52" width="20" height="76"></rect>
+                        </g>
+                        <rect y="128" width="320" height="52" class="f-camino"></rect>
+                        <path d="M0 154 H320" class="f-raya"></path>
+                        <g transform="translate(44 82)">
+                            <rect width="128" height="60" rx="12" class="f-autobus"></rect>
+                            <rect x="10" y="10" width="26" height="18" rx="3" class="f-ventana"></rect>
+                            <rect x="42" y="10" width="26" height="18" rx="3" class="f-ventana"></rect>
+                            <rect x="74" y="10" width="26" height="18" rx="3" class="f-ventana"></rect>
+                            <rect x="106" y="10" width="14" height="30" rx="3" class="f-ventana"></rect>
+                            <rect x="0" y="36" width="128" height="6" class="f-franja"></rect>
+                            <circle cx="30" cy="62" r="11" class="f-rueda"></circle>
+                            <circle cx="98" cy="62" r="11" class="f-rueda"></circle>
+                        </g>
+                    </svg>
+                    <h4 class="uso__titulo">Transporte</h4>
+                    <p class="uso__texto">Autobús o vuelo de ida y vuelta a la Ciudad de México.</p>
+                </li>
+                <li class="uso">
+                    <svg class="uso__imagen" viewBox="0 0 320 180" role="img" aria-labelledby="fig-hospedaje">
+                        <title id="fig-hospedaje">Ilustración: edificio de hospedaje de noche y un plato de comida.</title>
+                        <rect width="320" height="180" class="f-noche"></rect>
+                        <circle cx="262" cy="42" r="18" class="f-luna"></circle>
+                        <circle cx="272" cy="36" r="16" class="f-noche"></circle>
+                        <g transform="translate(62 34)">
+                            <rect width="112" height="128" rx="6" class="f-edificio"></rect>
+                            <rect x="14" y="16" width="20" height="18" rx="2" class="f-luz"></rect>
+                            <rect x="46" y="16" width="20" height="18" rx="2" class="f-apagada"></rect>
+                            <rect x="78" y="16" width="20" height="18" rx="2" class="f-luz"></rect>
+                            <rect x="14" y="48" width="20" height="18" rx="2" class="f-apagada"></rect>
+                            <rect x="46" y="48" width="20" height="18" rx="2" class="f-luz"></rect>
+                            <rect x="78" y="48" width="20" height="18" rx="2" class="f-luz"></rect>
+                            <rect x="14" y="80" width="20" height="18" rx="2" class="f-luz"></rect>
+                            <rect x="78" y="80" width="20" height="18" rx="2" class="f-apagada"></rect>
+                            <rect x="44" y="96" width="24" height="32" rx="3" class="f-puerta"></rect>
+                        </g>
+                        <g transform="translate(206 112)">
+                            <ellipse cx="40" cy="30" rx="44" ry="12" class="f-plato"></ellipse>
+                            <path d="M8 28 C 10 6, 70 6, 72 28 Z" class="f-comida"></path>
+                            <path d="M28 4 c -4 -8 4 -10 0 -18 M44 4 c -4 -8 4 -10 0 -18" class="f-vapor"></path>
+                        </g>
+                    </svg>
+                    <h4 class="uso__titulo">Hospedaje y comidas</h4>
+                    <p class="uso__texto">Un lugar seguro donde quedarse y alimentos durante los días del evento.</p>
+                </li>
+                <li class="uso">
+                    <svg class="uso__imagen" viewBox="0 0 320 180" role="img" aria-labelledby="fig-evento">
+                        <title id="fig-evento">Ilustración: gafete del evento y una laptop con una nube.</title>
+                        <rect width="320" height="180" class="f-cielo f-cielo--rosa"></rect>
+                        <g transform="translate(150 40)">
+                            <rect x="0" y="62" width="130" height="80" rx="8" class="f-laptop"></rect>
+                            <rect x="10" y="70" width="110" height="64" rx="4" class="f-pantalla"></rect>
+                            <path d="M42 112 a14 14 0 0 1 4 -27 a20 20 0 0 1 37 6 a12 12 0 0 1 2 21 Z" class="f-nube"></path>
+                            <rect x="-12" y="142" width="154" height="10" rx="5" class="f-laptop"></rect>
+                        </g>
+                        <path d="M70 0 L92 60 M130 0 L108 60" class="f-cordon"></path>
+                        <g transform="translate(58 56)">
+                            <rect width="84" height="108" rx="10" class="f-gafete"></rect>
+                            <rect x="30" y="6" width="24" height="8" rx="4" class="f-broche"></rect>
+                            <circle cx="42" cy="44" r="16" class="f-piel"></circle>
+                            <rect x="16" y="70" width="52" height="8" rx="4" class="f-linea"></rect>
+                            <rect x="24" y="84" width="36" height="8" rx="4" class="f-linea f-linea--suave"></rect>
+                        </g>
+                    </svg>
+                    <h4 class="uso__titulo">Acceso al evento</h4>
+                    <p class="uso__texto">Registro a Mexico Dreamin: charlas, talleres y contacto con la comunidad de Salesforce.</p>
+                </li>
+            </ul>
+
+            <h3 class="ayuda__subtitulo">Dona en tres pasos</h3>
+            <ol class="pasos">
+                <li class="paso">
+                    <span class="paso__numero" aria-hidden="true">1</span>
+                    <div>
+                        <h4 class="paso__titulo">Elige una campaña</h4>
+                        <p>Revisa la meta, cuánto se ha recaudado y hasta cuándo recibe donaciones.</p>
+                    </div>
+                </li>
+                <li class="paso">
+                    <span class="paso__numero" aria-hidden="true">2</span>
+                    <div>
+                        <h4 class="paso__titulo">Decide el monto y cómo aparecer</h4>
+                        <p>Dona de forma anónima, con tu nombre en el muro o con factura.</p>
+                    </div>
+                </li>
+                <li class="paso">
+                    <span class="paso__numero" aria-hidden="true">3</span>
+                    <div>
+                        <h4 class="paso__titulo">Paga en la página segura de Stripe</h4>
+                        <p>Recibes tu comprobante por correo cuando se confirma el pago.</p>
+                    </div>
+                </li>
+            </ol>
+
+            <div class="ayuda__accion">
+                <button type="button" class="boton boton--primario" onclick={verCampanas}>Ver campañas vigentes</button>
+                <p class="ayuda__nota">Ilustraciones de referencia. No se publican datos de ningún donante.</p>
+            </div>
+        </div>
+    </section>
+</template>

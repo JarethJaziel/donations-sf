@@ -340,6 +340,15 @@ export default class PortalCampanasPublico extends LightningElement {
         this.subir();
     }
 
+    /** Botón de la sección "¿Cómo puedes ayudar?": lleva al listado de campañas (US-23 AC4). */
+    irACampanas() {
+        const titulo = this.template.querySelector('.salidas__titulo');
+        if (titulo) {
+            titulo.scrollIntoView({ behavior: reducirMovimiento() ? 'auto' : 'smooth', block: 'start' });
+            titulo.focus({ preventScroll: true });
+        }
+    }
+
     subir() {
         // eslint-disable-next-line @lwc/lwc/no-async-operation
         requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: reducirMovimiento() ? 'auto' : 'smooth' }));
