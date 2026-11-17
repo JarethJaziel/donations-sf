@@ -300,6 +300,11 @@ public without sharing class DonationPublicController {
                     throw error('Escribe un RFC válido (12 o 13 caracteres, con una fecha que exista).');
                 }
             }
+            // US-19 AC2: el nombre que se publicaría en el muro no puede tener palabras bloqueadas
+            if (s.ocultarDelMuro != true
+                && FiltroPalabrasBloqueadas.contieneBloqueada(new List<String>{ s.nombre, s.nombrePublico })) {
+                throw error('El nombre tiene una palabra que no se permite en el muro. Escribe otro nombre.');
+            }
         }
         return campanas[0];
     }

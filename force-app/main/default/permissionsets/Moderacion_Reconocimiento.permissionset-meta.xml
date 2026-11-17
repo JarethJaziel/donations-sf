@@ -4,6 +4,10 @@
         <application>Gestion_Donaciones_MD2026</application>
         <visible>true</visible>
     </applicationVisibilities>
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>Moderacion_Reconocimiento</name>
+    </customPermissions>
     <description>Moderación MD2026: puede cambiar el nombre público y ocultar entradas del muro de reconocimiento. No ve el RFC ni modifica avisos de pasarela (US-04 AC6, US-19).</description>
     <fieldPermissions>
         <editable>false</editable>
@@ -85,12 +89,25 @@
         <object>Donacion__c</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
+    <objectPermissions>
+        <allowCreate>true</allowCreate>
+        <allowDelete>true</allowDelete>
+        <allowEdit>true</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>true</modifyAllRecords>
+        <object>Palabra_Bloqueada__c</object>
+        <viewAllRecords>true</viewAllRecords>
+    </objectPermissions>
     <tabSettings>
         <tab>Campana__c</tab>
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>
         <tab>Donacion__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
+        <tab>Palabra_Bloqueada__c</tab>
         <visibility>Visible</visibility>
     </tabSettings>
 </PermissionSet>

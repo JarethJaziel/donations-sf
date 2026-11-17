@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Moderacion_Solo_Nombre_Y_Visibilidad</fullName>
+    <active>true</active>
+    <description>Quien solo tiene moderación puede cambiar el nombre público y la visibilidad, pero no los datos de la donación (US-19 AC3). Los campos obligatorios no se pueden restringir con permisos de campo, por eso se valida aquí.</description>
+    <errorConditionFormula>NOT(ISNEW()) &amp;&amp; $Permission.Moderacion_Reconocimiento &amp;&amp; NOT($Permission.Gestion_Tesoreria) &amp;&amp; (
+    ISCHANGED(Monto__c) || ISCHANGED(Estado__c) || ISCHANGED(Modalidad__c) || ISCHANGED(Correo__c) ||
+    ISCHANGED(Campana__c) || ISCHANGED(Nombre_Donante__c) || ISCHANGED(RFC__c) || ISCHANGED(Tipo_Confirmacion__c) ||
+    ISCHANGED(Comprobante_Enviado__c) || ISCHANGED(Fecha_Pago__c)
+)</errorConditionFormula>
+    <errorMessage>Con el permiso de moderación solo puedes cambiar el nombre público y la visibilidad en el muro.</errorMessage>
+</ValidationRule>

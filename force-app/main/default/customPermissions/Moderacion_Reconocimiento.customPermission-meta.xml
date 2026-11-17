@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomPermission xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Identifica a quien modera el muro de reconocimiento: solo puede cambiar el nombre público y la visibilidad de una donación (US-19 AC3).</description>
+    <isLicensed>false</isLicensed>
+    <label>Moderación del reconocimiento</label>
+</CustomPermission>

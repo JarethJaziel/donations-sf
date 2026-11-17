@@ -16,6 +16,10 @@
         <apexClass>StripeWebhookService</apexClass>
         <enabled>false</enabled>
     </classAccesses>
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>Gestion_Tesoreria</name>
+    </customPermissions>
     <description>Tesorería y Coordinación MD2026: administra campañas y confirma pagos. Los avisos de pasarela, el tipo de confirmación y el estado del comprobante son de solo lectura, y no se permite borrar registros (US-09 a US-13).</description>
     <fieldPermissions>
         <editable>false</editable>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomPermission xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Identifica a coordinación y tesorería, que sí puede gestionar los datos de una donación aunque también tenga moderación (US-19 AC3).</description>
+    <isLicensed>false</isLicensed>
+    <label>Gestión de tesorería</label>
+</CustomPermission>

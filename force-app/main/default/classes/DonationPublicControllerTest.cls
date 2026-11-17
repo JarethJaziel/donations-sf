@@ -260,6 +260,38 @@ private class DonationPublicControllerTest {
     }
 
     @IsTest
+    static void rechazaNombresConPalabrasBloqueadas() {
+        insert new Palabra_Bloqueada__c(Name = 'Estafa');
+        mockExitoso();
+        DonationPublicController.SolicitudDonacionDTO s = solicitud('Con crédito', 100);
+        s.nombrePublico = 'Club ESTAFA';
+        String mensaje;
+        Test.startTest();
+        try {
+            DonationPublicController.iniciarDonacion(s);
+        } catch (AuraHandledException ex) {
+            mensaje = ex.getMessage();
+        }
+        Test.stopTest();
+        Assert.areEqual('El nombre tiene una palabra que no se permite en el muro. Escribe otro nombre.', mensaje, 'US-19 AC2');
+        Assert.areEqual(0, [SELECT COUNT() FROM Donacion__c WHERE Nombre_Publico__c = 'Club ESTAFA']);
+    }
+
+    @IsTest
+    static void palabraBloqueadaNoAplicaSiNoSePublica() {
+        insert new Palabra_Bloqueada__c(Name = 'Estafa');
+        mockExitoso();
+        DonationPublicController.SolicitudDonacionDTO s = solicitud('Con factura', 100);
+        s.nombre = 'Estafa Cero SA de CV';
+        s.ocultarDelMuro = true;
+        Test.startTest();
+        DonationPublicController.iniciarDonacion(s);
+        Test.stopTest();
+        Assert.areEqual(1, [SELECT COUNT() FROM Donacion__c WHERE Stripe_Session_Id__c = 'sesion_simulada_001'],
+            'Si la donación no aparece en el muro, el nombre solo se usa para la factura');
+    }
+
+    @IsTest
     static void facturaConCasillaNoApareceEnElMuro() {
         mockExitoso();
         DonationPublicController.SolicitudDonacionDTO s = solicitud('Con factura', 750);
