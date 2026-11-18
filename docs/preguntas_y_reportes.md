@@ -114,6 +114,29 @@
 
 ---
 
+### Entry #6 — Delivery 2 Security, Compliance & Code Audit (`US-18` to `US-24`)
+
+- **Date:** 2026-11-17
+- **Author:** Jareth Moo
+- **Type:** Technical Finding / Security & Code Audit Report
+1. **What we were trying to achieve (Story & Criterion):** Audit all 12 new commits pushed to `origin/main` since Delivery 1 (`a416d98..3cff89c`, covering `US-18`, `US-19`, `US-20`, `US-22`, `US-23`, `US-24`, and `US-07` impact prototype) for compliance with Critical Minimums (`M1`–`M3`), Salesforce coding standards (`C6`), LWS/accessibility, and documentation consistency before tagging `entrega-2`.
+2. **What we did (Concrete steps):** Inspected `git log a416d98..origin/main` and `git diff a416d98..origin/main` across all 52 changed files (Apex classes, triggers, permission sets, validation rules, LWCs, and the 18 PNG/PDF evidence files in `docs/evidencias/entrega-2/`). Verified `Blob.toPdf()` HTML escaping in `DonationReceiptService`, `WITH SYSTEM_MODE` / `as system` usage in `DonationPublicController` and `FiltroPalabrasBloqueadas`, and the interaction of `Moderacion_Solo_Nombre_Y_Visibilidad` across Guest, Moderator, Treasury, and Webhook contexts.
+3. **What we expected to happen:** Full compliance with `M1`, `M2`, and `M3`, zero governor-limit or XSS regressions, and synchronized documentation across rules and tracking logs.
+4. **What happened (Response / Finding / Exact error):**
+   - **Critical Minimums (`M1`, `M2`, `M3`):** **PASS.** Only `@example.com` emails and fictitious RFCs are used; the simulated invoice PDF includes the `"Sin validez fiscal – no es un CFDI"` disclaimer top and bottom; `DonationPublicController` and `FiltroPalabrasBloqueadas` keep zero Guest object permissions (`WITH SYSTEM_MODE` + DTOs only); zero Stripe keys, tokens, org IDs, or usernames appear in code, docs, or evidence binaries.
+   - **HTML Escaping (`US-20`):** Verified `DonationReceiptService.construirFacturaHtml` and `fila()` escape all dynamic values via `.escapeHtml4()`.
+   - **Medium Findings Identified for Follow-Up:**
+     1. `FiltroPalabrasBloqueadas` is invoked in `DonationPublicController` (skipped when `ocultarDelMuro = true`), not in `DonacionTriggerHandler`, so a moderator editing `Nombre_Publico__c` or re-enabling `Visible_En_Reconocimiento__c` in Salesforce could publish a blocked word.
+     2. `Moderacion_Solo_Nombre_Y_Visibilidad` omits `Stripe_Session_Id__c` and `Error_Comprobante__c` and would block a System Administrator who holds `Moderacion_Reconocimiento` without `Coordinacion_Tesoreria_Admin`.
+     3. Documentation drift: `GEMINI.md` / `CLAUDE.md` / `.agents/rules/donation-portal.md` still state that invoice donors are always public (`US-24` exception not reflected) and omit `Palabra_Bloqueada__c` / `US-20` PDF details; `README.md` still shows the pre-Delivery 2 progress table (16/20).
+   - **Low Findings:** Synchronous `Blob.toPdf()` inside `enviarComprobantes` loop (safe for single confirmations, monitor for bulk updates) and `FiltroPalabrasBloqueadas` static cache lacking a `@TestVisible` reset helper.
+5. **What we consulted with AI or documentation and the outcome:** Used Gemini / Antigravity (`code-auditor` subagent) to inspect the full diff against `GEMINI.md` rules (`M1`–`M3`, `C6`), Salesforce LWS constraints, and Flying Saucer `Blob.toPdf()` XHTML behavior, then verified every cited line and file directly.
+- **What we did afterward (Resolution):**
+  - Approved integration of `origin/main` (`3cff89c`) into local `main` via fast-forward merge.
+  - Documented the audit findings in this entry, `docs/contribucion.md` (Delivery 2), and `docs/bitacora_ia.md` (row #24), keeping Apex/LWC code unmodified in this sync step while tracking the 3 medium findings for team follow-up.
+
+---
+
 ## Template for New Entries (Copy & Paste)
 
 ### Entry #X — [Descriptive Title of Question or Technical Blocker]
